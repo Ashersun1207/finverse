@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinVerse 可视化 Demo</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0e17;--bg2:#111827;--bg3:#1a2540;--accent:#00d4aa;--accent2:#6366f1;--accent3:#f59e0b;--red:#ef4444;--text:#e2e8f0;--text2:#8b9dc3;--border:#1e2d4a;--green:#10b981;--up:#10b981;--down:#ef4444}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* Mode Switcher */
+.mode-bar{position:sticky;top:0;z-index:100;background:rgba(10,14,23,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0.8rem 2rem;display:flex;justify-content:space-between;align-items:center}
+.mode-tabs{display:flex;gap:0.5rem}
+.mode-tab{padding:0.5rem 1.2rem;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-size:0.85rem;transition:all 0.3s}
+.mode-tab.active{background:rgba(0,212,170,0.15);border-color:var(--accent);color:var(--accent)}
+.mode-tab:hover{border-color:var(--accent)}
+.page-title{font-size:0.9rem;color:var(--text2)}
+.asset-selector{display:flex;gap:0.5rem;align-items:center}
+.asset-btn{padding:0.3rem 0.8rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-size:0.8rem;transition:all 0.3s}
+.asset-btn.active{background:var(--bg3);color:var(--text);border-color:var(--accent)}
+
+/* Container */
+.container{max-width:1400px;margin:0 auto;padding:1.5rem}
+
+/* ============ SUMMARY MODE ============ */
+.summary-mode .hero-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.signal-badge{position:absolute;top:1.5rem;right:1.5rem;padding:0.4rem 1.2rem;border-radius:20px;font-weight:700;font-size:0.9rem}
+.signal-bearish{background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3)}
+.signal-bullish{background:rgba(16,185,129,0.15);color:var(--green);border:1px solid rgba(16,185,129,0.3)}
+.hero-price{font-size:3rem;font-weight:800;margin-bottom:0.3rem}
+.hero-change{font-size:1.1rem;margin-bottom:1.5rem}
+.hero-summary{font-size:1.05rem;line-height:1.8;color:var(--text2);max-width:600px}
+.hero-summary strong{color:var(--text)}
+.signal-bars{display:flex;gap:1.5rem;margin-top:2rem;flex-wrap:wrap}
+.signal-item{flex:1;min-width:150px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem}
+.signal-item .label{font-size:0.75rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem}
+.signal-item .value{font-size:1.3rem;font-weight:700}
+.signal-item .bar{height:6px;border-radius:3px;margin-top:0.5rem;background:var(--bg3)}
+.signal-item .bar-fill{height:100%;border-radius:3px;transition:width 1s ease}
+
+/* Quick alerts */
+.alerts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin-bottom:1.5rem}
+.alert-card{background:var(--bg2);border-radius:12px;padding:1.2rem;border-left:4px solid;transition:transform 0.2s}
+.alert-card:hover{transform:translateX(4px)}
+.alert-card.alert-red{border-left-color:var(--red)}
+.alert-card.alert-yellow{border-left-color:var(--accent3)}
+.alert-card.alert-green{border-left-color:var(--green)}
+.alert-card .alert-title{font-weight:600;font-size:0.9rem;margin-bottom:0.3rem}
+.alert-card .alert-desc{color:var(--text2);font-size:0.82rem}
+.alert-card .alert-time{color:var(--text2);font-size:0.7rem;margin-top:0.5rem}
+
+/* ============ CHART MODE ============ */
+.chart-container{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:1.5rem}
+.chart-toolbar{display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1.2rem;border-bottom:1px solid var(--border);background:var(--bg3)}
+.chart-toolbar .tf-tabs{display:flex;gap:0.3rem}
+.chart-toolbar .tf{padding:0.3rem 0.6rem;border-radius:4px;font-size:0.75rem;color:var(--text2);cursor:pointer;border:none;background:transparent}
+.chart-toolbar .tf.active{background:rgba(0,212,170,0.15);color:var(--accent)}
+.layer-toggles{display:flex;gap:0.5rem}
+.layer-toggle{display:flex;align-items:center;gap:0.3rem;font-size:0.75rem;color:var(--text2);cursor:pointer;padding:0.2rem 0.5rem;border-radius:4px;border:1px solid transparent;transition:all 0.3s}
+.layer-toggle.active{border-color:currentColor}
+.layer-toggle .dot{width:8px;height:8px;border-radius:50%}
+
+/* Canvas */
+.chart-canvas{position:relative;height:500px;padding:1rem;overflow:hidden}
+.chart-canvas canvas{width:100%;height:100%}
+
+/* AI Annotations */
+.ai-annotations{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none}
+.annotation-point{position:absolute;pointer-events:all;cursor:pointer}
+.annotation-dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;animation:pulse 2s ease infinite}
+.annotation-popup{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1rem;width:280px;font-size:0.8rem;display:none;z-index:10;box-shadow:0 8px 30px rgba(0,0,0,0.5)}
+.annotation-point:hover .annotation-popup{display:block}
+.annotation-popup .reason{color:var(--text2);margin-top:0.3rem;line-height:1.5}
+.annotation-popup .confidence{margin-top:0.5rem;font-size:0.7rem}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,212,170,0.4)}50%{box-shadow:0 0 0 10px rgba(0,212,170,0)}}
+@keyframes pulse-red{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.4)}50%{box-shadow:0 0 0 10px rgba(239,68,68,0)}}
+
+/* Support/Resistance zones */
+.zone{position:absolute;left:0;right:0;opacity:0.15;pointer-events:none}
+.zone-label{position:absolute;right:10px;font-size:0.7rem;font-weight:600;pointer-events:none}
+
+/* Event markers on timeline */
+.event-markers{position:absolute;bottom:40px;left:60px;right:20px;height:30px;display:flex;justify-content:space-around}
+.event-marker{position:relative;cursor:pointer}
+.event-marker .marker-line{width:1px;height:20px;background:var(--accent3);opacity:0.5}
+.event-marker .marker-label{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:0.6rem;color:var(--accent3);white-space:nowrap}
+.event-marker .marker-popup{position:absolute;bottom:25px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--accent3);border-radius:8px;padding:0.6rem;width:200px;font-size:0.75rem;display:none;z-index:10}
+.event-marker:hover .marker-popup{display:block}
+
+/* Heatmap overlay */
+.heatmap-overlay{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;opacity:0;transition:opacity 0.5s}
+.heatmap-overlay.active{opacity:1}
+.heat-spot{position:absolute;border-radius:50%;filter:blur(30px)}
+
+/* ============ DATA MODE ============ */
+.data-mode{display:none}
+.data-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+.data-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem}
+.data-card .label{font-size:0.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem}
+.data-card .value{font-size:1.5rem;font-weight:700}
+.data-card .sub{font-size:0.8rem;margin-top:0.2rem}
+
+.data-table{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.5rem}
+.data-table th{background:var(--bg3);padding:0.7rem 1rem;text-align:left;font-size:0.75rem;color:var(--accent);text-transform:uppercase;letter-spacing:1px}
+.data-table td{padding:0.6rem 1rem;border-bottom:1px solid var(--border);font-size:0.85rem;font-family:'SF Mono',monospace}
+.data-table tr:last-child td{border-bottom:none}
+.data-table .anomaly{background:rgba(239,68,68,0.08);animation:row-flash 2s ease infinite}
+@keyframes row-flash{0%,100%{background:rgba(239,68,68,0.08)}50%{background:rgba(239,68,68,0.02)}}
+
+/* Multi-signal panel */
+.signal-panel{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+.signal-panel h3{font-size:1rem;margin-bottom:1rem;color:var(--accent)}
+.signal-row{display:flex;align-items:center;gap:1rem;padding:0.6rem 0;border-bottom:1px solid var(--border)}
+.signal-row:last-child{border-bottom:none}
+.signal-name{width:140px;font-size:0.85rem}
+.signal-meter{flex:1;height:8px;background:var(--bg3);border-radius:4px;position:relative;overflow:hidden}
+.signal-fill{height:100%;border-radius:4px;transition:width 1.5s ease}
+.signal-verdict{width:80px;text-align:right;font-size:0.8rem;font-weight:600}
+
+/* History comparison overlay */
+.history-overlay{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;display:none}
+.history-label{position:absolute;top:10px;right:10px;background:rgba(99,102,241,0.2);color:var(--accent2);padding:0.3rem 0.8rem;border-radius:6px;font-size:0.7rem}
+
+/* Group consensus mini */
+.consensus-bar{display:flex;height:32px;border-radius:8px;overflow:hidden;margin:1rem 0}
+.consensus-segment{display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;transition:width 1s ease}
+
+/* Responsive */
+@media(max-width:768px){
+  .data-grid{grid-template-columns:repeat(2,1fr)}
+  .alerts-grid{grid-template-columns:1fr}
+  .mode-bar{flex-wrap:wrap;gap:0.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- Mode Bar -->
+<div class="mode-bar">
+  <div style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap">
+    <span class="page-title">FinVerse · 可视化 Demo</span>
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="switchMode('summary')">📋 摘要模式</button>
+      <button class="mode-tab" onclick="switchMode('chart')">📊 图表模式</button>
+      <button class="mode-tab" onclick="switchMode('data')">🔢 数据模式</button>
+    </div>
+  </div>
+  <div class="asset-selector">
+    <button class="asset-btn active">BTC/USD</button>
+    <button class="asset-btn">XAUUSD</button>
+    <button class="asset-btn">SPY</button>
+  </div>
+</div>
+
+<!-- ===================== SUMMARY MODE ===================== -->
+<div class="container summary-mode" id="summaryMode">
+  <!-- Hero Signal -->
+  <div class="hero-card">
+    <div class="signal-badge signal-bearish">⚠️ 短期偏空</div>
+    <div style="font-size:0.8rem;color:var(--text2);margin-bottom:0.5rem">BTC / USD · 2026.02.07</div>
+    <div class="hero-price">$66,742</div>
+    <div class="hero-change" style="color:var(--red)">▼ -1.8% · -$1,224 (24h)</div>
+    <div class="hero-summary">
+      <strong>AI 一句话：</strong>链上大额流入交易所 + 今晚 CPI 风险，短期偏空。<strong style="color:var(--accent)">关键看 $67,200 支撑</strong>，跌破则下看 $64,800。
+    </div>
+    <div class="signal-bars">
+      <div class="signal-item">
+        <div class="label">链上信号</div>
+        <div class="value" style="color:var(--red)">🔴 看空</div>
+        <div class="bar"><div class="bar-fill" style="width:78%;background:var(--red)"></div></div>
+      </div>
+      <div class="signal-item">
+        <div class="label">宏观信号</div>
+        <div class="value" style="color:var(--red)">🔴 看空</div>
+        <div class="bar"><div class="bar-fill" style="width:72%;background:var(--red)"></div></div>
+      </div>
+      <div class="signal-item">
+        <div class="label">技术信号</div>
+        <div class="value" style="color:var(--accent3)">🟡 中性</div>
+        <div class="bar"><div class="bar-fill" style="width:50%;background:var(--accent3)"></div></div>
+      </div>
+      <div class="signal-item">
+        <div class="label">小组共识</div>
+        <div class="value" style="color:var(--red)">📉 偏空</div>
+        <div class="bar"><div class="bar-fill" style="width:65%;background:var(--red)"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div class="alerts-grid">
+    <div class="alert-card alert-red">
+      <div class="alert-title">🚨 链上异常：交易所净流入激增</div>
+      <div class="alert-desc">过去 6h 净流入 12,400 BTC（$827M），集中在 Binance 和 Coinbase。历史上此规模 5 次中 3 次随后 48h 下跌 >8%。</div>
+      <div class="alert-time">2 小时前 · 置信度 74%</div>
+    </div>
+    <div class="alert-card alert-red">
+      <div class="alert-title">🏛️ 宏观风险：CPI 可能超预期</div>
+      <div class="alert-desc">今晚 20:30 UTC 发布 CPI。市场定价 3.1%，Cleveland Fed 模型预测 3.3%。超预期将利空风险资产。</div>
+      <div class="alert-time">4 小时前 · 置信度 68%</div>
+    </div>
+    <div class="alert-card alert-yellow">
+      <div class="alert-title">⛏️ 矿工抛售加速</div>
+      <div class="alert-desc">矿工 7 日平均净卖出从 200 BTC/天升至 580 BTC/天。抛压不只来自短期持有者。</div>
+      <div class="alert-time">6 小时前 · 置信度 81%</div>
+    </div>
+    <div class="alert-card alert-green">
+      <div class="alert-title">📐 技术面：$67,200 支撑仍在</div>
+      <div class="alert-desc">4H 级别 200MA + 前期密集成交区汇合于 $67,200。RSI(14) = 42，未进入超卖区。</div>
+      <div class="alert-time">1 小时前 · 置信度 72%</div>
+    </div>
+  </div>
+
+  <!-- Group Consensus -->
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <h3 style="font-size:1rem;color:var(--accent)">📊 小组共识 · 加密技术面研究</h3>
+      <span style="font-size:0.75rem;color:var(--text2)">8 人参与</span>
+    </div>
+    <div class="consensus-bar">
+      <div class="consensus-segment" style="width:12.5%;background:rgba(16,185,129,0.3);color:var(--green)">多 1</div>
+      <div class="consensus-segment" style="width:25%;background:rgba(245,158,11,0.3);color:var(--accent3)">观望 2</div>
+      <div class="consensus-segment" style="width:62.5%;background:rgba(239,68,68,0.3);color:var(--red)">空 5</div>
+    </div>
+    <div style="font-size:0.82rem;color:var(--text2);margin-top:0.5rem">主要分歧：支撑位是否能扛住 CPI 冲击。多数认为应等数据出来再行动。</div>
+  </div>
+</div>
+
+<!-- ===================== CHART MODE ===================== -->
+<div class="container" id="chartMode" style="display:none">
+  <div class="chart-container">
+    <div class="chart-toolbar">
+      <div class="tf-tabs">
+        <button class="tf">1m</button>
+        <button class="tf">5m</button>
+        <button class="tf">15m</button>
+        <button class="tf">1H</button>
+        <button class="tf active">4H</button>
+        <button class="tf">1D</button>
+        <button class="tf">1W</button>
+      </div>
+      <div class="layer-toggles">
+        <label class="layer-toggle active" style="color:var(--accent)" onclick="toggleLayer('ai')">
+          <span class="dot" style="background:var(--accent)"></span> AI 标注
+        </label>
+        <label class="layer-toggle active" style="color:var(--accent3)" onclick="toggleLayer('events')">
+          <span class="dot" style="background:var(--accent3)"></span> 宏观事件
+        </label>
+        <label class="layer-toggle active" style="color:var(--accent2)" onclick="toggleLayer('onchain')">
+          <span class="dot" style="background:var(--accent2)"></span> 链上数据
+        </label>
+        <label class="layer-toggle" style="color:var(--red)" onclick="toggleLayer('heatmap')">
+          <span class="dot" style="background:var(--red)"></span> 异常热力图
+        </label>
+        <label class="layer-toggle" style="color:#818cf8" onclick="toggleLayer('history')">
+          <span class="dot" style="background:#818cf8"></span> 历史叠影
+        </label>
+      </div>
+    </div>
+
+    <div class="chart-canvas" id="chartCanvas">
+      <canvas id="mainChart"></canvas>
+
+      <!-- Support/Resistance zones -->
+      <div class="zone" style="top:28%;height:3%;background:var(--red)" id="zoneResist"></div>
+      <div class="zone-label" style="top:27%;color:var(--red)">阻力 $69,800</div>
+      <div class="zone" style="top:58%;height:3%;background:var(--green)" id="zoneSupport1"></div>
+      <div class="zone-label" style="top:57%;color:var(--green)">支撑 $67,200 ★</div>
+      <div class="zone" style="top:78%;height:2%;background:rgba(16,185,129,0.5)" id="zoneSupport2"></div>
+      <div class="zone-label" style="top:77%;color:var(--green);opacity:0.6">次级支撑 $64,800</div>
+
+      <!-- AI Annotations -->
+      <div class="ai-annotations" id="aiLayer">
+        <div class="annotation-point" style="left:25%;top:35%">
+          <div class="annotation-dot" style="background:rgba(239,68,68,0.3);color:var(--red);animation-name:pulse-red">!</div>
+          <div class="annotation-popup">
+            <div style="color:var(--red);font-weight:600">🔴 假突破信号</div>
+            <div class="reason">价格突破 $69,800 后快速回落，成交量未配合。经典的假突破形态，AI 识别置信度 83%。</div>
+            <div class="confidence">
+              <span style="color:var(--text2)">置信度</span>
+              <span style="display:inline-block;width:80px;height:4px;background:var(--bg);border-radius:2px;vertical-align:middle;margin-left:0.3rem">
+                <span style="display:block;width:83%;height:100%;background:var(--red);border-radius:2px"></span>
+              </span>
+              <span style="color:var(--red)"> 83%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="annotation-point" style="left:58%;top:55%">
+          <div class="annotation-dot" style="background:rgba(0,212,170,0.3);color:var(--accent)">★</div>
+          <div class="annotation-popup">
+            <div style="color:var(--accent);font-weight:600">🟢 关键支撑汇合</div>
+            <div class="reason">三重支撑汇合：<br>① 200 周期 MA ($67,180)<br>② 前期密集成交区<br>③ 斐波那契 0.382<br>此处多次反弹，为当前最关键价位。</div>
+            <div class="confidence">
+              <span style="color:var(--text2)">置信度</span>
+              <span style="display:inline-block;width:80px;height:4px;background:var(--bg);border-radius:2px;vertical-align:middle;margin-left:0.3rem">
+                <span style="display:block;width:91%;height:100%;background:var(--accent);border-radius:2px"></span>
+              </span>
+              <span style="color:var(--accent)"> 91%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="annotation-point" style="left:78%;top:48%">
+          <div class="annotation-dot" style="background:rgba(245,158,11,0.3);color:var(--accent3)">?</div>
+          <div class="annotation-popup">
+            <div style="color:var(--accent3);font-weight:600">🟡 方向选择点</div>
+            <div class="reason">三角形收敛末端，即将突破。<br>向上突破目标 $71,200<br>向下破位目标 $64,800<br>CPI 数据可能成为催化剂。</div>
+            <div class="confidence">
+              <span style="color:var(--text2)">方向不确定</span>
+              <span style="display:inline-block;width:80px;height:4px;background:var(--bg);border-radius:2px;vertical-align:middle;margin-left:0.3rem">
+                <span style="display:block;width:50%;height:100%;background:var(--accent3);border-radius:2px"></span>
+              </span>
+              <span style="color:var(--accent3)"> 50/50</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="annotation-point" style="left:42%;top:42%">
+          <div class="annotation-dot" style="background:rgba(99,102,241,0.3);color:var(--accent2);font-size:0.6rem">⛓</div>
+          <div class="annotation-popup">
+            <div style="color:var(--accent2);font-weight:600">⛓ 链上异常</div>
+            <div class="reason">此处出现大额交易所流入（4,200 BTC 单笔转入 Binance）。价格随后加速下跌。链上 → 价格的传导时间约 4 小时。</div>
+            <div class="confidence">
+              <span style="color:var(--text2)">关联度</span>
+              <span style="display:inline-block;width:80px;height:4px;background:var(--bg);border-radius:2px;vertical-align:middle;margin-left:0.3rem">
+                <span style="display:block;width:76%;height:100%;background:var(--accent2);border-radius:2px"></span>
+              </span>
+              <span style="color:var(--accent2)"> 76%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Event Markers -->
+      <div class="event-markers" id="eventsLayer">
+        <div class="event-marker" style="left:15%">
+          <div class="marker-line"></div>
+          <div class="marker-label">FOMC 纪要</div>
+          <div class="marker-popup">
+            <div style="color:var(--accent3);font-weight:600">🏛️ FOMC 会议纪要发布</div>
+            <div style="color:var(--text2);margin-top:0.3rem">鹰派信号 7.2/10，高于预期。市场随后下行。</div>
+          </div>
+        </div>
+        <div class="event-marker" style="left:50%">
+          <div class="marker-line"></div>
+          <div class="marker-label">非农数据</div>
+          <div class="marker-popup">
+            <div style="color:var(--accent3);font-weight:600">📊 非农就业数据</div>
+            <div style="color:var(--text2);margin-top:0.3rem">新增 25.6 万，超预期。美元走强，BTC 承压。</div>
+          </div>
+        </div>
+        <div class="event-marker" style="left:85%">
+          <div class="marker-line" style="background:var(--red)"></div>
+          <div class="marker-label" style="color:var(--red)">⚡ 今晚 CPI</div>
+          <div class="marker-popup" style="border-color:var(--red)">
+            <div style="color:var(--red);font-weight:600">🚨 CPI 数据 · 20:30 UTC</div>
+            <div style="color:var(--text2);margin-top:0.3rem">预期 3.1%，模型预测 3.3%。超预期概率 62%。这是当前最大催化剂。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heatmap Overlay -->
+      <div class="heatmap-overlay" id="heatmapLayer">
+        <div class="heat-spot" style="width:200px;height:200px;background:rgba(239,68,68,0.3);left:35%;top:25%"></div>
+        <div class="heat-spot" style="width:150px;height:150px;background:rgba(239,68,68,0.4);left:70%;top:35%"></div>
+        <div class="heat-spot" style="width:120px;height:120px;background:rgba(0,212,170,0.3);left:55%;top:55%"></div>
+        <div class="heat-spot" style="width:180px;height:100px;background:rgba(245,158,11,0.25);left:80%;top:60%"></div>
+      </div>
+
+      <!-- History Overlay -->
+      <div class="history-overlay" id="historyLayer">
+        <div class="history-label">📎 历史叠影 · 2025-11-18 形态（相似度 84%）</div>
+        <svg width="100%" height="100%" style="position:absolute;top:0;left:0">
+          <path d="M60,200 Q150,180 200,220 T350,190 Q400,160 450,200 T550,170 Q600,150 650,180 T750,160 Q800,140 850,170 T950,150" stroke="#818cf8" fill="none" stroke-width="2" stroke-dasharray="8,4" opacity="0.5"/>
+          <text x="960" y="148" fill="#818cf8" font-size="11">2025-11 走势</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Reasoning Panel -->
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem">
+    <h3 style="font-size:1rem;margin-bottom:1rem;color:var(--accent)">🧠 AI 推理链 · 为什么判断偏空？</h3>
+    <div style="display:grid;gap:0.8rem">
+      <div style="display:flex;align-items:flex-start;gap:1rem;padding:0.8rem;background:var(--bg);border-radius:8px">
+        <div style="color:var(--red);font-size:1.2rem;flex-shrink:0">①</div>
+        <div>
+          <div style="font-weight:600;font-size:0.9rem">链上数据异常</div>
+          <div style="color:var(--text2);font-size:0.82rem;margin-top:0.2rem">交易所净流入 12,400 BTC。历史回测：此规模出现后 48h 内下跌概率 60%，平均跌幅 8.3%。</div>
+        </div>
+        <div style="color:var(--red);font-size:0.8rem;white-space:nowrap">权重 30%</div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:1rem;padding:0.8rem;background:var(--bg);border-radius:8px">
+        <div style="color:var(--red);font-size:1.2rem;flex-shrink:0">②</div>
+        <div>
+          <div style="font-weight:600;font-size:0.9rem">宏观环境利空</div>
+          <div style="color:var(--text2);font-size:0.82rem;margin-top:0.2rem">CPI 超预期概率 62% + DXY 突破 104.2。历史上该组合出现后 BTC 72h 平均跌幅 6.3%。</div>
+        </div>
+        <div style="color:var(--red);font-size:0.8rem;white-space:nowrap">权重 35%</div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:1rem;padding:0.8rem;background:var(--bg);border-radius:8px">
+        <div style="color:var(--accent3);font-size:1.2rem;flex-shrink:0">③</div>
+        <div>
+          <div style="font-weight:600;font-size:0.9rem">技术面支撑尚在</div>
+          <div style="color:var(--text2);font-size:0.82rem;margin-top:0.2rem">$67,200 三重支撑汇合未破。RSI 42 未超卖。如果支撑有效，可能是诱空。</div>
+        </div>
+        <div style="color:var(--accent3);font-size:0.8rem;white-space:nowrap">权重 20%</div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:1rem;padding:0.8rem;background:var(--bg);border-radius:8px">
+        <div style="color:var(--red);font-size:1.2rem;flex-shrink:0">④</div>
+        <div>
+          <div style="font-weight:600;font-size:0.9rem">矿工抛售 + 形态相似度</div>
+          <div style="color:var(--text2);font-size:0.82rem;margin-top:0.2rem">矿工净卖出 580 BTC/天。当前形态与 2025-11-18 相似度 84%，当时随后跌了 11%。</div>
+        </div>
+        <div style="color:var(--red);font-size:0.8rem;white-space:nowrap">权重 15%</div>
+      </div>
+    </div>
+    <div style="margin-top:1.2rem;padding:1rem;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;font-size:0.85rem">
+      <strong style="color:var(--red)">综合评分：偏空 72%</strong>
+      <span style="color:var(--text2);margin-left:1rem">⚠️ 此为 AI 分析，不构成投资建议。最终决策由你做出。</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DATA MODE ===================== -->
+<div class="container data-mode" id="dataMode">
+  <div class="data-grid">
+    <div class="data-card">
+      <div class="label">价格</div>
+      <div class="value">$66,742</div>
+      <div class="sub" style="color:var(--red)">▼ -1.8%</div>
+    </div>
+    <div class="data-card">
+      <div class="label">24H 成交量</div>
+      <div class="value">$38.2B</div>
+      <div class="sub" style="color:var(--red)">▲ +42% 异常</div>
+    </div>
+    <div class="data-card">
+      <div class="label">未平仓合约</div>
+      <div class="value">$21.7B</div>
+      <div class="sub" style="color:var(--accent3)">▲ +3.2%</div>
+    </div>
+    <div class="data-card">
+      <div class="label">恐惧贪婪指数</div>
+      <div class="value">38</div>
+      <div class="sub" style="color:var(--accent3)">恐惧</div>
+    </div>
+    <div class="data-card">
+      <div class="label">资金费率</div>
+      <div class="value">-0.012%</div>
+      <div class="sub" style="color:var(--green)">空头付费</div>
+    </div>
+    <div class="data-card">
+      <div class="label">交易所净流入</div>
+      <div class="value" style="color:var(--red)">+12,400</div>
+      <div class="sub" style="color:var(--red)">⚠️ 6h 异常</div>
+    </div>
+    <div class="data-card">
+      <div class="label">矿工净卖出</div>
+      <div class="value">580/天</div>
+      <div class="sub" style="color:var(--red)">▲ 190% 加速</div>
+    </div>
+    <div class="data-card">
+      <div class="label">DXY 美元指数</div>
+      <div class="value">104.35</div>
+      <div class="sub" style="color:var(--red)">突破阻力</div>
+    </div>
+  </div>
+
+  <!-- Signal Panel -->
+  <div class="signal-panel">
+    <h3>📡 多维信号面板</h3>
+    <div class="signal-row">
+      <div class="signal-name">链上信号</div>
+      <div class="signal-meter"><div class="signal-fill" style="width:78%;background:linear-gradient(90deg,var(--accent3),var(--red))"></div></div>
+      <div class="signal-verdict" style="color:var(--red)">看空 78%</div>
+    </div>
+    <div class="signal-row">
+      <div class="signal-name">宏观信号</div>
+      <div class="signal-meter"><div class="signal-fill" style="width:72%;background:linear-gradient(90deg,var(--accent3),var(--red))"></div></div>
+      <div class="signal-verdict" style="color:var(--red)">看空 72%</div>
+    </div>
+    <div class="signal-row">
+      <div class="signal-name">技术面信号</div>
+      <div class="signal-meter"><div class="signal-fill" style="width:50%;background:var(--accent3)"></div></div>
+      <div class="signal-verdict" style="color:var(--accent3)">中性 50%</div>
+    </div>
+    <div class="signal-row">
+      <div class="signal-name">市场情绪</div>
+      <div class="signal-meter"><div class="signal-fill" style="width:65%;background:linear-gradient(90deg,var(--accent3),var(--red))"></div></div>
+      <div class="signal-verdict" style="color:var(--red)">恐惧 65%</div>
+    </div>
+    <div class="signal-row">
+      <div class="signal-name">小组共识</div>
+      <div class="signal-meter"><div class="signal-fill" style="width:63%;background:linear-gradient(90deg,var(--accent3),var(--red))"></div></div>
+      <div class="signal-verdict" style="color:var(--red)">偏空 63%</div>
+    </div>
+    <div class="signal-row" style="border-top:2px solid var(--border);padding-top:1rem;margin-top:0.5rem">
+      <div class="signal-name" style="font-weight:700">综合评分</div>
+      <div class="signal-meter"><div class="signal-fill" style="width:72%;background:linear-gradient(90deg,var(--accent3),var(--red))"></div></div>
+      <div class="signal-verdict" style="color:var(--red);font-size:0.9rem">偏空 72%</div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <table class="data-table">
+    <thead>
+      <tr><th>指标</th><th>当前值</th><th>24H 变化</th><th>7D 变化</th><th>状态</th></tr>
+    </thead>
+    <tbody>
+      <tr class="anomaly"><td>交易所净流入 (BTC)</td><td>+12,400</td><td style="color:var(--red)">+340%</td><td style="color:var(--red)">+520%</td><td style="color:var(--red)">⚠️ 异常</td></tr>
+      <tr class="anomaly"><td>矿工净卖出 (BTC/天)</td><td>580</td><td style="color:var(--red)">+45%</td><td style="color:var(--red)">+190%</td><td style="color:var(--red)">⚠️ 异常</td></tr>
+      <tr><td>活跃地址数</td><td>892,341</td><td style="color:var(--red)">-3.2%</td><td style="color:var(--red)">-8.1%</td><td style="color:var(--accent3)">偏低</td></tr>
+      <tr><td>大额转账 (>100 BTC)</td><td>847 笔</td><td style="color:var(--red)">+28%</td><td style="color:var(--red)">+45%</td><td style="color:var(--accent3)">偏高</td></tr>
+      <tr><td>NUPL</td><td>0.42</td><td>-0.02</td><td>-0.05</td><td style="color:var(--green)">正常</td></tr>
+      <tr><td>MVRV Z-Score</td><td>1.8</td><td>-0.1</td><td>-0.3</td><td style="color:var(--green)">正常</td></tr>
+      <tr><td>稳定币交易所余额</td><td>$24.8B</td><td style="color:var(--green)">+1.2%</td><td style="color:var(--green)">+3.8%</td><td style="color:var(--green)">买力储备</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+// Draw candlestick chart
+function drawChart(){
+  const canvas=document.getElementById('mainChart');
+  const ctx=canvas.getContext('2d');
+  const rect=canvas.parentElement.getBoundingClientRect();
+  canvas.width=rect.width*2;canvas.height=rect.height*2;
+  ctx.scale(2,2);
+  const w=rect.width,h=rect.height;
+
+  // Generate fake OHLC data
+  const candles=[];
+  let price=68500;
+  for(let i=0;i<60;i++){
+    const open=price;
+    const change=(Math.random()-0.52)*800;
+    const close=open+change;
+    const high=Math.max(open,close)+Math.random()*400;
+    const low=Math.min(open,close)-Math.random()*400;
+    candles.push({o:open,h:high,l:low,c:close});
+    price=close;
+  }
+
+  const minP=Math.min(...candles.map(c=>c.l))-500;
+  const maxP=Math.max(...candles.map(c=>c.h))+500;
+  const toY=p=>30+(1-(p-minP)/(maxP-minP))*(h-70);
+  const cw=(w-80)/candles.length;
+
+  // Grid
+  ctx.strokeStyle='#1e2d4a';ctx.lineWidth=0.5;
+  for(let i=0;i<6;i++){
+    const y=30+i*(h-70)/5;
+    ctx.beginPath();ctx.moveTo(60,y);ctx.lineTo(w-10,y);ctx.stroke();
+    const p=maxP-(i/5)*(maxP-minP);
+    ctx.fillStyle='#8b9dc3';ctx.font='10px monospace';
+    ctx.fillText('$'+Math.round(p).toLocaleString(),5,y+4);
+  }
+
+  // Volume bars (subtle)
+  candles.forEach((c,i)=>{
+    const x=60+i*cw;
+    const vol=20+Math.random()*30;
+    ctx.fillStyle=c.c>=c.o?'rgba(16,185,129,0.15)':'rgba(239,68,68,0.15)';
+    ctx.fillRect(x+2,h-35,cw-4,-(vol));
+  });
+
+  // 200MA line
+  ctx.beginPath();ctx.strokeStyle='rgba(0,212,170,0.4)';ctx.lineWidth=1.5;
+  let maSum=0;
+  candles.forEach((c,i)=>{
+    maSum+=c.c;
+    if(i>=5){
+      const ma=maSum/Math.min(i+1,20);
+      const x=60+i*cw+cw/2;
+      const y=toY(ma+(i<30?200:-300));
+      if(i===5)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    }
+  });
+  ctx.stroke();
+
+  // Candlesticks
+  candles.forEach((c,i)=>{
+    const x=60+i*cw;
+    const isUp=c.c>=c.o;
+    ctx.fillStyle=isUp?'#10b981':'#ef4444';
+    ctx.strokeStyle=isUp?'#10b981':'#ef4444';
+    ctx.lineWidth=1;
+
+    // Wick
+    ctx.beginPath();
+    ctx.moveTo(x+cw/2,toY(c.h));
+    ctx.lineTo(x+cw/2,toY(c.l));
+    ctx.stroke();
+
+    // Body
+    const bodyTop=toY(Math.max(c.o,c.c));
+    const bodyH=Math.max(1,Math.abs(toY(c.o)-toY(c.c)));
+    if(isUp){
+      ctx.strokeRect(x+3,bodyTop,cw-6,bodyH);
+    }else{
+      ctx.fillRect(x+3,bodyTop,cw-6,bodyH);
+    }
+  });
+
+  // Current price line
+  const lastPrice=candles[candles.length-1].c;
+  const cy=toY(lastPrice);
+  ctx.setLineDash([4,4]);ctx.strokeStyle='var(--text)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(60,cy);ctx.lineTo(w-10,cy);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#e2e8f0';ctx.font='bold 11px monospace';
+  ctx.fillText('$'+Math.round(lastPrice).toLocaleString(),w-75,cy-5);
+}
+
+// Mode switching
+function switchMode(mode){
+  document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('summaryMode').style.display=mode==='summary'?'block':'none';
+  document.getElementById('chartMode').style.display=mode==='chart'?'block':'none';
+  document.getElementById('dataMode').style.display=mode==='data'?'block':'none';
+  if(mode==='chart')setTimeout(drawChart,100);
+}
+
+// Layer toggles
+function toggleLayer(layer){
+  const el=event.target.closest('.layer-toggle');
+  el.classList.toggle('active');
+  const layerEl=document.getElementById(layer+'Layer');
+  if(layerEl){
+    if(layer==='heatmap'){
+      layerEl.classList.toggle('active');
+    }else if(layer==='history'){
+      layerEl.style.display=layerEl.style.display==='block'?'none':'block';
+    }else{
+      layerEl.style.display=layerEl.style.display==='none'?'block':'none';
+    }
+  }
+}
+
+// Init
+window.addEventListener('resize',()=>{
+  if(document.getElementById('chartMode').style.display!=='none')drawChart();
+});
+</script>
+
+</body>
+</html>
