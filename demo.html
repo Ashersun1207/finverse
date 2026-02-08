@@ -77,6 +77,73 @@
             gap: 1.5rem;
         }
 
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            background: rgba(19, 23, 41, 0.8);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 8px;
+            color: #e4e6eb;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            background: rgba(19, 23, 41, 1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 1rem;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            left: 0;
+            right: 0;
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 8px;
+            padding: 0.5rem;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .search-suggestions.active {
+            display: block;
+        }
+
+        .search-suggestion {
+            padding: 0.75rem;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            transition: background 0.2s;
+        }
+
+        .search-suggestion:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .suggestion-icon {
+            margin-right: 0.5rem;
+        }
+
         .lang-switch {
             cursor: pointer;
             font-size: 1.2rem;
@@ -123,6 +190,259 @@
 
         .user-avatar:hover {
             transform: scale(1.05);
+        }
+
+        /* AI Chat Button */
+        .ai-chat-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+            z-index: 1500;
+        }
+
+        .ai-chat-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 24px rgba(99, 102, 241, 0.6);
+        }
+
+        .ai-chat-button.active {
+            transform: scale(0.9);
+        }
+
+        /* AI Chat Panel */
+        .ai-chat-panel {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 400px;
+            height: 600px;
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 16px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            z-index: 1500;
+            animation: slideUp 0.3s ease;
+        }
+
+        .ai-chat-panel.active {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chat-status {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .chat-close {
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .chat-close:hover {
+            color: #e4e6eb;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 0.75rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .message-avatar.ai {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .message-content {
+            flex: 1;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .chat-message.user .message-content {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .message-action-btn {
+            padding: 0.4rem 0.75rem;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #e4e6eb;
+        }
+
+        .message-action-btn:hover {
+            background: rgba(99, 102, 241, 0.25);
+            border-color: #6366f1;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 0.25rem;
+            padding: 0.5rem 0;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #6366f1;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        .chat-input-container {
+            padding: 1rem;
+            border-top: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(10, 14, 23, 0.5);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 8px;
+            color: #e4e6eb;
+            font-size: 0.875rem;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .chat-send-btn {
+            margin-top: 0.5rem;
+            width: 100%;
+            padding: 0.75rem;
+            background: #6366f1;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-send-btn:hover {
+            background: #5558e3;
+        }
+
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         /* Container */
@@ -964,21 +1284,91 @@
             transform: scale(1.3);
         }
 
-        .annotation-tooltip {
-            position: absolute;
+        /* Reasoning Chain Panel */
+        .reasoning-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            max-width: 90vw;
             background: #131729;
             border: 1px solid rgba(99, 102, 241, 0.3);
-            border-radius: 6px;
-            padding: 0.75rem;
-            font-size: 0.75rem;
-            min-width: 200px;
-            z-index: 100;
+            border-radius: 12px;
+            padding: 2rem;
             display: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+            animation: slideUp 0.3s ease;
         }
 
-        .ai-annotation:hover .annotation-tooltip {
+        .reasoning-panel.active {
             display: block;
+        }
+
+        .reasoning-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .reasoning-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #6366f1;
+        }
+
+        .reasoning-close {
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #9ca3af;
+        }
+
+        .reasoning-close:hover {
+            color: #e4e6eb;
+        }
+
+        .reasoning-step {
+            background: rgba(99, 102, 241, 0.05);
+            border-left: 3px solid #6366f1;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .step-number {
+            font-size: 0.75rem;
+            color: #6366f1;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content {
+            font-size: 0.875rem;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+
+        .step-weight {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .weight-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .weight-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
         }
 
         /* Data Mode */
@@ -1258,17 +1648,6 @@
             animation: slideUp 0.3s ease;
         }
 
-        @keyframes slideUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -1316,6 +1695,12 @@
             padding: 1rem;
             border-radius: 0 6px 6px 0;
             margin-top: 1rem;
+            display: none;
+        }
+
+        .ai-preview.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
         }
 
         .preview-title {
@@ -1331,11 +1716,54 @@
             line-height: 1.6;
         }
 
+        .ai-enhance-btn {
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        .loading-spinner.active {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
         .modal-actions {
             display: flex;
             gap: 1rem;
             margin-top: 1.5rem;
             justify-content: flex-end;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1999;
+        }
+
+        .overlay.active {
+            display: block;
         }
 
         /* Responsive */
@@ -1346,6 +1774,10 @@
 
             .nav-items {
                 display: none;
+            }
+
+            .search-container {
+                max-width: 200px;
             }
 
             .container {
@@ -1366,6 +1798,18 @@
 
             .filter-bar {
                 flex-direction: column;
+            }
+
+            .ai-chat-panel {
+                width: 100vw;
+                height: 100vh;
+                bottom: 0;
+                right: 0;
+                border-radius: 0;
+            }
+
+            .reasoning-panel {
+                width: 95vw;
             }
         }
 
@@ -1388,634 +1832,6 @@
             background: rgba(99, 102, 241, 0.5);
         }
 
-        /* Experience Page Styles */
-        .experience-hero {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem 0;
-        }
-
-        .experience-hero h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .comparison-card {
-            background: #131729;
-            border: 1px solid rgba(99, 102, 241, 0.1);
-            border-radius: 12px;
-            padding: 2rem;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-        }
-
-        .comparison-card:hover {
-            transform: translateY(-5px) scale(1.02);
-        }
-
-        .comparison-card.animate-in {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .comparison-header {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid rgba(99, 102, 241, 0.2);
-        }
-
-        .comparison-card.traditional .comparison-header {
-            color: #9ca3af;
-        }
-
-        .comparison-card.finverse .comparison-header {
-            color: #10b981;
-        }
-
-        /* Traditional Mode */
-        .traditional-content {
-            color: #9ca3af;
-            line-height: 1.4;
-            font-size: 0.85rem;
-        }
-
-        .traditional-text {
-            margin-bottom: 1rem;
-            text-align: justify;
-        }
-
-        .reading-timer {
-            background: rgba(156, 163, 175, 0.1);
-            border: 1px solid rgba(156, 163, 175, 0.3);
-            border-radius: 6px;
-            padding: 0.75rem;
-            text-align: center;
-            margin-top: 1rem;
-            font-size: 0.875rem;
-            color: #9ca3af;
-        }
-
-        .timer-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #f59e0b;
-        }
-
-        .btn-disabled {
-            background: rgba(107, 114, 128, 0.2);
-            color: #6b7280;
-            border: 1px solid rgba(107, 114, 128, 0.3);
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            width: 100%;
-            margin-top: 1rem;
-            cursor: not-allowed;
-        }
-
-        /* Summary Mode */
-        .summary-mode {
-            text-align: center;
-        }
-
-        .direction-big {
-            font-size: 4rem;
-            margin-bottom: 0.5rem;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.05);
-                opacity: 0.9;
-            }
-        }
-
-        .direction-label {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #10b981;
-            margin-bottom: 1.5rem;
-        }
-
-        .quick-cards {
-            display: grid;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .quick-card {
-            background: rgba(99, 102, 241, 0.05);
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            border-radius: 8px;
-            padding: 1rem;
-            animation: breathe 3s ease-in-out infinite;
-        }
-
-        @keyframes breathe {
-            0%, 100% {
-                box-shadow: 0 0 0 rgba(99, 102, 241, 0);
-            }
-            50% {
-                box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-            }
-        }
-
-        .quick-card-title {
-            font-size: 0.875rem;
-            color: #6366f1;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .quick-card-content {
-            font-size: 0.875rem;
-            color: #e4e6eb;
-        }
-
-        .conclusion {
-            background: rgba(16, 185, 129, 0.1);
-            border-left: 3px solid #10b981;
-            padding: 1rem;
-            border-radius: 0 6px 6px 0;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-        }
-
-        .btn-action {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            width: 100%;
-            margin-top: 1rem;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
-            animation: glow 2s ease-in-out infinite;
-        }
-
-        @keyframes glow {
-            0%, 100% {
-                box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
-            }
-            50% {
-                box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
-            }
-        }
-
-        .btn-action:hover {
-            background: #059669;
-            transform: translateY(-2px);
-        }
-
-        /* Chart Mode */
-        .chart-preview {
-            position: relative;
-            background: rgba(10, 14, 23, 0.5);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            height: 200px;
-        }
-
-        .mini-candlestick {
-            position: relative;
-            height: 100%;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-around;
-            padding: 1rem 0;
-        }
-
-        .candle {
-            width: 8px;
-            background: #10b981;
-            border-radius: 2px;
-            position: relative;
-        }
-
-        .candle.red {
-            background: #ef4444;
-        }
-
-        .candle-wick {
-            position: absolute;
-            width: 2px;
-            background: currentColor;
-            left: 3px;
-        }
-
-        .ai-marker {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #6366f1;
-            border: 2px solid #0a0e17;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .ai-marker:hover {
-            transform: scale(1.5);
-        }
-
-        .ai-marker:hover::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            left: 15px;
-            top: -5px;
-            background: #131729;
-            border: 1px solid #6366f1;
-            border-radius: 4px;
-            padding: 0.5rem;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            z-index: 10;
-        }
-
-        .layer-controls {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .layer-tag {
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            color: #6366f1;
-            padding: 0.25rem 0.75rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .layer-tag:hover {
-            background: rgba(99, 102, 241, 0.2);
-        }
-
-        .btn-chart {
-            background: #6366f1;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            width: 100%;
-            margin-top: 1rem;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-chart:hover {
-            background: #5558e3;
-            transform: translateY(-2px);
-        }
-
-        /* AI Chat Assistant */
-        .ai-chat-button {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5);
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        .ai-chat-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 30px rgba(99, 102, 241, 0.7);
-        }
-
-        .ai-chat-panel {
-            position: fixed;
-            bottom: 100px;
-            right: 2rem;
-            width: 350px;
-            height: 500px;
-            background: #131729;
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            display: none;
-            flex-direction: column;
-            z-index: 1000;
-            animation: slideUp 0.3s ease;
-        }
-
-        .ai-chat-panel.active {
-            display: flex;
-        }
-
-        .ai-chat-header {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            padding: 1rem;
-            border-radius: 12px 12px 0 0;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .ai-chat-close {
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: transform 0.2s;
-        }
-
-        .ai-chat-close:hover {
-            transform: scale(1.2);
-        }
-
-        .ai-chat-messages {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .ai-message {
-            max-width: 80%;
-            padding: 0.75rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            line-height: 1.6;
-            animation: messageIn 0.3s ease;
-        }
-
-        @keyframes messageIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .ai-message.bot {
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            align-self: flex-start;
-        }
-
-        .ai-message.user {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            align-self: flex-end;
-        }
-
-        .ai-loading {
-            display: flex;
-            gap: 0.5rem;
-            padding: 0.75rem;
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            border-radius: 8px;
-            align-self: flex-start;
-            max-width: 80px;
-        }
-
-        .ai-loading-dot {
-            width: 8px;
-            height: 8px;
-            background: #6366f1;
-            border-radius: 50%;
-            animation: loadingDot 1.4s ease-in-out infinite;
-        }
-
-        .ai-loading-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .ai-loading-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes loadingDot {
-            0%, 80%, 100% {
-                transform: scale(0.8);
-                opacity: 0.5;
-            }
-            40% {
-                transform: scale(1.2);
-                opacity: 1;
-            }
-        }
-
-        .ai-message-buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .ai-action-btn {
-            background: rgba(99, 102, 241, 0.2);
-            border: 1px solid rgba(99, 102, 241, 0.4);
-            color: #6366f1;
-            padding: 0.25rem 0.75rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .ai-action-btn:hover {
-            background: rgba(99, 102, 241, 0.3);
-        }
-
-        .ai-chat-input {
-            padding: 1rem;
-            border-top: 1px solid rgba(99, 102, 241, 0.1);
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .ai-input-field {
-            flex: 1;
-            padding: 0.75rem;
-            background: rgba(10, 14, 23, 0.5);
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            border-radius: 6px;
-            color: #e4e6eb;
-            font-size: 0.875rem;
-        }
-
-        .ai-input-field:focus {
-            outline: none;
-            border-color: #6366f1;
-        }
-
-        .ai-send-btn {
-            background: #6366f1;
-            color: white;
-            border: none;
-            padding: 0.75rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .ai-send-btn:hover {
-            background: #5558e3;
-        }
-
-        /* AI Enhance Button in Modal */
-        .ai-enhance-section {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(99, 102, 241, 0.1);
-        }
-
-        .btn-ai-enhance {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            width: 100%;
-            margin-bottom: 1rem;
-        }
-
-        .btn-ai-enhance:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-        }
-
-        .ai-enhanced-data {
-            background: rgba(99, 102, 241, 0.05);
-            border-left: 3px solid #6366f1;
-            padding: 1rem;
-            border-radius: 0 6px 6px 0;
-            font-size: 0.875rem;
-            margin-top: 1rem;
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .ai-enhanced-data.active {
-            display: block;
-        }
-
-        .ai-enhanced-title {
-            color: #6366f1;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-        }
-
-        .ai-data-item {
-            margin-bottom: 0.5rem;
-            color: #9ca3af;
-            line-height: 1.6;
-        }
-
-        .direction-pills {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .direction-pill {
-            padding: 0.5rem 1rem;
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            background: transparent;
-            color: #e4e6eb;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.875rem;
-        }
-
-        .direction-pill:hover {
-            background: rgba(99, 102, 241, 0.1);
-        }
-
-        .direction-pill.selected {
-            background: #10b981;
-            border-color: #10b981;
-            color: white;
-        }
-
-        .direction-pill.bearish.selected {
-            background: #ef4444;
-            border-color: #ef4444;
-        }
-
-        .confidence-slider {
-            margin-top: 1rem;
-        }
-
-        .slider-label {
-            font-size: 0.875rem;
-            color: #9ca3af;
-            margin-bottom: 0.5rem;
-        }
-
-        .slider-input {
-            width: 100%;
-            height: 6px;
-            background: rgba(99, 102, 241, 0.2);
-            border-radius: 3px;
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        .slider-input::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            background: #6366f1;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .slider-value {
-            text-align: right;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #6366f1;
-            margin-top: 0.25rem;
-        }
-
         /* Utility */
         .mb-2 { margin-bottom: 2rem; }
         .mb-3 { margin-bottom: 3rem; }
@@ -2026,9 +1842,21 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo">FinVerse</div>
+        
+        <!-- Search Bar -->
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input 
+                type="text" 
+                class="search-input" 
+                placeholder="自然语言搜索..." 
+                id="globalSearch"
+            />
+            <div class="search-suggestions" id="searchSuggestions"></div>
+        </div>
+
         <ul class="nav-items">
-            <li class="nav-item active" data-page="experience">体验</li>
-            <li class="nav-item" data-page="dashboard">仪表板</li>
+            <li class="nav-item active" data-page="dashboard">仪表板</li>
             <li class="nav-item" data-page="signals">公域信号</li>
             <li class="nav-item" data-page="groups">我的小组</li>
             <li class="nav-item" data-page="visualization">可视化</li>
@@ -2044,91 +1872,58 @@
         </div>
     </nav>
 
-    <!-- Experience Page -->
-    <div id="experience" class="page active">
-        <div class="container">
-            <div class="experience-hero">
-                <h1>同样的数据。不同的呈现。这就是 FinVerse。</h1>
+    <!-- AI Chat Button -->
+    <div class="ai-chat-button" id="aiChatButton">
+        🤖
+    </div>
+
+    <!-- AI Chat Panel -->
+    <div class="ai-chat-panel" id="aiChatPanel">
+        <div class="chat-header">
+            <div class="chat-title">
+                <span class="chat-status"></span>
+                AI 助手
             </div>
-
-            <div class="comparison-grid">
-                <!-- Traditional Way -->
-                <div class="comparison-card traditional">
-                    <div class="comparison-header">
-                        ❌ 这是你现在看到的
+            <div class="chat-close" id="closeChatPanel">✕</div>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message">
+                <div class="message-avatar ai">🤖</div>
+                <div class="message-content">
+                    你好！我是 FinVerse AI 助手。我可以帮你分析市场、查看信号、管理小组。试试问我：
+                    <div class="message-actions">
+                        <button class="message-action-btn" data-query="BTC 怎么样？">BTC 怎么样？</button>
+                        <button class="message-action-btn" data-query="这周有什么重要事件？">重要事件</button>
+                        <button class="message-action-btn" data-query="帮我分析一下 ETH">分析 ETH</button>
                     </div>
-                    <div class="traditional-content">
-                        <div class="traditional-text">
-                            根据最新市场数据分析，比特币当前价格为96420美元，较前一交易日上涨2.3%。技术指标方面，RSI指数为58，处于中性偏多区间，MACD指标出现金叉信号，显示短期动能转强。均线系统显示MA20上穿MA50，形成多头排列。链上数据显示，过去24小时内大额持仓地址增持约1200枚BTC，交易所余额下降1.2%，显示长期持有意愿增强。市场情绪方面，恐慌贪婪指数为72，处于贪婪区间但尚未达到极端水平。资金费率为0.032%，略高于平均水平，需警惕过热风险。综合来看，当前市场呈现偏多格局，短期内建议关注95000美元支撑位的有效性...
-                        </div>
-                        <div class="reading-timer">
-                            <div>已阅读</div>
-                            <div class="timer-value" id="readingTimer">0s</div>
-                        </div>
-                    </div>
-                    <button class="btn-disabled">做决策？</button>
-                </div>
-
-                <!-- FinVerse Summary Mode -->
-                <div class="comparison-card finverse">
-                    <div class="comparison-header">
-                        ✅ 1秒消化
-                    </div>
-                    <div class="summary-mode">
-                        <div class="direction-big">🟢</div>
-                        <div class="direction-label">偏多 65%</div>
-                        
-                        <div class="quick-cards">
-                            <div class="quick-card">
-                                <div class="quick-card-title">📈 技术面</div>
-                                <div class="quick-card-content">RSI超卖反弹</div>
-                            </div>
-                            <div class="quick-card">
-                                <div class="quick-card-title">🐋 链上</div>
-                                <div class="quick-card-content">鲸鱼增持 1,200 BTC</div>
-                            </div>
-                            <div class="quick-card">
-                                <div class="quick-card-title">🔥 情绪</div>
-                                <div class="quick-card-content">贪婪指数 72</div>
-                            </div>
-                        </div>
-
-                        <div class="conclusion">
-                            多头信号偏强，关注 $95,000 支撑
-                        </div>
-
-                        <button class="btn-action">立即决策 →</button>
-                    </div>
-                </div>
-
-                <!-- FinVerse Chart Mode -->
-                <div class="comparison-card finverse">
-                    <div class="comparison-header">
-                        ✅ 30秒深度理解
-                    </div>
-                    
-                    <div class="layer-controls">
-                        <span class="layer-tag">MA</span>
-                        <span class="layer-tag">RSI</span>
-                        <span class="layer-tag">AI标注</span>
-                    </div>
-
-                    <div class="chart-preview" id="miniChartPreview">
-                        <div class="mini-candlestick" id="miniCandles"></div>
-                    </div>
-
-                    <div style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 1rem;">
-                        悬停 AI 标注点查看推理链
-                    </div>
-
-                    <button class="btn-chart">深入分析 →</button>
                 </div>
             </div>
         </div>
+        <div class="chat-input-container">
+            <textarea 
+                class="chat-input" 
+                placeholder="输入你的问题..." 
+                id="chatInput"
+                rows="2"
+            ></textarea>
+            <button class="chat-send-btn" id="chatSendBtn">发送</button>
+        </div>
     </div>
 
+    <!-- Reasoning Chain Panel -->
+    <div class="reasoning-panel" id="reasoningPanel">
+        <div class="reasoning-header">
+            <div class="reasoning-title">🧠 AI 推理链</div>
+            <div class="reasoning-close" id="closeReasoningPanel">✕</div>
+        </div>
+        <div id="reasoningSteps"></div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
     <!-- Dashboard Page -->
-    <div id="dashboard" class="page">
+    <div id="dashboard" class="page active">
         <div class="container">
             <div class="welcome-banner">
                 早安，Asher 👋 你的 Agent 发现了 <strong>3</strong> 个值得关注的信号
@@ -2677,37 +2472,21 @@
             </div>
             <div class="input-group">
                 <label class="input-label">分析内容</label>
-                <textarea class="textarea" id="postContent" placeholder="分享你的分析观点...&#10;&#10;例如：我觉得BTC要跌到9万"></textarea>
+                <textarea class="textarea" id="postTextarea" placeholder="分享你的分析观点...&#10;&#10;例如：我觉得 BTC 要跌到 9 万"></textarea>
             </div>
-
-            <div class="ai-enhance-section">
-                <button class="btn-ai-enhance" id="aiEnhanceBtn">
+            <div class="ai-enhance-btn">
+                <button class="btn btn-secondary" id="aiEnhanceBtn">
                     🤖 AI 补充数据
                 </button>
-
-                <div class="ai-enhanced-data" id="aiEnhancedData">
-                    <div class="ai-enhanced-title">AI 正在分析并补充数据...</div>
-                </div>
-
-                <div class="input-group" id="directionGroup" style="display: none;">
-                    <label class="input-label">方向</label>
-                    <div class="direction-pills">
-                        <button class="direction-pill" data-direction="bullish">看多</button>
-                        <button class="direction-pill bearish" data-direction="bearish">看空</button>
-                        <button class="direction-pill" data-direction="neutral">中性</button>
-                    </div>
-                </div>
-
-                <div class="confidence-slider" id="confidenceGroup" style="display: none;">
-                    <label class="slider-label">置信度</label>
-                    <input type="range" class="slider-input" id="confidenceSlider" min="0" max="100" value="75">
-                    <div class="slider-value" id="confidenceValue">75%</div>
-                </div>
+                <span class="loading-spinner" id="enhanceSpinner"></span>
             </div>
-
+            <div class="ai-preview" id="aiPreview">
+                <div class="preview-title">🤖 AI 增强预览</div>
+                <div class="preview-content" id="previewContent"></div>
+            </div>
             <div class="modal-actions">
                 <button class="btn btn-secondary" id="cancelPost">取消</button>
-                <button class="btn btn-primary" id="publishPost">发布</button>
+                <button class="btn btn-primary">发布</button>
             </div>
         </div>
     </div>
@@ -2735,27 +2514,6 @@
                 <button class="btn btn-secondary" id="cancelApiKey">取消</button>
                 <button class="btn btn-primary">保存</button>
             </div>
-        </div>
-    </div>
-
-    <!-- AI Chat Assistant -->
-    <div class="ai-chat-button" id="aiChatButton">
-        🤖
-    </div>
-
-    <div class="ai-chat-panel" id="aiChatPanel">
-        <div class="ai-chat-header">
-            <span>FinVerse AI</span>
-            <span class="ai-chat-close" id="aiChatClose">✕</span>
-        </div>
-        <div class="ai-chat-messages" id="aiChatMessages">
-            <div class="ai-message bot">
-                👋 你好！我是你的 AI Agent。试试问我：BTC怎么样？
-            </div>
-        </div>
-        <div class="ai-chat-input">
-            <input type="text" class="ai-input-field" id="aiInputField" placeholder="输入你的问题...">
-            <button class="ai-send-btn" id="aiSendBtn">发送</button>
         </div>
     </div>
 
@@ -2808,6 +2566,98 @@
             }
         ];
 
+        // AI Responses Database
+        const aiResponses = {
+            'btc': {
+                keywords: ['btc', 'bitcoin', '比特币'],
+                response: `根据最新数据分析：
+
+**当前价格：** $96,420（24H +2.3%）
+
+**技术面：**
+• MA20 上穿 MA50，金叉信号
+• RSI 68，偏强但未超买
+• MACD 柱状图转正，动能增强
+
+**链上数据：**
+• 巨鲸地址净流入 2,847 BTC（24H）
+• 交易所余额下降 1.2%，筹码外流
+• 活跃地址数增长 15%
+
+**综合评估：** 短期偏多，建议关注 $98,000 阻力突破。`,
+                actions: ['📊 看图表', '📋 详细报告', '⚡ 设提醒']
+            },
+            'eth': {
+                keywords: ['eth', 'ethereum', '以太坊'],
+                response: `ETH 当前分析：
+
+**当前价格：** $3,280（24H +1.1%）
+
+**DeFi 生态：**
+• TVL 达 $52B，创历史新高
+• Gas 费用平均 15 Gwei，处于低位
+• Layer2 活跃度上升 28%
+
+**技术指标：**
+• 布林带收窄，即将选择方向
+• 成交量较前日缩减 18%
+• 资金费率 0.018%，中性偏多
+
+**建议：** 关注 DeFi 热点，短期震荡为主。`,
+                actions: ['📊 看图表', '🔥 热门 DeFi', '⚡ 设提醒']
+            },
+            'event': {
+                keywords: ['事件', '重要', '日程', '新闻'],
+                response: `本周重要事件：
+
+**2月10日（周三）**
+• 🇺🇸 美国 CPI 数据公布（21:30 UTC+8）
+• 可能影响美联储政策预期
+
+**2月12日（周五）**
+• 🪙 以太坊坎昆升级进展更新
+• 预计 Gas 费大幅下降
+
+**2月13日（周六）**
+• 📊 BTC 期权到期，名义价值 $2.3B
+• 市场可能出现波动
+
+建议提前做好风险管理。`,
+                actions: ['📅 添加日历', '⚡ 设提醒']
+            },
+            '小组': {
+                keywords: ['小组', '讨论', '共识', '成员'],
+                response: `你的小组今日活动：
+
+**BTC 趋势交易组**
+• 今日发帖 8 条，讨论活跃
+• 共识：65% 看多，25% 看空
+• 热门话题：$98,000 突破可能性
+
+**ETH DeFi 研究组**
+• 新增分析 5 条
+• 关注焦点：Layer2 生态发展
+• 本周复盘会议：周日 20:00
+
+点击查看详情 👇`,
+                actions: ['💬 进入小组', '📊 查看共识']
+            },
+            'default': {
+                response: `我可以帮你：
+
+• 📊 分析任意加密资产（BTC/ETH/SOL...）
+• 📈 查看市场信号和共识
+• 📅 追踪重要事件和日程
+• 💬 管理和查看小组讨论
+
+试试问我具体问题，例如：
+"BTC 怎么样？"
+"这周有什么重要事件？"
+"帮我分析一下 ETH"`,
+                actions: ['🔍 探索功能']
+            }
+        };
+
         // Render Signal Card
         function renderSignalCard(signal) {
             return `
@@ -2837,6 +2687,146 @@
                 </div>
             `;
         }
+
+        // Typewriter Effect
+        function typewriter(element, text, speed = 30) {
+            element.textContent = '';
+            let i = 0;
+            
+            return new Promise((resolve) => {
+                const timer = setInterval(() => {
+                    if (i < text.length) {
+                        element.textContent += text.charAt(i);
+                        i++;
+                        // Auto scroll
+                        element.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    } else {
+                        clearInterval(timer);
+                        resolve();
+                    }
+                }, speed);
+            });
+        }
+
+        // AI Chat Functions
+        function getAIResponse(query) {
+            const lowerQuery = query.toLowerCase();
+            
+            for (const [key, data] of Object.entries(aiResponses)) {
+                if (data.keywords && data.keywords.some(kw => lowerQuery.includes(kw))) {
+                    return data;
+                }
+            }
+            
+            return aiResponses.default;
+        }
+
+        async function sendChatMessage(query) {
+            const chatMessages = document.getElementById('chatMessages');
+            const chatInput = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('chatSendBtn');
+            
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-message user';
+            userMsg.innerHTML = `
+                <div class="message-avatar">A</div>
+                <div class="message-content">${query}</div>
+            `;
+            chatMessages.appendChild(userMsg);
+            
+            // Clear input
+            chatInput.value = '';
+            sendBtn.disabled = true;
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Show typing indicator
+            const typingMsg = document.createElement('div');
+            typingMsg.className = 'chat-message';
+            typingMsg.innerHTML = `
+                <div class="message-avatar ai">🤖</div>
+                <div class="message-content">
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(typingMsg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Simulate AI thinking
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Remove typing indicator
+            chatMessages.removeChild(typingMsg);
+            
+            // Get AI response
+            const aiData = getAIResponse(query);
+            
+            // Add AI message
+            const aiMsg = document.createElement('div');
+            aiMsg.className = 'chat-message';
+            
+            const actionsHTML = aiData.actions ? 
+                `<div class="message-actions">
+                    ${aiData.actions.map(action => 
+                        `<button class="message-action-btn">${action}</button>`
+                    ).join('')}
+                </div>` : '';
+            
+            aiMsg.innerHTML = `
+                <div class="message-avatar ai">🤖</div>
+                <div class="message-content">
+                    <div class="ai-response-text"></div>
+                    ${actionsHTML}
+                </div>
+            `;
+            chatMessages.appendChild(aiMsg);
+            
+            // Typewriter effect
+            const responseText = aiMsg.querySelector('.ai-response-text');
+            await typewriter(responseText, aiData.response);
+            
+            sendBtn.disabled = false;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Search Functions
+        const searchSuggestions = {
+            '最近看多btc': {
+                text: '最近看多 BTC 的信号',
+                icon: '📊',
+                action: () => {
+                    document.querySelector('[data-page="signals"]').click();
+                    setTimeout(() => {
+                        document.querySelector('[data-filter="asset"][data-value="btc"]').click();
+                        document.querySelector('[data-filter="direction"][data-value="bullish"]').click();
+                    }, 100);
+                }
+            },
+            '小组讨论': {
+                text: '我的小组今天讨论了什么',
+                icon: '💬',
+                action: () => {
+                    document.querySelector('[data-page="groups"]').click();
+                }
+            },
+            '分析eth': {
+                text: '帮我分析 ETH',
+                icon: '🔍',
+                action: () => {
+                    document.getElementById('aiChatButton').click();
+                    setTimeout(() => {
+                        document.getElementById('chatInput').value = '帮我分析一下 ETH';
+                        document.getElementById('chatSendBtn').click();
+                    }, 500);
+                }
+            }
+        };
 
         // Initialize Dashboard Signals
         function initDashboardSignals() {
@@ -2967,40 +2957,125 @@
             });
             
             // Add AI annotations
-            const chartContainer = canvas.parentElement;
-            [3, 7, 14, 18].forEach((index, i) => {
+            const chartContainer = canvas.parentElement.parentElement;
+            const existingAnnotations = chartContainer.querySelectorAll('.ai-annotation');
+            existingAnnotations.forEach(a => a.remove());
+            
+            const annotationData = [
+                { index: 3, label: '支撑位', reasoning: [
+                    { step: '数据来源', content: '历史价格数据显示此处多次反弹', weight: 30 },
+                    { step: '分析逻辑', content: '成交量放大 + 长下影线形态确认', weight: 45 },
+                    { step: '结论', content: '强支撑位，突破概率低于 15%', weight: 25 }
+                ]},
+                { index: 7, label: '阻力位', reasoning: [
+                    { step: '数据来源', content: '前期高点形成压力', weight: 35 },
+                    { step: '分析逻辑', content: '未平仓合约密集区 + 斐波那契 0.618', weight: 40 },
+                    { step: '结论', content: '需要放量才能突破', weight: 25 }
+                ]},
+                { index: 14, label: '突破信号', reasoning: [
+                    { step: '数据来源', content: '链上大额转账增加 28%', weight: 30 },
+                    { step: '分析逻辑', content: '成交量突破 + MACD 金叉共振', weight: 45 },
+                    { step: '结论', content: '上涨概率 72%，建议关注', weight: 25 }
+                ]},
+                { index: 18, label: '回调预警', reasoning: [
+                    { step: '数据来源', content: 'RSI 进入超买区（>70）', weight: 35 },
+                    { step: '分析逻辑', content: '资金费率偏高 + 多空比失衡', weight: 40 },
+                    { step: '结论', content: '短期回调风险，建议止盈', weight: 25 }
+                ]}
+            ];
+            
+            annotationData.forEach((data, i) => {
                 const annotation = document.createElement('div');
                 annotation.className = 'ai-annotation';
-                const x = padding + index * candleSpacing + candleSpacing / 2;
-                const candle = candles[index];
+                const x = padding + data.index * candleSpacing + candleSpacing / 2;
+                const candle = candles[data.index];
                 const y = priceToY(candle.high) - 20;
                 
-                annotation.style.left = x + 'px';
-                annotation.style.top = y + 'px';
+                annotation.style.left = (x + canvas.offsetLeft) + 'px';
+                annotation.style.top = (y + canvas.offsetTop) + 'px';
+                annotation.dataset.reasoning = JSON.stringify(data.reasoning);
+                annotation.dataset.label = data.label;
                 
-                const tooltip = document.createElement('div');
-                tooltip.className = 'annotation-tooltip';
-                tooltip.style.left = '20px';
-                tooltip.style.top = '-10px';
-                tooltip.innerHTML = `
-                    <strong>AI 标注 ${i + 1}</strong><br>
-                    ${['支撑位', '阻力位', '突破信号', '回调预警'][i]}
-                `;
-                
-                annotation.appendChild(tooltip);
                 chartContainer.appendChild(annotation);
             });
+        }
+
+        // Show Reasoning Panel
+        function showReasoningPanel(reasoning, label) {
+            const panel = document.getElementById('reasoningPanel');
+            const stepsContainer = document.getElementById('reasoningSteps');
+            const overlay = document.getElementById('overlay');
             
-            // Price labels
-            ctx.fillStyle = '#9ca3af';
-            ctx.font = '11px sans-serif';
-            ctx.textAlign = 'right';
+            stepsContainer.innerHTML = reasoning.map((step, i) => `
+                <div class="reasoning-step">
+                    <div class="step-number">第 ${i + 1} 步：${step.step}</div>
+                    <div class="step-content">${step.content}</div>
+                    <div class="step-weight">
+                        <span>权重</span>
+                        <div class="weight-bar">
+                            <div class="weight-fill" style="width: ${step.weight}%;"></div>
+                        </div>
+                        <span>${step.weight}%</span>
+                    </div>
+                </div>
+            `).join('');
             
-            for (let i = 0; i <= 5; i++) {
-                const price = minPrice + (priceRange / 5) * i;
-                const y = padding + chartHeight - (chartHeight / 5) * i;
-                ctx.fillText('$' + price.toFixed(0), padding - 10, y + 4);
-            }
+            panel.classList.add('active');
+            overlay.classList.add('active');
+        }
+
+        // AI Enhance Post
+        async function enhancePost() {
+            const textarea = document.getElementById('postTextarea');
+            const preview = document.getElementById('aiPreview');
+            const previewContent = document.getElementById('previewContent');
+            const spinner = document.getElementById('enhanceSpinner');
+            const enhanceBtn = document.getElementById('aiEnhanceBtn');
+            
+            const userText = textarea.value.trim();
+            if (!userText) return;
+            
+            enhanceBtn.disabled = true;
+            spinner.classList.add('active');
+            
+            // Simulate AI processing
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            spinner.classList.remove('active');
+            preview.classList.add('active');
+            
+            // Extract asset and direction from user text
+            let asset = 'BTC';
+            let direction = '看空';
+            if (userText.toLowerCase().includes('eth')) asset = 'ETH';
+            if (userText.toLowerCase().includes('sol')) asset = 'SOL';
+            if (userText.includes('涨') || userText.includes('多')) direction = '看多';
+            
+            const enhancedText = `
+<strong>原始观点：</strong> ${userText}
+
+<strong>🤖 AI 补充数据：</strong>
+
+<strong>当前价格：</strong> ${asset === 'BTC' ? '$96,420' : asset === 'ETH' ? '$3,280' : '$148'}
+
+<strong>技术指标：</strong>
+• RSI(14): ${68 + Math.floor(Math.random() * 10)}
+• MACD: ${direction === '看多' ? '金叉' : '死叉'}
+• 布林带: ${direction === '看多' ? '突破上轨' : '跌破下轨'}
+
+<strong>链上数据：</strong>
+• 24H 大额转账: ${direction === '看多' ? '+' : '-'}${Math.floor(Math.random() * 30 + 10)}%
+• 交易所余额: ${direction === '看多' ? '流出' : '流入'} ${(Math.random() * 2).toFixed(1)}%
+
+<strong>近期新闻：</strong>
+• ${asset} ${direction === '看多' ? '机构持仓增加' : '部分机构减持'}
+• 市场情绪：${direction === '看多' ? '贪婪' : '恐慌'}指数 ${60 + Math.floor(Math.random() * 20)}
+
+<strong>风险提示：</strong> ${direction === '看空' ? '注意止损，避免追空' : '注意回调风险，建议分批建仓'}
+            `;
+            
+            previewContent.innerHTML = enhancedText;
+            enhanceBtn.disabled = false;
         }
 
         // Navigation
@@ -3014,6 +3089,89 @@
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                 document.getElementById(page).classList.add('active');
             });
+        });
+
+        // AI Chat Button
+        document.getElementById('aiChatButton').addEventListener('click', function() {
+            const panel = document.getElementById('aiChatPanel');
+            this.classList.toggle('active');
+            panel.classList.toggle('active');
+        });
+
+        document.getElementById('closeChatPanel').addEventListener('click', () => {
+            document.getElementById('aiChatPanel').classList.remove('active');
+            document.getElementById('aiChatButton').classList.remove('active');
+        });
+
+        // Chat Send
+        document.getElementById('chatSendBtn').addEventListener('click', () => {
+            const input = document.getElementById('chatInput');
+            const query = input.value.trim();
+            if (query) {
+                sendChatMessage(query);
+            }
+        });
+
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                document.getElementById('chatSendBtn').click();
+            }
+        });
+
+        // Chat quick actions
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('message-action-btn')) {
+                const query = e.target.dataset.query || e.target.textContent;
+                document.getElementById('chatInput').value = query;
+                document.getElementById('chatSendBtn').click();
+            }
+        });
+
+        // Global Search
+        const globalSearch = document.getElementById('globalSearch');
+        const searchSuggestionsEl = document.getElementById('searchSuggestions');
+
+        globalSearch.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            
+            if (query.length < 2) {
+                searchSuggestionsEl.classList.remove('active');
+                return;
+            }
+            
+            const matches = Object.entries(searchSuggestions)
+                .filter(([key]) => key.includes(query))
+                .slice(0, 3);
+            
+            if (matches.length > 0) {
+                searchSuggestionsEl.innerHTML = matches.map(([key, data]) => `
+                    <div class="search-suggestion" data-action="${key}">
+                        <span class="suggestion-icon">${data.icon}</span>
+                        ${data.text}
+                    </div>
+                `).join('');
+                searchSuggestionsEl.classList.add('active');
+            } else {
+                searchSuggestionsEl.classList.remove('active');
+            }
+        });
+
+        searchSuggestionsEl.addEventListener('click', (e) => {
+            const suggestion = e.target.closest('.search-suggestion');
+            if (suggestion) {
+                const action = suggestion.dataset.action;
+                searchSuggestions[action].action();
+                globalSearch.value = '';
+                searchSuggestionsEl.classList.remove('active');
+            }
+        });
+
+        // Close search suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                searchSuggestionsEl.classList.remove('active');
+            }
         });
 
         // Language Switch
@@ -3094,6 +3252,26 @@
             });
         });
 
+        // AI Annotation Click
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('ai-annotation')) {
+                const reasoning = JSON.parse(e.target.dataset.reasoning);
+                const label = e.target.dataset.label;
+                showReasoningPanel(reasoning, label);
+            }
+        });
+
+        // Close Reasoning Panel
+        document.getElementById('closeReasoningPanel').addEventListener('click', () => {
+            document.getElementById('reasoningPanel').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        });
+
+        document.getElementById('overlay').addEventListener('click', () => {
+            document.getElementById('reasoningPanel').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        });
+
         // Modals
         document.getElementById('postAnalysisBtn').addEventListener('click', () => {
             document.getElementById('postModal').classList.add('active');
@@ -3101,11 +3279,15 @@
 
         document.getElementById('closeModal').addEventListener('click', () => {
             document.getElementById('postModal').classList.remove('active');
+            document.getElementById('aiPreview').classList.remove('active');
         });
 
         document.getElementById('cancelPost').addEventListener('click', () => {
             document.getElementById('postModal').classList.remove('active');
+            document.getElementById('aiPreview').classList.remove('active');
         });
+
+        document.getElementById('aiEnhanceBtn').addEventListener('click', enhancePost);
 
         document.getElementById('addApiKey').addEventListener('click', () => {
             document.getElementById('apiKeyModal').classList.add('active');
@@ -3124,6 +3306,7 @@
             modal.addEventListener('click', function(e) {
                 if (e.target === this) {
                     this.classList.remove('active');
+                    document.getElementById('aiPreview').classList.remove('active');
                 }
             });
         });
@@ -3154,295 +3337,6 @@
                 fill.style.width = fill.style.width;
             });
         }, 100);
-
-        // ===== Experience Page Features =====
-
-        // Animate comparison cards on load
-        function initExperiencePage() {
-            const cards = document.querySelectorAll('.comparison-card');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.classList.add('animate-in');
-                }, index * 300);
-            });
-
-            // Reading timer
-            let seconds = 0;
-            const timerElement = document.getElementById('readingTimer');
-            const timerInterval = setInterval(() => {
-                seconds++;
-                if (timerElement) {
-                    timerElement.textContent = seconds + 's';
-                }
-            }, 1000);
-
-            // Stop timer when leaving experience page
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    if (item.dataset.page !== 'experience') {
-                        clearInterval(timerInterval);
-                    }
-                });
-            });
-        }
-
-        // Initialize mini candlestick chart
-        function initMiniCandlestickChart() {
-            const container = document.getElementById('miniCandles');
-            if (!container) return;
-
-            container.innerHTML = '';
-            const candleCount = 15;
-            const colors = ['green', 'green', 'red', 'green', 'red', 'green', 'green', 'green', 'red', 'green', 'green', 'red', 'green', 'green', 'green'];
-            const aiMarkers = [3, 7, 11];
-
-            for (let i = 0; i < candleCount; i++) {
-                const height = 30 + Math.random() * 60;
-                const candle = document.createElement('div');
-                candle.className = 'candle ' + (colors[i] === 'red' ? 'red' : '');
-                candle.style.height = height + '%';
-                candle.style.color = colors[i] === 'red' ? '#ef4444' : '#10b981';
-                container.appendChild(candle);
-
-                // Add AI markers
-                if (aiMarkers.includes(i)) {
-                    const marker = document.createElement('div');
-                    marker.className = 'ai-marker';
-                    marker.style.left = ((i + 0.5) / candleCount * 100) + '%';
-                    marker.style.bottom = (height + 10) + '%';
-                    marker.setAttribute('data-tooltip', ['支撑位', '突破信号', '阻力位'][aiMarkers.indexOf(i)]);
-                    container.parentElement.appendChild(marker);
-                }
-            }
-        }
-
-        // Initialize experience page when loaded
-        if (document.getElementById('experience').classList.contains('active')) {
-            initExperiencePage();
-            initMiniCandlestickChart();
-        }
-
-        // Reinit when navigating to experience page
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', () => {
-                if (item.dataset.page === 'experience') {
-                    setTimeout(() => {
-                        initExperiencePage();
-                        initMiniCandlestickChart();
-                    }, 100);
-                }
-            });
-        });
-
-        // ===== AI Chat Assistant Features =====
-
-        const aiChatButton = document.getElementById('aiChatButton');
-        const aiChatPanel = document.getElementById('aiChatPanel');
-        const aiChatClose = document.getElementById('aiChatClose');
-        const aiInputField = document.getElementById('aiInputField');
-        const aiSendBtn = document.getElementById('aiSendBtn');
-        const aiChatMessages = document.getElementById('aiChatMessages');
-
-        // Toggle chat panel
-        aiChatButton.addEventListener('click', () => {
-            aiChatPanel.classList.toggle('active');
-        });
-
-        aiChatClose.addEventListener('click', () => {
-            aiChatPanel.classList.remove('active');
-        });
-
-        // Send message
-        function sendAIMessage() {
-            const message = aiInputField.value.trim();
-            if (!message) return;
-
-            // Add user message
-            const userMsg = document.createElement('div');
-            userMsg.className = 'ai-message user';
-            userMsg.textContent = message;
-            aiChatMessages.appendChild(userMsg);
-            aiInputField.value = '';
-
-            // Scroll to bottom
-            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
-
-            // Show loading
-            const loading = document.createElement('div');
-            loading.className = 'ai-loading';
-            loading.innerHTML = '<div class="ai-loading-dot"></div><div class="ai-loading-dot"></div><div class="ai-loading-dot"></div>';
-            aiChatMessages.appendChild(loading);
-            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
-
-            // Simulate AI response
-            setTimeout(() => {
-                loading.remove();
-                const botMsg = document.createElement('div');
-                botMsg.className = 'ai-message bot';
-                
-                let response = '';
-                if (message.toLowerCase().includes('btc') || message.toLowerCase().includes('比特币')) {
-                    response = `📊 <strong>BTC 快速摘要</strong><br><br>
-价格: $96,420 (+2.3%)<br>
-技术面: RSI 58, MACD 金叉 ✅<br>
-链上: 鲸鱼24H增持 1,200 BTC 🐋<br>
-情绪: 贪婪指数 72/100 🔥<br><br>
-综合判断: 偏多，关注 $95,000 支撑位`;
-                } else if (message.toLowerCase().includes('eth') || message.toLowerCase().includes('以太')) {
-                    response = `📊 <strong>ETH 快速摘要</strong><br><br>
-价格: $3,280 (+1.1%)<br>
-技术面: RSI 62, MACD 多头<br>
-链上: DeFi TVL 增长 8% 🔥<br>
-情绪: 贪婪指数 69/100<br><br>
-综合判断: 偏多，关注 $3,200 支撑`;
-                } else if (message.toLowerCase().includes('小组') || message.toLowerCase().includes('讨论')) {
-                    response = `📝 <strong>你的小组今日动态</strong><br><br>
-<strong>BTC趋势交易组：</strong><br>
-- 新增3篇分析，共识偏多(70%)<br>
-- @Trader_Lin 发布了技术分析`;
-                } else {
-                    response = `我可以帮你分析任何资产。试试输入币种名称，比如 BTC、ETH、SOL 😊`;
-                }
-
-                typewriterEffect(botMsg, response, () => {
-                    // Add action buttons for asset responses
-                    if (message.toLowerCase().includes('btc') || message.toLowerCase().includes('eth')) {
-                        const buttons = document.createElement('div');
-                        buttons.className = 'ai-message-buttons';
-                        buttons.innerHTML = `
-                            <button class="ai-action-btn">📈 看图表</button>
-                            <button class="ai-action-btn">📋 详细报告</button>
-                            <button class="ai-action-btn">⚡ 设提醒</button>
-                        `;
-                        botMsg.appendChild(buttons);
-                    } else if (message.toLowerCase().includes('小组')) {
-                        const buttons = document.createElement('div');
-                        buttons.className = 'ai-message-buttons';
-                        buttons.innerHTML = `
-                            <button class="ai-action-btn">📋 查看详情</button>
-                            <button class="ai-action-btn">👥 进入小组</button>
-                        `;
-                        botMsg.appendChild(buttons);
-                    }
-                });
-
-                aiChatMessages.appendChild(botMsg);
-                aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
-            }, 1000);
-        }
-
-        // Typewriter effect
-        function typewriterEffect(element, html, callback) {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = html;
-            const text = tempDiv.textContent || tempDiv.innerText;
-            
-            element.innerHTML = '';
-            let index = 0;
-            const interval = setInterval(() => {
-                if (index < text.length) {
-                    element.textContent += text[index];
-                    index++;
-                    aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
-                } else {
-                    clearInterval(interval);
-                    element.innerHTML = html;
-                    if (callback) callback();
-                }
-            }, 30);
-        }
-
-        aiSendBtn.addEventListener('click', sendAIMessage);
-        aiInputField.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendAIMessage();
-            }
-        });
-
-        // ===== AI Enhance Feature in Post Modal =====
-
-        const aiEnhanceBtn = document.getElementById('aiEnhanceBtn');
-        const aiEnhancedData = document.getElementById('aiEnhancedData');
-        const postContent = document.getElementById('postContent');
-        const directionGroup = document.getElementById('directionGroup');
-        const confidenceGroup = document.getElementById('confidenceGroup');
-        const confidenceSlider = document.getElementById('confidenceSlider');
-        const confidenceValue = document.getElementById('confidenceValue');
-
-        aiEnhanceBtn.addEventListener('click', () => {
-            const content = postContent.value.trim();
-            if (!content) {
-                alert('请先输入分析内容');
-                return;
-            }
-
-            // Show loading
-            aiEnhancedData.classList.add('active');
-            aiEnhancedData.innerHTML = '<div class="ai-enhanced-title">AI 正在分析并补充数据...</div>';
-
-            // Simulate AI analysis
-            setTimeout(() => {
-                const isBearish = content.toLowerCase().includes('跌') || content.toLowerCase().includes('空') || content.toLowerCase().includes('下');
-                
-                aiEnhancedData.innerHTML = `
-                    <div class="ai-enhanced-title">🤖 AI 补充数据</div>
-                    <div class="ai-data-item">💰 当前价格：$96,420</div>
-                    <div class="ai-data-item">📊 技术指标：RSI 58（中性偏多）、MACD 金叉</div>
-                    <div class="ai-data-item">🔗 链上数据：交易所流入增加 15%</div>
-                    <div class="ai-data-item">📰 近期新闻：Fed会议纪要今晚公布</div>
-                `;
-
-                // Show direction pills and confidence slider
-                directionGroup.style.display = 'block';
-                confidenceGroup.style.display = 'block';
-
-                // Auto-select direction
-                document.querySelectorAll('.direction-pill').forEach(pill => {
-                    pill.classList.remove('selected');
-                    if ((isBearish && pill.dataset.direction === 'bearish') || 
-                        (!isBearish && pill.dataset.direction === 'bullish')) {
-                        pill.classList.add('selected');
-                    }
-                });
-
-                // Auto-set confidence
-                const autoConfidence = 70 + Math.floor(Math.random() * 20);
-                confidenceSlider.value = autoConfidence;
-                confidenceValue.textContent = autoConfidence + '%';
-            }, 2000);
-        });
-
-        // Direction pill selection
-        document.querySelectorAll('.direction-pill').forEach(pill => {
-            pill.addEventListener('click', () => {
-                document.querySelectorAll('.direction-pill').forEach(p => p.classList.remove('selected'));
-                pill.classList.add('selected');
-            });
-        });
-
-        // Confidence slider
-        confidenceSlider.addEventListener('input', (e) => {
-            confidenceValue.textContent = e.target.value + '%';
-        });
-
-        // Publish post
-        document.getElementById('publishPost').addEventListener('click', () => {
-            const content = postContent.value.trim();
-            if (!content) {
-                alert('请输入分析内容');
-                return;
-            }
-
-            alert('分析已发布！');
-            document.getElementById('postModal').classList.remove('active');
-            
-            // Reset form
-            postContent.value = '';
-            aiEnhancedData.classList.remove('active');
-            directionGroup.style.display = 'none';
-            confidenceGroup.style.display = 'none';
-            document.querySelectorAll('.direction-pill').forEach(p => p.classList.remove('selected'));
-        });
     </script>
 </body>
 </html>
