@@ -1,0 +1,797 @@
+<!-- 第10-17章完整重写版 -->
+
+<!-- Chapter 10: 用户匹配 - 完整重写版 -->
+<div class="chapter" id="chapter-10">
+    <div class="chapter-header">
+        <div class="chapter-number">第十章</div>
+        <h1 class="chapter-title">用户匹配：按交易风格不按水平</h1>
+        <p class="chapter-summary">
+            不分高手韭菜,按风格匹配小组。日内交易者跟日内交易者合作,技术派跟技术派讨论。入门测试 + 使用中学习 + 智能推荐。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 偏好测试 + 小组推荐界面</div>
+        <div class="mockup">
+            <!-- Onboarding quiz -->
+            <div style="max-width: 600px; margin: 0 auto;">
+                <div style="background: var(--bg-secondary); border-radius: 12px; padding: 32px;">
+                    <!-- Progress -->
+                    <div style="margin-bottom: 24px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-size: 12px; color: var(--text-secondary);">问题 2/5</span>
+                            <span style="font-size: 12px; color: var(--accent);">40%</span>
+                        </div>
+                        <div style="height: 6px; background: var(--bg-primary); border-radius: 3px; overflow: hidden;">
+                            <div style="width: 40%; height: 100%; background: linear-gradient(90deg, var(--accent) 0%, var(--success) 100%);"></div>
+                        </div>
+                    </div>
+
+                    <!-- Question -->
+                    <div style="margin-bottom: 24px;">
+                        <div style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text-primary);">你通常持仓多久？</div>
+                        <div style="font-size: 14px; color: var(--text-secondary);">这将帮助我们匹配合适的小组给你</div>
+                    </div>
+
+                    <!-- Options -->
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="wire-card" style="border: 2px solid var(--accent); cursor: pointer;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 24px; height: 24px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 700;">A</div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; margin-bottom: 4px;">几分钟到几小时（日内交易）</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">快进快出,捕捉短期波动</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wire-card" style="cursor: pointer;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 24px; height: 24px; background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">B</div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; margin-bottom: 4px;">1-5 天（短线交易）</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">关注短期趋势和技术形态</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wire-card" style="cursor: pointer;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 24px; height: 24px; background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">C</div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; margin-bottom: 4px;">1-4 周（波段交易）</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">跟随中期趋势,赚取波段收益</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wire-card" style="cursor: pointer;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 24px; height: 24px; background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">D</div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; margin-bottom: 4px;">数月到数年（长线投资）</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">关注基本面,长期持有</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div style="display: flex; justify-content: space-between; margin-top: 24px;">
+                        <div style="height: 40px; width: 100px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer;">上一题</div>
+                        <div style="height: 40px; width: 100px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: white; cursor: pointer;">下一题</div>
+                    </div>
+                </div>
+
+                <!-- Group recommendations -->
+                <div style="margin-top: 32px; background: var(--bg-secondary); border-radius: 12px; padding: 32px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+                        <div style="font-size: 24px;">🎯</div>
+                        <div>
+                            <div style="font-size: 20px; font-weight: 700; margin-bottom: 4px;">推荐小组</div>
+                            <div style="font-size: 14px; color: var(--text-secondary);">基于你的偏好,这些小组可能适合你</div>
+                        </div>
+                    </div>
+
+                    <!-- Group card 1 -->
+                    <div class="wire-card" style="margin-bottom: 16px; border: 2px solid var(--accent);">
+                        <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
+                            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, var(--accent) 0%, var(--success) 100%); border-radius: 12px;"></div>
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                    <div style="font-size: 16px; font-weight: 700;">加密短线技术派</div>
+                                    <div style="padding: 4px 8px; background: rgba(99, 102, 241, 0.2); border-radius: 6px; font-size: 10px; color: var(--accent); font-weight: 600;">匹配度 92%</div>
+                                </div>
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">专注加密货币短线交易,技术分析为主,日内到 5 天持仓</div>
+                                <div style="display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-secondary);">
+                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                        <span>👥</span><span>12 成员</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                        <span>📊</span><span>活跃度高</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                        <span>📈</span><span>历史准确率 68%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <div style="flex: 1; height: 40px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 600; cursor: pointer;">加入小组</div>
+                            <div style="height: 40px; width: 100px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;">查看详情</div>
+                        </div>
+                    </div>
+
+                    <!-- Group card 2 -->
+                    <div class="wire-card">
+                        <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
+                            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, var(--warning) 0%, var(--danger) 100%); border-radius: 12px;"></div>
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                    <div style="font-size: 16px; font-weight: 700;">链上数据猎手</div>
+                                    <div style="padding: 4px 8px; background: rgba(245, 158, 11, 0.2); border-radius: 6px; font-size: 10px; color: var(--warning); font-weight: 600;">匹配度 75%</div>
+                                </div>
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">深度挖掘链上数据异常,中短线持仓,数据驱动决策</div>
+                                <div style="display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-secondary);">
+                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                        <span>👥</span><span>9 成员</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                        <span>📊</span><span>活跃度中</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                        <span>📈</span><span>历史准确率 71%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <div style="flex: 1; height: 40px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;">加入小组</div>
+                            <div style="height: 40px; width: 100px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;">查看详情</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            核心理念：<span class="highlight">不分水平，按风格匹配</span>。认知差距太大时无法协作，同风格的人才能有效讨论。
+        </p>
+
+        <p><strong>多维标签体系（不分水平，按风格）：</strong></p>
+
+        <p><strong>1. 交易风格</strong></p>
+        <ul>
+            <li><strong>日内交易</strong>：几分钟到几小时，快进快出</li>
+            <li><strong>短线（1-5 天）</strong>：关注短期趋势和技术形态</li>
+            <li><strong>波段（周-月）</strong>：跟随中期趋势</li>
+            <li><strong>长线投资</strong>：数月到数年，关注基本面</li>
+            <li><strong>高频量化</strong>：程序化交易，毫秒级</li>
+        </ul>
+
+        <p><strong>2. 分析偏好</strong></p>
+        <ul>
+            <li><strong>技术面</strong>：K 线形态、指标、趋势线</li>
+            <li><strong>基本面</strong>：财报、行业分析、估值</li>
+            <li><strong>量化策略</strong>：数学模型、回测、因子</li>
+            <li><strong>链上分析</strong>：交易所流入、大户持仓、MVRV</li>
+            <li><strong>宏观分析</strong>：利率、CPI、地缘政治</li>
+        </ul>
+
+        <p><strong>3. 品种偏好</strong></p>
+        <ul>
+            <li><strong>美股</strong>：个股、ETF、期权</li>
+            <li><strong>外汇</strong>：主流货币对、交叉盘</li>
+            <li><strong>贵金属</strong>：黄金、白银</li>
+            <li><strong>加密货币</strong>：BTC、ETH、山寨币</li>
+            <li><strong>期权</strong>：看涨/看跌期权策略</li>
+            <li><strong>期货</strong>：商品期货、股指期货</li>
+        </ul>
+
+        <p><strong>4. 风险偏好</strong></p>
+        <ul>
+            <li><strong>保守型</strong>：追求稳定收益，回撤容忍度低</li>
+            <li><strong>稳健型</strong>：平衡风险收益，可接受中等回撤</li>
+            <li><strong>激进型</strong>：追求高收益，可承受大幅回撤</li>
+        </ul>
+
+        <p><strong>匹配机制四层：</strong></p>
+
+        <p><strong>第一层：入门 - 2 分钟游戏化偏好测试</strong></p>
+        <ul>
+            <li><strong>不是考试，是情景题</strong>：
+                <ul>
+                    <li>问题 1："你通常持仓多久？" → 选项：几分钟/几天/几周/几月</li>
+                    <li>问题 2："你更喜欢看 K 线图还是数字表格？" → 选项：K 线图/数字表格/两者都看</li>
+                    <li>问题 3："如果 BTC 暴跌 10%，你会？" → 选项：立即止损/观察/加仓抄底</li>
+                    <li>问题 4："你最关注哪个数据？" → 选项：价格走势/成交量/链上数据/新闻事件</li>
+                    <li>问题 5："你希望小组多久发一次分析？" → 选项：每天多次/每天一次/每周几次/不在意</li>
+                </ul>
+            </li>
+            <li><strong>答题体验</strong>：
+                <ul>
+                    <li>进度条显示 "问题 2/5"</li>
+                    <li>每个选项带图标和详细描述</li>
+                    <li>支持返回修改答案</li>
+                    <li>完成后立即生成标签</li>
+                </ul>
+            </li>
+            <li><strong>生成标签</strong>：
+                <ul>
+                    <li>交易风格：短线</li>
+                    <li>分析偏好：技术面、链上</li>
+                    <li>品种偏好：加密货币</li>
+                    <li>风险偏好：稳健型</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>第二层：使用中 - AI 根据行为数据持续调整</strong></p>
+        <ul>
+            <li><strong>行为数据收集</strong>：
+                <ul>
+                    <li>用户看什么指标最多？（RSI、MACD、成交量、链上数据）</li>
+                    <li>用户用什么工具最多？（摘要模式、图表模式、数据模式）</li>
+                    <li>用户发布的分析深度如何？（简单/中等/深度）</li>
+                    <li>用户的持仓时间？（从发布分析到复盘的时间框架）</li>
+                </ul>
+            </li>
+            <li><strong>标签调整</strong>：
+                <ul>
+                    <li>初始标签：短线、技术面</li>
+                    <li>观察到用户经常查看链上数据 → 添加"链上分析"标签</li>
+                    <li>观察到用户持仓时间越来越长 → 调整为"波段交易"</li>
+                </ul>
+            </li>
+            <li><strong>用户可见</strong>：
+                <ul>
+                    <li>设置页面显示当前标签</li>
+                    <li>"系统发现你最近更关注链上数据，已添加'链上分析'标签"</li>
+                    <li>用户可以手动修改或确认</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>第三层：推荐 - 系统推荐风格相似的小组</strong></p>
+        <ul>
+            <li><strong>推荐算法</strong>：
+                <ul>
+                    <li>计算用户标签与小组标签的余弦相似度</li>
+                    <li>公式：similarity = (user_tags ∩ group_tags) / sqrt(|user_tags| * |group_tags|)</li>
+                    <li>推荐 Top 5 相似度最高的小组</li>
+                </ul>
+            </li>
+            <li><strong>推荐卡片展示</strong>：
+                <ul>
+                    <li>小组名称、描述</li>
+                    <li>匹配度百分比："匹配度 92%"</li>
+                    <li>成员数、活跃度、历史准确率</li>
+                    <li>"加入小组"按钮（主按钮）</li>
+                    <li>"查看详情"按钮（次要按钮）</li>
+                </ul>
+            </li>
+            <li><strong>排序规则</strong>：
+                <ul>
+                    <li>优先推荐匹配度高的</li>
+                    <li>其次考虑活跃度（避免推荐死群）</li>
+                    <li>最后考虑人数（避免推荐满员小组）</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>第四层：自组织 - 自由加入退出</strong></p>
+        <ul>
+            <li><strong>加入流程</strong>：
+                <ul>
+                    <li>点击"加入小组" → 系统检查是否满员 → 自动加入（公开小组）或发送申请（私有小组）</li>
+                    <li>加入后立即可以浏览历史分析</li>
+                    <li>收到欢迎消息："欢迎加入【加密短线技术派】，这里有 12 位风格相似的交易者"</li>
+                </ul>
+            </li>
+            <li><strong>退出机制</strong>：
+                <ul>
+                    <li>待不下去的自然走：小组设置 → 退出小组</li>
+                    <li>聊得来的自然留：活跃度高的小组粘性强</li>
+                    <li>系统不强制匹配，用户自己选择</li>
+                </ul>
+            </li>
+            <li><strong>自动调整</strong>：
+                <ul>
+                    <li>如果用户加入小组后发现不合适（如分析风格不匹配）</li>
+                    <li>系统检测到用户活跃度低 → 7 天后推荐其他小组</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>为什么不做"大神带韭菜"：</strong></p>
+        <ul>
+            <li><strong>大神没动力免费分享</strong>：
+                <ul>
+                    <li>真正的高手时间很值钱</li>
+                    <li>免费分享没有激励</li>
+                    <li>收费就变成卖课/喊单，违背初衷</li>
+                </ul>
+            </li>
+            <li><strong>认知差距太大时韭菜只会无脑跟单</strong>：
+                <ul>
+                    <li>韭菜看不懂大神的分析逻辑</li>
+                    <li>只会问"老师我该买吗"</li>
+                    <li>学不到东西，依赖性强</li>
+                </ul>
+            </li>
+            <li><strong>亏了怪大神，大神受不了走人</strong>：
+                <ul>
+                    <li>市场不可预测，再厉害也会错</li>
+                    <li>韭菜亏钱后怪大神，负面情绪传播</li>
+                    <li>大神心累，退出平台</li>
+                </ul>
+            </li>
+            <li><strong>同风格协作才有粘性</strong>：
+                <ul>
+                    <li>不是师生关系，是研究小组</li>
+                    <li>例如：都是短线交易者，大家讨论的是"这个 5 分钟形态怎么看"</li>
+                    <li>而不是"老师我该买吗"</li>
+                    <li>认知水平接近，才能有效讨论</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>示例小组（按风格分类）：</strong></p>
+        <ul>
+            <li><strong>加密短线技术派</strong>：12 人，关注 BTC/ETH 日内到 5 天形态</li>
+            <li><strong>美股价值投资圈</strong>：8 人，长线持仓，深度财报分析</li>
+            <li><strong>外汇量化研究组</strong>：6 人，程序化交易，回测策略</li>
+            <li><strong>宏观对冲分析室</strong>：15 人，关注利率、CPI、地缘政治</li>
+            <li><strong>链上数据猎手</strong>：9 人，深度挖掘交易所流入、大户动向</li>
+            <li><strong>ETF 懒人定投群</strong>：20 人，长期定投，不关注短期波动</li>
+        </ul>
+
+        <p><strong>匹配示例：</strong></p>
+        <ul>
+            <li><strong>用户 A</strong>：
+                <ul>
+                    <li>标签：短线、技术面、加密货币、稳健型</li>
+                    <li>推荐：加密短线技术派（匹配度 92%）、链上数据猎手（75%）</li>
+                </ul>
+            </li>
+            <li><strong>用户 B</strong>：
+                <ul>
+                    <li>标签：长线、基本面、美股、保守型</li>
+                    <li>推荐：美股价值投资圈（88%）、ETF 懒人定投群（65%）</li>
+                </ul>
+            </li>
+            <li><strong>用户 C</strong>：
+                <ul>
+                    <li>标签：日内、量化、外汇、激进型</li>
+                    <li>推荐：外汇量化研究组（94%）、高频交易实验室（72%）</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>数据库设计：</strong></p>
+        <ul>
+            <li><strong>user_tags 表</strong>：
+                <ul>
+                    <li>user_id、tag_type（trading_style/analysis_preference/asset_preference/risk_preference）、tag_value、weight（权重，使用中调整）</li>
+                </ul>
+            </li>
+            <li><strong>group_tags 表</strong>：
+                <ul>
+                    <li>group_id、tag_type、tag_value</li>
+                </ul>
+            </li>
+            <li><strong>matching_scores 表</strong>：
+                <ul>
+                    <li>user_id、group_id、similarity_score、last_updated</li>
+                    <li>定期重新计算（每天或每次标签更新时）</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>技术实现提示：</strong></p>
+        <ul>
+            <li>偏好测试：React 多步表单，使用状态管理（Zustand/Redux）</li>
+            <li>标签计算：根据答案映射到标签（如选"几分钟到几小时" → trading_style: day-trading）</li>
+            <li>行为数据收集：前端埋点 + 后端日志分析</li>
+            <li>相似度计算：定时任务（Cron）每天凌晨重新计算所有用户与小组的匹配度</li>
+            <li>推荐排序：SQL 查询按 similarity_score DESC 排序，取 Top 5</li>
+            <li>实时更新：用户修改标签后立即重新计算匹配度</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-10')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+
+
+
+<!-- Chapter 11: Agent自定义 - 完整重写版 -->
+<div class="chapter" id="chapter-11">
+    <div class="chapter-header">
+        <div class="chapter-number">第十一章</div>
+        <h1 class="chapter-title">Agent 自定义：渐进式从零门槛到编程</h1>
+        <p class="chapter-summary">
+            入门用户只需选标签，进阶用户自然语言调教，高级用户直接编辑 SOUL.md 写策略逻辑。三级递进，满足不同需求。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 Agent 设置页面三级界面</div>
+        <div class="mockup">
+            <div style="display: flex; gap: 20px;">
+                <!-- Level tabs -->
+                <div style="width: 200px;">
+                    <div style="background: var(--bg-secondary); border-radius: 8px; padding: 8px;">
+                        <div style="padding: 12px; background: var(--accent); border-radius: 6px; margin-bottom: 4px; color: white; font-weight: 600; font-size: 13px;">入门级</div>
+                        <div style="padding: 12px; border-radius: 6px; color: var(--text-secondary); font-size: 13px; cursor: pointer;">进阶级</div>
+                        <div style="padding: 12px; border-radius: 6px; color: var(--text-secondary); font-size: 13px; cursor: pointer;">高级</div>
+                    </div>
+                </div>
+
+                <!-- Main content -->
+                <div style="flex: 1;">
+                    <!-- Beginner level: Preset roles -->
+                    <div style="background: var(--bg-secondary); border-radius: 12px; padding: 32px;">
+                        <div style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">选择 Agent 角色</div>
+                        <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 24px;">无需技术知识,选择一个预设角色即可开始使用</div>
+
+                        <!-- Role cards -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <!-- Role 1: Conservative -->
+                            <div class="wire-card" style="border: 2px solid var(--success); position: relative;">
+                                <div style="position: absolute; top: -10px; right: 12px; background: var(--success); padding: 4px 12px; border-radius: 12px; font-size: 10px; font-weight: 600; color: white;">推荐</div>
+                                <div style="text-align: center; margin-bottom: 16px;">
+                                    <div style="font-size: 48px; margin-bottom: 8px;">🛡️</div>
+                                    <div style="font-size: 16px; font-weight: 700; margin-bottom: 4px;">稳健型</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">追求稳定收益,风险优先</div>
+                                </div>
+                                <div style="background: var(--bg-primary); border-radius: 6px; padding: 12px; font-size: 11px; color: var(--text-secondary); margin-bottom: 12px;">
+                                    <div style="margin-bottom: 4px;">• 置信度 > 70% 才推送</div>
+                                    <div style="margin-bottom: 4px;">• 重点关注风险提示</div>
+                                    <div>• 避免极端预测</div>
+                                </div>
+                                <div style="height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 600; cursor: pointer;">选择</div>
+                            </div>
+
+                            <!-- Role 2: Aggressive -->
+                            <div class="wire-card">
+                                <div style="text-align: center; margin-bottom: 16px;">
+                                    <div style="font-size: 48px; margin-bottom: 8px;">🚀</div>
+                                    <div style="font-size: 16px; font-weight: 700; margin-bottom: 4px;">激进型</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">追求高收益,捕捉机会</div>
+                                </div>
+                                <div style="background: var(--bg-primary); border-radius: 6px; padding: 12px; font-size: 11px; color: var(--text-secondary); margin-bottom: 12px;">
+                                    <div style="margin-bottom: 4px;">• 置信度 > 50% 即推送</div>
+                                    <div style="margin-bottom: 4px;">• 重点关注机会</div>
+                                    <div>• 容忍更多不确定性</div>
+                                </div>
+                                <div style="height: 36px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;">选择</div>
+                            </div>
+
+                            <!-- Role 3: Technical -->
+                            <div class="wire-card">
+                                <div style="text-align: center; margin-bottom: 16px;">
+                                    <div style="font-size: 48px; margin-bottom: 8px;">📊</div>
+                                    <div style="font-size: 16px; font-weight: 700; margin-bottom: 4px;">技术派</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">图表形态为王</div>
+                                </div>
+                                <div style="background: var(--bg-primary); border-radius: 6px; padding: 12px; font-size: 11px; color: var(--text-secondary); margin-bottom: 12px;">
+                                    <div style="margin-bottom: 4px;">• 技术维度权重 60%</div>
+                                    <div style="margin-bottom: 4px;">• 自动标注关键位</div>
+                                    <div>• 形态识别优先</div>
+                                </div>
+                                <div style="height: 36px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;">选择</div>
+                            </div>
+
+                            <!-- Role 4: Fundamental -->
+                            <div class="wire-card">
+                                <div style="text-align: center; margin-bottom: 16px;">
+                                    <div style="font-size: 48px; margin-bottom: 8px;">📰</div>
+                                    <div style="font-size: 16px; font-weight: 700; margin-bottom: 4px;">基本面派</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">新闻事件驱动</div>
+                                </div>
+                                <div style="background: var(--bg-primary); border-radius: 6px; padding: 12px; font-size: 11px; color: var(--text-secondary); margin-bottom: 12px;">
+                                    <div style="margin-bottom: 4px;">• 宏观维度权重 60%</div>
+                                    <div style="margin-bottom: 4px;">• 重点跟踪新闻</div>
+                                    <div>• 事件影响评估</div>
+                                </div>
+                                <div style="height: 36px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;">选择</div>
+                            </div>
+                        </div>
+
+                        <!-- Preview panel -->
+                        <div style="margin-top: 32px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border-radius: 8px; padding: 20px; border: 1px solid var(--accent);">
+                            <div style="font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--accent);">✨ 实时预览</div>
+                            <div style="background: var(--bg-card); border-radius: 6px; padding: 16px;">
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">稳健型 Agent 分析示例：</div>
+                                <div style="height: 12px; background: var(--border-color); border-radius: 4px; margin-bottom: 6px; opacity: 0.7;"></div>
+                                <div style="height: 12px; background: var(--border-color); border-radius: 4px; max-width: 90%; margin-bottom: 6px; opacity: 0.7;"></div>
+                                <div style="height: 12px; background: var(--border-color); border-radius: 4px; max-width: 70%; opacity: 0.7;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            创建一个<span class="highlight">渐进式 Agent 自定义系统</span>，从零门槛到编程三个级别，满足不同用户需求。
+        </p>
+
+        <p><strong>入门级（0 门槛）：选择预设角色</strong></p>
+        <ul>
+            <li><strong>用户场景</strong>：刚注册的新用户，不懂技术，只想快速开始</li>
+            <li><strong>预设角色</strong>：
+                <ul>
+                    <li><strong>🛡️ 稳健型</strong>：
+                        <ul>
+                            <li>置信度 > 70% 才推送信号</li>
+                            <li>重点关注风险提示和支撑位</li>
+                            <li>避免极端预测（如"BTC 要归零"）</li>
+                            <li>适合：保守投资者、新手</li>
+                        </ul>
+                    </li>
+                    <li><strong>🚀 激进型</strong>：
+                        <ul>
+                            <li>置信度 > 50% 即推送</li>
+                            <li>重点关注突破机会和异常数据</li>
+                            <li>容忍更多不确定性</li>
+                            <li>适合：追求高收益、能承受风险的用户</li>
+                        </ul>
+                    </li>
+                    <li><strong>📊 技术派</strong>：
+                        <ul>
+                            <li>技术面维度权重 60%（其他维度各 10-15%）</li>
+                            <li>自动标注关键技术位（支撑、阻力、趋势线）</li>
+                            <li>形态识别优先（如头肩顶、双底）</li>
+                            <li>适合：喜欢看图的用户</li>
+                        </ul>
+                    </li>
+                    <li><strong>📰 基本面派</strong>：
+                        <ul>
+                            <li>宏观维度权重 60%</li>
+                            <li>重点跟踪新闻事件（CPI、FOMC、地缘政治）</li>
+                            <li>事件影响评估（如"CPI 超预期概率 60%"）</li>
+                            <li>适合：关注新闻的用户</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li><strong>选择流程</strong>：
+                <ul>
+                    <li>展示 4 个角色卡片，每个卡片包含：图标、名称、描述、特点列表</li>
+                    <li>用户点击"选择"按钮</li>
+                    <li>实时预览：展示该角色生成的示例分析</li>
+                    <li>确认后，Agent 立即使用该角色的默认提示词</li>
+                </ul>
+            </li>
+            <li><strong>技术实现</strong>：
+                <ul>
+                    <li>每个角色对应一个预设的 SOUL.md 模板</li>
+                    <li>用户选择后，系统复制模板到用户的 Agent 配置</li>
+                    <li>Agent 重启，加载新配置</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>进阶级（有想法的用户）：自然语言调教</strong></p>
+        <ul>
+            <li><strong>用户场景</strong>：使用一段时间后，有自己的想法，但不会编程</li>
+            <li><strong>调教方式</strong>：
+                <ul>
+                    <li>直接在聊天软件里跟 Agent 说</li>
+                    <li>或在网站设置页面输入自然语言指令</li>
+                </ul>
+            </li>
+            <li><strong>调教示例</strong>：
+                <ul>
+                    <li>"我更关注链上数据，技术面不太看"
+                        <ul>
+                            <li>→ Agent 记录：链上维度权重 +20%，技术面权重 -10%</li>
+                        </ul>
+                    </li>
+                    <li>"当 RSI 低于 30 的时候重点提醒我"
+                        <ul>
+                            <li>→ Agent 添加规则：RSI < 30 时，推送优先级提升为"重要"</li>
+                        </ul>
+                    </li>
+                    <li>"我不关心 meme 币，只看 BTC 和 ETH"
+                        <ul>
+                            <li>→ Agent 添加过滤规则：只订阅 BTC/USD 和 ETH/USD 的公域信号</li>
+                        </ul>
+                    </li>
+                    <li>"每天早上 8 点推送日报，不要在凌晨推送"
+                        <ul>
+                            <li>→ Agent 调整 Cron 任务时间：08:00（用户时区）</li>
+                            <li>→ 设置免打扰时段：00:00-07:00</li>
+                        </ul>
+                    </li>
+                    <li>"价格突破 $70,000 时立即提醒我"
+                        <ul>
+                            <li>→ Agent 添加价格监控规则：BTC > $70,000 触发推送</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li><strong>Agent 处理流程</strong>：
+                <ul>
+                    <li>用户输入自然语言指令</li>
+                    <li>Agent 调用 AI 解析意图（使用 few-shot learning，提供示例）</li>
+                    <li>AI 返回结构化配置更新：
+                        <ul>
+                            <li>类型：权重调整/规则添加/时间设置/过滤规则</li>
+                            <li>参数：具体数值和条件</li>
+                        </ul>
+                    </li>
+                    <li>Agent 更新自己的配置文件（MEMORY.md 或 SOUL.md）</li>
+                    <li>回复用户："好的，我已经记住了。从现在开始，我会更关注链上数据。"</li>
+                    <li>立即生效</li>
+                </ul>
+            </li>
+            <li><strong>记忆系统</strong>：
+                <ul>
+                    <li>所有偏好都记录在 <code>MEMORY.md</code> 的专门章节</li>
+                    <li>Agent 每次分析时都会读取这些偏好</li>
+                    <li>用户可以在设置页面查看所有历史调教记录</li>
+                    <li>支持撤销：删除某条偏好，Agent 恢复默认</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>高级（量化/开发者）：编辑 SOUL.md</strong></p>
+        <ul>
+            <li><strong>用户场景</strong>：懂编程或量化的用户，想完全自定义 Agent 逻辑</li>
+            <li><strong>SOUL.md 编辑器</strong>：
+                <ul>
+                    <li>网站提供代码编辑器（Monaco Editor，VS Code 同款）</li>
+                    <li>支持 Markdown 语法高亮</li>
+                    <li>支持代码折叠、搜索替换</li>
+                    <li>左侧编辑，右侧实时预览</li>
+                </ul>
+            </li>
+            <li><strong>SOUL.md 内容示例</strong>：
+                <pre style="background: var(--bg-primary); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 12px;">
+# Agent SOUL 配置
+
+## 角色定位
+你是一个专注于加密货币短线交易的 AI 分析师。
+
+## 分析权重
+- 链上数据：40%
+- 技术面：30%
+- 宏观因素：20%
+- 市场情绪：10%
+
+## 推送规则
+1. 置信度 > 65% 时推送信号
+2. RSI < 30 或 > 70 时重点提醒
+3. 交易所流入异常（日增 > 10000 BTC）立即推送
+
+## 交易风格
+- 时间框架：1h - 48h
+- 风险偏好：稳健型
+- 关注资产：BTC/USD、ETH/USD
+
+## 自定义策略
+当检测到以下条件时，提升信号优先级：
+- 链上数据 + 技术面 双重确认
+- 宏观事件即将公布（24h 内）
+- 历史形态相似度 > 80%
+                </pre>
+            </li>
+            <li><strong>高级自定义功能</strong>：
+                <ul>
+                    <li>接入自己的私有数据源（通过 API key）</li>
+                    <li>编写自定义分析脚本（Python/JavaScript）</li>
+                    <li>通过 API 程序化控制 Agent</li>
+                    <li>给 Agent 写"交易性格"（如"保守"、"激进"、"谨慎"）</li>
+                </ul>
+            </li>
+            <li><strong>实时预览</strong>：
+                <ul>
+                    <li>修改 SOUL.md 后，点击"测试"按钮</li>
+                    <li>Agent 立即生成一个示例分析</li>
+                    <li>用户对比修改前后的差异</li>
+                    <li>满意后点击"保存并应用"</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>Agent 记忆系统（基于 OpenClaw）：</strong></p>
+        <ul>
+            <li><strong>MEMORY.md（长期记忆）</strong>：
+                <ul>
+                    <li>用户偏好：关注资产、分析维度权重、推送时间</li>
+                    <li>重要决策：历史上哪些分析最准、哪些失误</li>
+                    <li>教训：用户明确说"以后别这样"的事情</li>
+                    <li>人设：Agent 的性格（如严谨、幽默、简洁）</li>
+                </ul>
+            </li>
+            <li><strong>memory/YYYY-MM-DD.md（每日记录）</strong>：
+                <ul>
+                    <li>当日发布的信号</li>
+                    <li>用户的查询和反馈</li>
+                    <li>异常事件</li>
+                    <li>市场走势记录</li>
+                </ul>
+            </li>
+            <li><strong>定期回顾和整理</strong>：
+                <ul>
+                    <li>Agent 每周自动回顾最近 7 天的记录</li>
+                    <li>提取关键信息更新 MEMORY.md</li>
+                    <li>删除过时或无效的记忆</li>
+                    <li>越来越了解用户</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>团队版功能（Pro/Team 订阅）：</strong></p>
+        <ul>
+            <li><strong>多 Agent 实例</strong>：
+                <ul>
+                    <li>一个用户可以创建最多 5 个 Agent</li>
+                    <li>每个 Agent 负责不同资产或策略</li>
+                    <li>例如：Agent-BTC（专注 BTC）、Agent-Altcoins（山寨币）、Agent-DeFi（DeFi 项目）</li>
+                </ul>
+            </li>
+            <li><strong>共享分析模板</strong>：
+                <ul>
+                    <li>团队成员可以共享 SOUL.md 模板</li>
+                    <li>一个人调教好，其他人一键复制</li>
+                </ul>
+            </li>
+            <li><strong>团队协作空间</strong>：
+                <ul>
+                    <li>所有成员的 Agent 分析集中展示</li>
+                    <li>支持协同标注图表</li>
+                    <li>团队共识报告</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>安全限制：</strong></p>
+        <ul>
+            <li><strong>不能访问其他用户数据</strong>：Agent 只能访问自己用户的数据和公域信号</li>
+            <li><strong>API 调用频率限制</strong>：
+                <ul>
+                    <li>免费版：每小时 10 次 AI 调用</li>
+                    <li>Pro 版：每小时 100 次</li>
+                    <li>超过限制后排队或提示升级</li>
+                </ul>
+            </li>
+            <li><strong>自定义脚本需要审核</strong>：
+                <ul>
+                    <li>用户上传的 Python/JavaScript 脚本需要平台审核</li>
+                    <li>禁止恶意代码（如攻击其他服务器、挖矿）</li>
+                    <li>沙箱环境运行，限制资源使用</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>技术实现提示：</strong></p>
+        <ul>
+            <li>预设角色：存储为 JSON 配置文件，用户选择后复制到 Agent</li>
+            <li>自然语言调教：使用 GPT-4 解析意图，返回结构化配置更新</li>
+            <li>SOUL.md 编辑器：使用 Monaco Editor（React 组件）</li>
+            <li>实时预览：调用 Agent API，传入测试数据，返回分析示例</li>
+            <li>记忆系统：基于 OpenClaw 的文件系统，读写 MEMORY.md</li>
+            <li>配置热更新：Agent 监听配置文件变化，自动重新加载（无需重启）</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-11')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+<!-- 由于篇幅限制,剩余第12-17章将在下一部分继续... -->

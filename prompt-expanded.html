@@ -1,0 +1,756 @@
+<!-- 这是扩充后的第7、8、10-17章,将替换原文件中对应部分 -->
+
+<!-- Chapter 7: 私域小组 - 完整重写版 -->
+<div class="chapter" id="chapter-7">
+    <div class="chapter-header">
+        <div class="chapter-number">第七章</div>
+        <h1 class="chapter-title">私域小组：异步分析协作</h1>
+        <p class="chapter-summary">
+            异步深度分析 > 实时碎片闲聊。用户发布想法,AI 帮助结构化,成员讨论投票,系统自动生成共识报告,一周后复盘准确率。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 小组主页界面示意图</div>
+        <div class="mockup">
+            <!-- Header with group info -->
+            <div class="wire-nav" style="padding: 20px;">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 56px; height: 56px; background: linear-gradient(135deg, var(--accent) 0%, var(--success) 100%); border-radius: 12px; opacity: 0.9;"></div>
+                    <div style="flex: 1;">
+                        <div style="height: 20px; background: var(--border-color); border-radius: 4px; max-width: 200px; margin-bottom: 8px;"></div>
+                        <div style="height: 14px; background: var(--border-color); border-radius: 4px; max-width: 300px; opacity: 0.6;"></div>
+                    </div>
+                    <div style="height: 40px; width: 120px; background: var(--accent); border-radius: 8px;"></div>
+                    <div style="height: 40px; width: 40px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px;"></div>
+                </div>
+            </div>
+
+            <!-- Members bar -->
+            <div style="background: var(--bg-secondary); padding: 16px; margin-top: 1px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-right: 8px;">成员 12</div>
+                    <div style="display: flex; gap: -8px;">
+                        <div style="width: 32px; height: 32px; background: var(--accent); border-radius: 50%; border: 2px solid var(--bg-secondary);"></div>
+                        <div style="width: 32px; height: 32px; background: var(--success); border-radius: 50%; border: 2px solid var(--bg-secondary); margin-left: -8px;"></div>
+                        <div style="width: 32px; height: 32px; background: var(--warning); border-radius: 50%; border: 2px solid var(--bg-secondary); margin-left: -8px;"></div>
+                        <div style="width: 32px; height: 32px; background: var(--border-color); border-radius: 50%; border: 2px solid var(--bg-secondary); margin-left: -8px; display: flex; align-items: center; justify-content: center; font-size: 10px;">+9</div>
+                    </div>
+                    <div style="height: 1px; flex: 1; background: var(--border-color);"></div>
+                    <div style="padding: 6px 12px; background: rgba(99, 102, 241, 0.1); border-radius: 6px; font-size: 11px; color: var(--accent);">活跃度 🔥 高</div>
+                </div>
+            </div>
+
+            <!-- Analysis feed -->
+            <div style="padding: 20px;">
+                <!-- Post 1 -->
+                <div class="wire-card" style="margin-bottom: 16px; border-left: 4px solid var(--danger);">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <div style="width: 40px; height: 40px; background: var(--accent); border-radius: 50%;"></div>
+                        <div style="flex: 1;">
+                            <div style="height: 14px; background: var(--border-color); border-radius: 4px; max-width: 120px; margin-bottom: 6px;"></div>
+                            <div style="height: 10px; background: var(--border-color); border-radius: 4px; max-width: 80px; opacity: 0.5;"></div>
+                        </div>
+                        <div style="padding: 6px 12px; background: rgba(239, 68, 68, 0.1); border-radius: 6px; color: var(--danger); font-size: 12px; font-weight: 600;">看空 ⬇️ 72%</div>
+                    </div>
+
+                    <div style="height: 16px; background: var(--border-color); border-radius: 4px; margin-bottom: 12px;"></div>
+                    
+                    <!-- Dimension bars -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 9px; color: var(--text-secondary); margin-bottom: 4px;">链上</div>
+                            <div style="height: 20px; background: var(--danger); border-radius: 4px; opacity: 0.8; display: flex; align-items: center; justify-content: center; font-size: 11px;">78%</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 9px; color: var(--text-secondary); margin-bottom: 4px;">技术</div>
+                            <div style="height: 20px; background: var(--text-secondary); border-radius: 4px; opacity: 0.6; display: flex; align-items: center; justify-content: center; font-size: 11px;">50%</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 9px; color: var(--text-secondary); margin-bottom: 4px;">宏观</div>
+                            <div style="height: 20px; background: var(--danger); border-radius: 4px; opacity: 0.8; display: flex; align-items: center; justify-content: center; font-size: 11px;">72%</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 9px; color: var(--text-secondary); margin-bottom: 4px;">情绪</div>
+                            <div style="height: 20px; background: var(--danger); border-radius: 4px; opacity: 0.7; display: flex; align-items: center; justify-content: center; font-size: 11px;">65%</div>
+                        </div>
+                    </div>
+
+                    <!-- Summary text -->
+                    <div style="margin-bottom: 12px;">
+                        <div style="height: 10px; background: var(--border-color); border-radius: 4px; margin-bottom: 4px; opacity: 0.6;"></div>
+                        <div style="height: 10px; background: var(--border-color); border-radius: 4px; max-width: 90%; opacity: 0.6;"></div>
+                    </div>
+
+                    <!-- Chart preview -->
+                    <div style="height: 120px; background: linear-gradient(180deg, rgba(239, 68, 68, 0.1) 0%, transparent 100%); border-radius: 8px; border: 1px dashed var(--border-color); margin-bottom: 12px;"></div>
+
+                    <!-- Actions -->
+                    <div style="display: flex; align-items: center; gap: 16px; padding-top: 12px; border-top: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary);">
+                            <span>👍</span><span>12</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary);">
+                            <span>👎</span><span>2</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary);">
+                            <span>💬</span><span>5</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary);">
+                            <span>👁️</span><span>89</span>
+                        </div>
+                        <div style="flex: 1;"></div>
+                        <div style="height: 32px; width: 80px; background: var(--accent); border-radius: 6px;"></div>
+                    </div>
+                </div>
+
+                <!-- Consensus Report Card -->
+                <div class="wire-card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border: 2px solid var(--accent);">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <div style="font-size: 24px;">📊</div>
+                        <div style="flex: 1;">
+                            <div style="height: 16px; background: var(--accent); border-radius: 4px; max-width: 150px; margin-bottom: 6px; opacity: 0.8;"></div>
+                            <div style="height: 12px; background: var(--border-color); border-radius: 4px; max-width: 200px; opacity: 0.6;"></div>
+                        </div>
+                        <div style="height: 32px; width: 100px; background: var(--accent); border-radius: 6px;"></div>
+                    </div>
+                    <div style="height: 12px; background: var(--border-color); border-radius: 4px; margin-bottom: 6px; opacity: 0.5;"></div>
+                    <div style="height: 12px; background: var(--border-color); border-radius: 4px; max-width: 80%; opacity: 0.5;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            创建一个<span class="highlight">异步分析协作小组系统</span>,核心循环是：用户发想法 → AI 辅助结构化 → 成员阅读投票 → AI 汇总共识 → 历史复盘。这是与普通论坛的核心差异。
+        </p>
+
+        <p><strong>为什么选择异步而非实时：</strong></p>
+        <ul>
+            <li>交易者分布在全球不同时区,不需要同时在线</li>
+            <li>降低使用门槛,不用"泡"在平台上</li>
+            <li>异步深度分析 > 实时碎片闲聊</li>
+            <li>给 AI 充足时间处理和汇总信息</li>
+        </ul>
+
+        <p><strong>核心循环详解：</strong></p>
+
+        <p><strong>① 发布分析（AI 辅助降低门槛）</strong></p>
+        <ul>
+            <li><strong>用户场景</strong>：用户看到 BTC 交易所流入增加,想分享给小组</li>
+            <li><strong>传统做法</strong>：手写长文,找数据截图,配图,排版,发布（门槛高,大部分人懒得发）</li>
+            <li><strong>FinVerse 做法</strong>：用户说一句话"我觉得 BTC 要跌,交易所流入太多了" → Agent 自动处理
+                <ul>
+                    <li>识别资产（BTC/USD）、方向（看空）、理由（交易所流入）</li>
+                    <li>自动拉取最新链上数据：交易所净流入 +12,400 BTC (+35%)</li>
+                    <li>补充其他维度数据：RSI、MACD、宏观事件、情绪指数</li>
+                    <li>生成结构化分析 JSON + Markdown 详细内容</li>
+                    <li>配置图表：K 线图 + 交易所流入标注 + 关键支撑阻力位</li>
+                    <li>呈现预览给用户确认,点击"发布"即可</li>
+                </ul>
+            </li>
+            <li><strong>数据库设计</strong>：
+                <ul>
+                    <li>group_posts 表存储分析</li>
+                    <li>字段包含：title、content（Markdown）、analysis_data（JSONB）、ai_assisted（布尔）、original_prompt（用户原始输入）</li>
+                    <li>attachments 字段存储图表配置</li>
+                </ul>
+            </li>
+            <li><strong>极低门槛</strong>：说一句话就能发一篇结构化分析,这是与普通论坛的核心差异</li>
+        </ul>
+
+        <p><strong>② 阅读 + 反馈（通知 + 深度链接）</strong></p>
+        <ul>
+            <li><strong>通知机制</strong>：
+                <ul>
+                    <li>小组有新分析发布 → 通知所有成员</li>
+                    <li>Telegram 推送："[@用户名] 刚发布了 BTC 分析：BTC 短期看空,交易所流入激增"</li>
+                    <li>推送带按钮："查看详情"（跳转网站）、"快速投票"（在聊天软件内投票）</li>
+                </ul>
+            </li>
+            <li><strong>阅读体验</strong>：
+                <ul>
+                    <li>点击跳转到网站小组页面,看完整分析</li>
+                    <li>四个维度的信号条一目了然</li>
+                    <li>图表可以交互：悬停查看数据点、切换时间框架</li>
+                    <li>AI 推理链可展开查看：为什么得出 72% 置信度</li>
+                </ul>
+            </li>
+            <li><strong>反馈方式</strong>：
+                <ul>
+                    <li>👍/👎 表态（快速）</li>
+                    <li>评论（深度讨论）：也可以 AI 辅助,说想法 → Agent 结构化</li>
+                    <li>补充自己的角度：点击"我也发布分析"，引用原帖,添加自己的维度</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>③ AI 汇总共识报告（自动生成）</strong></p>
+        <ul>
+            <li><strong>触发条件</strong>：
+                <ul>
+                    <li>每个主题讨论结束（超过 50% 成员投票,或发布 24 小时后）</li>
+                    <li>每日结束时（UTC 23:59）自动生成当日所有分析的汇总</li>
+                </ul>
+            </li>
+            <li><strong>报告内容</strong>：
+                <ul>
+                    <li><strong>观点分布</strong>："72% 成员看空 BTC（9人看空,2人看多,1人中性）"</li>
+                    <li><strong>维度共识</strong>："链上维度共识最强（78% 看空）,技术面出现分歧（50% vs 50%）"</li>
+                    <li><strong>关键位</strong>："85% 成员认为 $67,200 是关键支撑"</li>
+                    <li><strong>主要分歧点</strong>："技术派认为支撑尚在,链上派认为抛压过大"</li>
+                    <li><strong>与公域对比</strong>："小组共识 72% 看空,公域共识 68% 看空,一致性高"</li>
+                    <li><strong>关键洞察</strong>：
+                        <ul>
+                            <li>从讨论中提炼的 3-5 条关键洞察</li>
+                            <li>例："成员 @Alice 指出 MVRV 比率接近历史高位,值得关注"</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li><strong>AI 生成过程</strong>：
+                <ul>
+                    <li>拉取所有相关分析和投票数据</li>
+                    <li>统计信号分布、置信度平均值、维度分解</li>
+                    <li>调用小组创建者的 AI（或平台 AI）生成 Markdown 格式报告</li>
+                    <li>存储到 consensus_reports 表</li>
+                    <li>推送通知所有成员："今日共识报告已生成"</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>④ 历史复盘追踪（杀手功能）</strong></p>
+        <ul>
+            <li><strong>复盘触发</strong>：
+                <ul>
+                    <li>一周后（或用户设定的时间框架到期）</li>
+                    <li>定时任务自动检查所有信号的时间框架</li>
+                    <li>对于已过期的信号,拉取实际走势数据</li>
+                </ul>
+            </li>
+            <li><strong>准确率计算</strong>：
+                <ul>
+                    <li>信号：看空,时间框架 48h</li>
+                    <li>实际走势：48 小时后价格下跌 3.2%</li>
+                    <li>判断：准确 ✅</li>
+                    <li>评分：根据置信度加权（72% 置信度 + 准确 = 高分）</li>
+                </ul>
+            </li>
+            <li><strong>展示方式</strong>：
+                <ul>
+                    <li><strong>只给个人看</strong>：不公开排名,避免炫耀/焦虑</li>
+                    <li>用户查看自己的历史分析,每个分析旁边显示：
+                        <ul>
+                            <li>✅ 准确（绿色）</li>
+                            <li>❌ 错误（红色）</li>
+                            <li>⏳ 待验证（灰色）</li>
+                        </ul>
+                    </li>
+                    <li>统计数据："过去 30 天你发布了 15 个分析,准确率 68%"</li>
+                    <li>维度分解："你的链上分析准确率 78%,技术面分析 55%"</li>
+                    <li>洞察："当你的置信度 > 70% 时,准确率提升到 82%"</li>
+                </ul>
+            </li>
+            <li><strong>这才是真正帮人进步的功能</strong>：
+                <ul>
+                    <li>传统论坛：发完就忘,永远不知道自己对不对</li>
+                    <li>FinVerse：系统自动追踪,告诉你哪些分析靠谱,哪些不靠谱</li>
+                    <li>用户可以优化自己的分析方法：发现自己擅长链上分析,以后多关注这个维度</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>与普通论坛的核心区别：</strong></p>
+        <ul>
+            <li><strong>发帖门槛</strong>：普通论坛纯手写,门槛高 | FinVerse AI 辅助,说想法就能发</li>
+            <li><strong>内容形式</strong>：普通论坛纯文字/截图 | FinVerse 结构化数据 + 交互图表</li>
+            <li><strong>讨论方式</strong>：普通论坛灌水、情绪化 | FinVerse 围绕数据点讨论</li>
+            <li><strong>讨论结果</strong>：普通论坛淹没在信息流 | FinVerse AI 汇总共识报告</li>
+            <li><strong>历史追踪</strong>：普通论坛没有 | FinVerse 自动复盘准确率</li>
+        </ul>
+
+        <p><strong>为什么不做"大神带韭菜"：</strong></p>
+        <ul>
+            <li>大神没动力免费分享,收费就变成卖课/喊单</li>
+            <li>认知差距太大时韭菜只会无脑跟单,学不到东西</li>
+            <li>亏了怪大神,大神受不了走人</li>
+            <li><strong>同风格协作才有粘性</strong>：不是师生关系,是研究小组</li>
+            <li>例如：都是短线交易者,大家讨论的是"这个 5 分钟形态怎么看",而不是"老师我该买吗"</li>
+        </ul>
+
+        <p><strong>创建小组流程：</strong></p>
+        <ul>
+            <li><strong>第一步：基本信息</strong>
+                <ul>
+                    <li>小组名称（20 字以内）</li>
+                    <li>描述（100 字以内）</li>
+                    <li>小组类型：公开/私有/仅邀请</li>
+                    <li>最大成员数（3-20 人,Pro 版可设置 3-50）</li>
+                </ul>
+            </li>
+            <li><strong>第二步：风格设置</strong>
+                <ul>
+                    <li>交易风格：日内/短线/波段/长线（下拉选择）</li>
+                    <li>分析偏好：技术/基本/量化/链上/宏观（多选）</li>
+                    <li>关注资产：BTC、ETH、美股、外汇等（多选）</li>
+                    <li>风险偏好：保守/稳健/激进（单选）</li>
+                </ul>
+            </li>
+            <li><strong>第三步：规则设置</strong>
+                <ul>
+                    <li>发布频率限制：每人每天最多发布 X 个分析（防刷屏）</li>
+                    <li>共识报告频率：每日/每周/每主题</li>
+                    <li>复盘时间：信号发布后 X 天自动复盘</li>
+                </ul>
+            </li>
+            <li><strong>第四步：邀请成员</strong>
+                <ul>
+                    <li>生成邀请链接</li>
+                    <li>或从好友列表选择邀请</li>
+                    <li>或系统推荐匹配的用户</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>小组主页界面元素：</strong></p>
+        <ul>
+            <li><strong>顶部信息栏</strong>：
+                <ul>
+                    <li>小组名称、描述</li>
+                    <li>成员头像列表（最多显示 5 个,其余显示"+N"）</li>
+                    <li>活跃度指标：根据最近 7 天的发帖和投票数量计算</li>
+                    <li>加入/退出按钮</li>
+                </ul>
+            </li>
+            <li><strong>分析帖子 Feed</strong>：
+                <ul>
+                    <li>按时间倒序排列</li>
+                    <li>每个帖子显示：作者、时间、标题、信号方向、置信度、四维度信号条、摘要、图表预览、互动数据</li>
+                    <li>点击展开查看完整分析</li>
+                </ul>
+            </li>
+            <li><strong>共识报告卡片</strong>：
+                <ul>
+                    <li>醒目的渐变背景</li>
+                    <li>显示报告标题、生成时间、一句话摘要</li>
+                    <li>点击查看完整报告</li>
+                </ul>
+            </li>
+            <li><strong>侧边栏</strong>：
+                <ul>
+                    <li>成员列表（显示在线状态、时区、最近活跃时间）</li>
+                    <li>小组设置（创建者/管理员可见）</li>
+                    <li>邀请新成员按钮</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>数据库表设计关键点：</strong></p>
+        <ul>
+            <li><strong>groups 表</strong>：存储小组基本信息、标签、设置</li>
+            <li><strong>group_members 表</strong>：成员关系、角色（创建者/管理员/成员）、权限、通知设置</li>
+            <li><strong>group_posts 表</strong>：分析内容、结构化数据（JSONB）、AI 辅助标记、互动统计、复盘数据</li>
+            <li><strong>post_votes 表</strong>：投票记录、用户自己的观点、理由</li>
+            <li><strong>post_comments 表</strong>：评论内容、可选的结构化数据、嵌套回复</li>
+            <li><strong>consensus_reports 表</strong>：共识报告、统计数据、AI 生成的摘要、与公域对比</li>
+        </ul>
+
+        <p><strong>技术实现提示：</strong></p>
+        <ul>
+            <li>AI 辅助发布：调用用户的 AI,传入详细 prompt（包含小组风格、用户偏好、当前市场数据）</li>
+            <li>实时通知：使用 WebSocket 推送新分析通知到在线成员</li>
+            <li>离线通知：通过 Telegram/WhatsApp 推送给离线成员</li>
+            <li>共识报告生成：定时任务（Cron）触发,调用 AI 生成 Markdown 格式报告</li>
+            <li>复盘追踪：定时任务每小时检查一次,计算准确率并更新 outcome_data 字段</li>
+            <li>图表配置：存储为 JSON,前端使用 lightweight-charts 渲染</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-7')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+
+
+
+<!-- Chapter 8: 聊天软件集成 - 完整重写版 -->
+<div class="chapter" id="chapter-8">
+    <div class="chapter-header">
+        <div class="chapter-number">第八章</div>
+        <h1 class="chapter-title">聊天软件集成：Agent 活在用户的消息里</h1>
+        <p class="chapter-summary">
+            不做新 App,Agent 直接活在 Telegram/WhatsApp 里。日常推送、简单查询在聊天,深度分析、可视化去网站。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 Telegram 聊天界面示意图</div>
+        <div class="mockup">
+            <!-- Mobile chat interface -->
+            <div style="max-width: 360px; margin: 0 auto; background: var(--bg-card); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                <!-- Chat header -->
+                <div style="background: var(--accent); padding: 12px 16px; display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 36px; height: 36px; background: white; border-radius: 50%; opacity: 0.9;"></div>
+                    <div style="flex: 1;">
+                        <div style="height: 14px; background: rgba(255,255,255,0.9); border-radius: 4px; max-width: 120px; margin-bottom: 4px;"></div>
+                        <div style="height: 10px; background: rgba(255,255,255,0.6); border-radius: 4px; max-width: 80px;"></div>
+                    </div>
+                    <div style="width: 24px; height: 24px; background: rgba(255,255,255,0.3); border-radius: 50%;"></div>
+                </div>
+
+                <!-- Chat messages -->
+                <div style="padding: 16px; background: #0e1621;">
+                    <!-- Incoming message 1: Daily summary -->
+                    <div style="margin-bottom: 16px;">
+                        <div style="background: var(--bg-secondary); border-radius: 12px 12px 12px 2px; padding: 12px; max-width: 85%;">
+                            <div style="font-size: 11px; color: var(--accent); margin-bottom: 8px; font-weight: 600;">📋 今日市场摘要</div>
+                            <div style="height: 10px; background: var(--border-color); border-radius: 4px; margin-bottom: 6px; opacity: 0.7;"></div>
+                            <div style="height: 10px; background: var(--border-color); border-radius: 4px; max-width: 90%; margin-bottom: 6px; opacity: 0.7;"></div>
+                            <div style="height: 10px; background: var(--border-color); border-radius: 4px; max-width: 70%; opacity: 0.7;"></div>
+                            
+                            <div style="margin: 12px 0; padding: 8px; background: rgba(239, 68, 68, 0.15); border-radius: 6px; border-left: 3px solid var(--danger);">
+                                <div style="font-size: 10px; color: var(--danger); font-weight: 600; margin-bottom: 4px;">BTC/USD 看空 ⬇️ 72%</div>
+                                <div style="height: 8px; background: rgba(239, 68, 68, 0.3); border-radius: 4px;"></div>
+                            </div>
+
+                            <!-- Inline buttons -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+                                <div style="padding: 8px; background: rgba(99, 102, 241, 0.2); border-radius: 6px; text-align: center; font-size: 10px; color: var(--accent);">📊 查看详情</div>
+                                <div style="padding: 8px; background: rgba(99, 102, 241, 0.2); border-radius: 6px; text-align: center; font-size: 10px; color: var(--accent);">🔔 订阅提醒</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 9px; color: var(--text-secondary); margin-top: 4px; padding-left: 8px;">08:00</div>
+                    </div>
+
+                    <!-- Outgoing message: User query -->
+                    <div style="margin-bottom: 16px; display: flex; justify-content: flex-end;">
+                        <div>
+                            <div style="background: var(--accent); border-radius: 12px 12px 2px 12px; padding: 12px; max-width: 85%;">
+                                <div style="height: 10px; background: rgba(255,255,255,0.9); border-radius: 4px;"></div>
+                            </div>
+                            <div style="font-size: 9px; color: var(--text-secondary); margin-top: 4px; text-align: right; padding-right: 8px;">10:23</div>
+                        </div>
+                    </div>
+
+                    <!-- Incoming message 2: Agent response with data -->
+                    <div style="margin-bottom: 16px;">
+                        <div style="background: var(--bg-secondary); border-radius: 12px 12px 12px 2px; padding: 12px; max-width: 85%;">
+                            <div style="height: 10px; background: var(--border-color); border-radius: 4px; margin-bottom: 6px; opacity: 0.7;"></div>
+                            <div style="height: 10px; background: var(--border-color); border-radius: 4px; max-width: 75%; opacity: 0.7;"></div>
+                            
+                            <!-- Data points -->
+                            <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <div style="padding: 8px; background: rgba(16, 185, 129, 0.1); border-radius: 6px;">
+                                    <div style="font-size: 9px; color: var(--success);">价格</div>
+                                    <div style="font-size: 14px; font-weight: 700; color: var(--success); margin-top: 4px;">$68,245</div>
+                                </div>
+                                <div style="padding: 8px; background: rgba(239, 68, 68, 0.1); border-radius: 6px;">
+                                    <div style="font-size: 9px; color: var(--danger);">24h</div>
+                                    <div style="font-size: 14px; font-weight: 700; color: var(--danger); margin-top: 4px;">-2.3%</div>
+                                </div>
+                            </div>
+
+                            <div style="padding: 8px; background: rgba(99, 102, 241, 0.2); border-radius: 6px; text-align: center; font-size: 10px; color: var(--accent); margin-top: 8px;">🔗 查看完整分析</div>
+                        </div>
+                        <div style="font-size: 9px; color: var(--text-secondary); margin-top: 4px; padding-left: 8px;">10:23</div>
+                    </div>
+
+                    <!-- Incoming message 3: Alert -->
+                    <div style="margin-bottom: 16px;">
+                        <div style="background: var(--warning); border-radius: 12px 12px 12px 2px; padding: 12px; max-width: 85%;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                <div style="font-size: 18px;">🚨</div>
+                                <div style="font-size: 11px; font-weight: 700; color: #1a1f2e;">异常预警</div>
+                            </div>
+                            <div style="font-size: 10px; color: #1a1f2e; margin-bottom: 8px;">BTC 链上数据异常：交易所流入激增 +35%</div>
+                            <div style="padding: 8px; background: rgba(0,0,0,0.1); border-radius: 6px; text-align: center; font-size: 10px; font-weight: 600;">查看详情</div>
+                        </div>
+                        <div style="font-size: 9px; color: var(--text-secondary); margin-top: 4px; padding-left: 8px;">刚刚</div>
+                    </div>
+                </div>
+
+                <!-- Input bar -->
+                <div style="background: var(--bg-secondary); padding: 12px; border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px;">
+                    <div style="flex: 1; height: 36px; background: var(--bg-primary); border-radius: 18px; display: flex; align-items: center; padding: 0 12px;">
+                        <div style="height: 10px; background: var(--border-color); border-radius: 4px; flex: 1; opacity: 0.5;"></div>
+                    </div>
+                    <div style="width: 36px; height: 36px; background: var(--accent); border-radius: 50%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            核心理念：<span class="highlight">不做新聊天工具,Agent 直接活在用户已有的聊天软件里</span>。Telegram、WhatsApp、Discord、Signal 都是用户每天在用的 App,不需要再装一个新 App。
+        </p>
+
+        <p><strong>分工矩阵（什么在聊天,什么在网站）：</strong></p>
+        <ul>
+            <li><strong>日常推送</strong> → 聊天软件
+                <ul>
+                    <li>每日开盘前摘要："今日关注 BTC $67,200 支撑,CPI 数据 14:30 公布"</li>
+                    <li>每日收盘后复盘："BTC 守住支撑,收于 $68,100,短期震荡格局"</li>
+                    <li>格式：一句话摘要 + 2-3 个关键数据 + "查看详情"按钮</li>
+                </ul>
+            </li>
+            <li><strong>简单查询</strong> → 聊天软件
+                <ul>
+                    <li>用户："BTC 怎么样？"</li>
+                    <li>Agent："BTC 当前 $68,245,24h -2.3%。公域共识 72% 看空,链上数据显示交易所流入增加。[查看完整分析]"</li>
+                    <li>响应时间 < 3 秒,快速给出结论</li>
+                </ul>
+            </li>
+            <li><strong>异常预警</strong> → 聊天软件
+                <ul>
+                    <li>监控脚本检测到异常 → 唤醒 Agent → Agent 分析 → 推送</li>
+                    <li>格式："🚨 异常预警：BTC 链上数据异常,交易所流入激增 +35%"</li>
+                    <li>颜色：红色/黄色醒目背景</li>
+                </ul>
+            </li>
+            <li><strong>深度分析</strong> → FinVerse 网站
+                <ul>
+                    <li>聊天软件承载不了交互图表、多图层叠加、推理链展开</li>
+                    <li>只推送标题 + 摘要 + "查看详情"链接</li>
+                    <li>点击跳转到网站,看完整可视化</li>
+                </ul>
+            </li>
+            <li><strong>小组分析浏览/发布</strong> → FinVerse 网站
+                <ul>
+                    <li>结构化内容需要专门界面</li>
+                    <li>聊天软件只推送通知："@Alice 刚在【加密短线技术派】发布了 BTC 分析"</li>
+                </ul>
+            </li>
+            <li><strong>多人协作看板</strong> → FinVerse 网站
+                <ul>
+                    <li>实时协作（如共同标注图表）在聊天软件里做不了</li>
+                    <li>需要专门的协作界面</li>
+                </ul>
+            </li>
+            <li><strong>Agent 偏好设置</strong> → 聊天软件 或 网站
+                <ul>
+                    <li>简单设置（如"不要在凌晨推送"）可以直接在聊天里说</li>
+                    <li>复杂设置（如编辑 SOUL.md）需要去网站</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>用户日常体验流程：</strong></p>
+        <ul>
+            <li><strong>08:00 早上起床</strong>：Telegram 收到 Agent 推送："📋 今日市场摘要：BTC 震荡 $66.7K,关注今晚 CPI"</li>
+            <li><strong>09:30 通勤路上</strong>：问一句："ETH 怎么样？" → Agent 秒回简短分析</li>
+            <li><strong>10:00 到公司</strong>：想深入看 BTC 分析 → 点推送里的"查看详情"链接 → 跳到 FinVerse 网站看可视化</li>
+            <li><strong>11:00 工作中</strong>：小组有人发了新分析 → Telegram 通知："@Bob 发布了 BTC 分析" → 点进网站看完整内容 → 回复评论</li>
+            <li><strong>14:35 下午</strong>：收到异常预警："🚨 BTC 链上异常流入" → 点进网站看详细数据 → 决定是否操作</li>
+            <li><strong>20:00 晚上</strong>：收到 Agent 收盘摘要 + 小组共识报告 → 看一眼,了解今日情况</li>
+        </ul>
+
+        <p><strong>类似 GitHub 的模式：通知在聊天软件里收,干活去网页上</strong></p>
+        <ul>
+            <li>GitHub 也不强制你用它的 App,你可以在 Slack/Discord 收通知</li>
+            <li>但真正要 code review、merge PR,还是要去网页</li>
+            <li>FinVerse 同理：日常推送在聊天,深度分析在网站</li>
+        </ul>
+
+        <p><strong>Telegram Bot 开发详解：</strong></p>
+
+        <p><strong>1. 注册 Bot</strong></p>
+        <ul>
+            <li>与 @BotFather 对话,创建新 Bot</li>
+            <li>获取 Bot Token（类似 110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw）</li>
+            <li>设置 Bot 描述、头像、命令列表</li>
+        </ul>
+
+        <p><strong>2. Webhook 接收消息</strong></p>
+        <ul>
+            <li>Telegram 向你的服务器发送 POST 请求（JSON 格式）</li>
+            <li>包含用户消息、消息类型、用户 ID 等</li>
+            <li>你的服务器解析消息,调用 Agent 处理,返回响应</li>
+            <li>响应时间要快（< 60 秒）,否则 Telegram 会超时</li>
+        </ul>
+
+        <p><strong>3. 推送消息格式</strong></p>
+        <ul>
+            <li><strong>文本消息</strong>：
+                <ul>
+                    <li>支持 Markdown 格式（粗体、斜体、代码块）</li>
+                    <li>或 HTML 格式（更灵活）</li>
+                    <li>长度限制 4096 字符,超过需要分段</li>
+                </ul>
+            </li>
+            <li><strong>按钮（Inline Keyboard）</strong>：
+                <ul>
+                    <li>每行最多 8 个按钮</li>
+                    <li>每个按钮可以是：URL（跳转链接）、Callback（回调数据）、切换内联查询</li>
+                    <li>例：[📊 查看详情] [🔔 订阅提醒]</li>
+                </ul>
+            </li>
+            <li><strong>图片 + 文字</strong>：
+                <ul>
+                    <li>发送图片（如图表截图）+ 文字说明</li>
+                    <li>图片可以是 URL 或上传文件</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>4. 深度链接（Deep Link）</strong></p>
+        <ul>
+            <li>用户点击"查看详情"按钮 → 跳转到 FinVerse 网站特定页面</li>
+            <li>URL 格式：https://finverse.app/analysis/abc123?source=telegram&user_id=xxx</li>
+            <li>网站检测到 source=telegram,自动登录该用户（通过 user_id 或 token）</li>
+            <li>用户无需重新登录,直接看到完整分析</li>
+        </ul>
+
+        <p><strong>5. 快捷查询（Inline Query）</strong></p>
+        <ul>
+            <li>用户在任何聊天中输入 @FinVerseBot BTC</li>
+            <li>Bot 返回 BTC 的快捷摘要</li>
+            <li>用户可以直接发送到当前聊天</li>
+            <li>适合在与朋友讨论时快速查数据</li>
+        </ul>
+
+        <p><strong>通知管理（优先级和免打扰）：</strong></p>
+
+        <p><strong>通知优先级：</strong></p>
+        <ul>
+            <li><strong>紧急</strong>：异常预警、突破关键位
+                <ul>
+                    <li>即使在免打扰时段也推送</li>
+                    <li>声音提醒 + 震动</li>
+                    <li>颜色：红色/黄色</li>
+                </ul>
+            </li>
+            <li><strong>重要</strong>：小组 @你、有人回复你的评论
+                <ul>
+                    <li>免打扰时段延迟到下次活跃时推送</li>
+                    <li>声音提醒</li>
+                    <li>颜色：蓝色</li>
+                </ul>
+            </li>
+            <li><strong>普通</strong>：每日摘要、公域信号更新
+                <ul>
+                    <li>免打扰时段不推送</li>
+                    <li>静默通知</li>
+                    <li>颜色：灰色</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>免打扰时段：</strong></p>
+        <ul>
+            <li>用户设置："23:00 - 08:00 不要推送"</li>
+            <li>Agent 根据用户时区计算免打扰时段</li>
+            <li>紧急通知除外</li>
+            <li>用户可以随时修改："今晚别推送了"</li>
+        </ul>
+
+        <p><strong>突破价格提醒：</strong></p>
+        <ul>
+            <li>用户设置："BTC 突破 $70,000 提醒我"</li>
+            <li>监控脚本检测到价格突破 → 立即推送</li>
+            <li>即使在免打扰时段也推送（用户主动设置的）</li>
+        </ul>
+
+        <p><strong>WhatsApp 集成（备选）：</strong></p>
+        <ul>
+            <li>WhatsApp Business API（需要审核,成本较高）</li>
+            <li>或使用第三方服务（如 Twilio、MessageBird）</li>
+            <li>功能与 Telegram 类似,但限制更多：
+                <ul>
+                    <li>24 小时窗口：只能在用户主动发消息后 24 小时内回复</li>
+                    <li>不支持 Inline Keyboard</li>
+                    <li>消息模板需要预先审核</li>
+                </ul>
+            </li>
+            <li>建议优先做 Telegram,WhatsApp 作为备选</li>
+        </ul>
+
+        <p><strong>Discord/Signal 集成：</strong></p>
+        <ul>
+            <li>Discord：适合团队用户,可以创建专属频道</li>
+            <li>Signal：注重隐私的用户,但 API 支持较弱</li>
+            <li>MVP 阶段只做 Telegram,后续根据用户需求扩展</li>
+        </ul>
+
+        <p><strong>推送逻辑（定时 + 事件触发）：</strong></p>
+
+        <p><strong>定时推送（Cron）：</strong></p>
+        <ul>
+            <li><strong>每日开盘前摘要</strong>：
+                <ul>
+                    <li>触发时间：用户关注市场的开盘时间前 30 分钟</li>
+                    <li>内容：昨日走势回顾 + 今日关注点 + 宏观事件</li>
+                    <li>例："BTC 昨日震荡于 $66.5K-$68.2K,今日关注 $67.2K 支撑,CPI 数据 14:30 公布"</li>
+                </ul>
+            </li>
+            <li><strong>每日收盘后复盘</strong>：
+                <ul>
+                    <li>触发时间：收盘后 1 小时</li>
+                    <li>内容：当日走势总结 + 准确率评估 + 明日预判</li>
+                </ul>
+            </li>
+            <li><strong>小组共识报告</strong>：
+                <ul>
+                    <li>触发时间：每日 UTC 23:59 或每周结束</li>
+                    <li>内容：共识摘要 + "查看完整报告"链接</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>事件触发推送：</strong></p>
+        <ul>
+            <li><strong>异常检测</strong>：
+                <ul>
+                    <li>监控脚本发现异常 → 唤醒 Agent → Agent 分析 → 推送</li>
+                    <li>延迟 < 1 分钟</li>
+                </ul>
+            </li>
+            <li><strong>小组新分析</strong>：
+                <ul>
+                    <li>成员发布分析 → 通知所有成员</li>
+                    <li>延迟 < 10 秒</li>
+                </ul>
+            </li>
+            <li><strong>有人回复你</strong>：
+                <ul>
+                    <li>你的分析或评论被回复 → 实时通知</li>
+                </ul>
+            </li>
+            <li><strong>公域信号重大变化</strong>：
+                <ul>
+                    <li>共识从 60% 看多变为 60% 看空 → 推送通知</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>用户主动查询：</strong></p>
+        <ul>
+            <li>用户发消息："BTC" 或 "帮我看一下 BTC"</li>
+            <li>Agent 识别意图,返回简短摘要</li>
+            <li>响应时间 < 3 秒</li>
+        </ul>
+
+        <p><strong>技术实现提示：</strong></p>
+        <ul>
+            <li>Telegram Bot 库：node-telegram-bot-api（Node.js）或 python-telegram-bot（Python）</li>
+            <li>Webhook 服务器：使用 Express/Fastify（Node.js）或 FastAPI（Python）</li>
+            <li>消息队列：Redis（存储待推送消息）,确保推送不丢失</li>
+            <li>推送频率限制：Telegram 限制 30 消息/秒,需要队列平滑推送</li>
+            <li>深度链接：URL 包含用户 token,网站自动登录</li>
+            <li>按钮点击回调：使用 callback_query 处理,更新消息内容或跳转</li>
+            <li>错误处理：推送失败（如用户拉黑 Bot）记录日志,不影响其他用户</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-8')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+<!-- 由于内容过长,剩余第10-17章将继续在下一个文件中... -->
