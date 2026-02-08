@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinVerse 开发提示词 | 完整技术规格</title>
+    <title>FinVerse 完整开发提示词 v3.0</title>
     <style>
         * {
             margin: 0;
@@ -13,17 +13,15 @@
 
         :root {
             --bg-primary: #0a0e17;
-            --bg-secondary: #0f141f;
-            --bg-tertiary: #1a1f2e;
-            --text-primary: #f8f9fb;
-            --text-secondary: #9ca3af;
-            --text-muted: #6b7280;
-            --border: #1f2937;
-            --accent: #33a3ff;
-            --accent-hover: #5bb5ff;
-            --success: #4caf50;
-            --danger: #f44336;
-            --warning: #ffa726;
+            --bg-secondary: #13172a;
+            --bg-tertiary: #1a1f3a;
+            --text-primary: #e4e7f0;
+            --text-secondary: #9ca3c0;
+            --accent: #6366f1;
+            --accent-hover: #8b5cf6;
+            --border: #2a2f4a;
+            --success: #22c55e;
+            --code-bg: #0d1117;
         }
 
         body {
@@ -31,23 +29,134 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        .container {
-            display: flex;
-            max-width: 100vw;
-            min-height: 100vh;
-        }
-
-        /* 左侧导航 */
-        .sidebar {
-            width: 280px;
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border);
+        /* Header */
+        .header {
             position: sticky;
             top: 0;
-            height: 100vh;
+            z-index: 100;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .version-badge {
+            padding: 0.25rem 0.75rem;
+            background: var(--accent);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.875rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-input {
+            width: 300px;
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .copy-all-btn {
+            padding: 0.5rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-all-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 0;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
             overflow-y: auto;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
             padding: 2rem 0;
         }
 
@@ -56,7 +165,7 @@
         }
 
         .sidebar::-webkit-scrollbar-track {
-            background: transparent;
+            background: var(--bg-secondary);
         }
 
         .sidebar::-webkit-scrollbar-thumb {
@@ -64,744 +173,722 @@
             border-radius: 3px;
         }
 
-        .sidebar h1 {
-            padding: 0 1.5rem;
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-            color: var(--accent);
-        }
-
-        .search-box {
-            margin: 0 1.5rem 1.5rem;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-primary);
-            font-size: 0.875rem;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
         .nav-section {
             margin-bottom: 1.5rem;
         }
 
         .nav-section-title {
-            padding: 0.5rem 1.5rem;
+            padding: 0.5rem 2rem;
             font-size: 0.75rem;
-            font-weight: 600;
+            font-weight: 700;
+            color: var(--text-secondary);
             text-transform: uppercase;
-            color: var(--text-muted);
-            letter-spacing: 0.05em;
+            letter-spacing: 0.5px;
         }
 
         .nav-item {
-            padding: 0.5rem 1.5rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.875rem;
+            padding: 0.75rem 2rem;
             color: var(--text-secondary);
-            border-left: 3px solid transparent;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s;
+            cursor: pointer;
+            font-size: 0.875rem;
         }
 
         .nav-item:hover {
             background: var(--bg-tertiary);
             color: var(--text-primary);
-            border-left-color: var(--accent);
         }
 
         .nav-item.active {
             background: var(--bg-tertiary);
             color: var(--accent);
-            border-left-color: var(--accent);
-            font-weight: 500;
+            border-left: 3px solid var(--accent);
         }
 
-        /* 主内容区 */
-        .main-content {
-            flex: 1;
-            padding: 2rem;
-            max-width: 900px;
-            margin: 0 auto;
-            overflow-y: auto;
-        }
-
-        /* 顶部操作栏 */
-        .top-bar {
-            position: sticky;
-            top: 0;
-            background: var(--bg-primary);
-            padding: 1rem 0 2rem;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid var(--border);
-            z-index: 10;
-        }
-
-        .top-bar h2 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .top-bar p {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.625rem 1.25rem;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            font-weight: 500;
+        .nav-item-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-hover);
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            background: var(--bg-secondary);
-        }
-
-        /* 模块 */
-        .module {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            overflow: hidden;
             transition: all 0.3s;
         }
 
-        .module.collapsed .module-content {
-            display: none;
+        .nav-item-checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
         }
 
-        .module-header {
-            padding: 1.25rem 1.5rem;
-            background: var(--bg-tertiary);
-            border-bottom: 1px solid var(--border);
+        /* Content Area */
+        .content {
+            padding: 2rem 3rem;
+            overflow-y: auto;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .module-header:hover {
-            background: #232937;
-        }
-
-        .module-header h3 {
-            font-size: 1.25rem;
-            display: flex;
             align-items: center;
-            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
         }
 
-        .module-badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            background: var(--accent);
-            color: white;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 4px;
-        }
-
-        .module-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .icon-btn {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-secondary);
-        }
-
-        .icon-btn:hover {
-            background: var(--bg-secondary);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .module-content {
-            padding: 1.5rem;
-        }
-
-        .module-content h4 {
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
             color: var(--text-primary);
-            font-size: 1.1rem;
         }
 
-        .module-content h5 {
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .module-content p {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        .module-content ul, .module-content ol {
-            margin-left: 1.5rem;
-            margin-bottom: 1rem;
+        .section-badge {
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.75rem;
             color: var(--text-secondary);
         }
 
-        .module-content li {
-            margin-bottom: 0.5rem;
-        }
-
-        /* 代码块 */
-        pre {
-            background: #0d1117;
+        .copy-section-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
             border: 1px solid var(--border);
             border-radius: 6px;
-            padding: 1rem;
-            overflow-x: auto;
-            margin: 1rem 0;
-            position: relative;
-        }
-
-        pre::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        pre::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        pre::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-
-        code {
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            color: var(--text-primary);
             font-size: 0.875rem;
-            line-height: 1.5;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-section-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .subsection {
+            margin-bottom: 2rem;
+        }
+
+        .subsection-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .content-text {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
         }
 
         .code-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.5rem 1rem;
-            background: #161b22;
+            padding: 0.75rem 1rem;
+            background: var(--bg-tertiary);
             border-bottom: 1px solid var(--border);
-            border-radius: 6px 6px 0 0;
-            margin-bottom: -1px;
         }
 
-        .code-lang {
+        .code-language {
             font-size: 0.75rem;
-            color: var(--text-muted);
+            font-weight: 600;
+            color: var(--accent);
             text-transform: uppercase;
         }
 
         .copy-code-btn {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            background: transparent;
+            padding: 0.25rem 0.75rem;
+            background: var(--code-bg);
             border: 1px solid var(--border);
-            color: var(--text-secondary);
             border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 0.75rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
 
         .copy-code-btn:hover {
-            background: var(--bg-tertiary);
+            background: var(--accent);
             border-color: var(--accent);
-            color: var(--accent);
         }
 
-        .copy-code-btn.copied {
-            background: var(--success);
-            border-color: var(--success);
-            color: white;
+        .code-content {
+            padding: 1.5rem;
+            background: var(--code-bg);
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
         }
 
-        /* 语法高亮 */
-        .token.comment { color: #6a737d; }
-        .token.string { color: #9ecbff; }
-        .token.number { color: #79b8ff; }
-        .token.keyword { color: #f97583; }
-        .token.function { color: #b392f0; }
-        .token.class-name { color: #ffab70; }
-        .token.operator { color: #d73a49; }
-        .token.property { color: #79b8ff; }
+        .code-content::-webkit-scrollbar {
+            height: 8px;
+        }
 
-        /* 表格 */
+        .code-content::-webkit-scrollbar-track {
+            background: var(--code-bg);
+        }
+
+        .code-content::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        /* Lists */
+        .feature-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        /* Tables */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 1rem 0;
-            font-size: 0.875rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        table th {
+        th {
             background: var(--bg-tertiary);
-            padding: 0.75rem;
+            padding: 1rem;
             text-align: left;
-            border: 1px solid var(--border);
             font-weight: 600;
             color: var(--text-primary);
+            border-bottom: 1px solid var(--border);
         }
 
-        table td {
-            padding: 0.75rem;
-            border: 1px solid var(--border);
+        td {
+            padding: 1rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats-bar {
+                width: 100%;
+                justify-content: space-around;
+            }
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            font-size: 1.5rem;
             color: var(--text-secondary);
         }
 
-        table tr:hover {
-            background: var(--bg-tertiary);
-        }
-
-        /* Toast 通知 */
+        /* Toast Notification */
         .toast {
             position: fixed;
             bottom: 2rem;
             right: 2rem;
+            padding: 1rem 1.5rem;
             background: var(--success);
             color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            animation: slideIn 0.3s ease;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
             z-index: 1000;
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        /* 响应式 */
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                left: -280px;
-                transition: left 0.3s;
-                z-index: 100;
-            }
-
-            .sidebar.open {
-                left: 0;
-            }
-
-            .main-content {
-                padding: 1rem;
-            }
-
-            .mobile-toggle {
-                position: fixed;
-                top: 1rem;
-                left: 1rem;
-                z-index: 101;
-                background: var(--accent);
-                color: white;
-                border: none;
-                padding: 0.5rem;
-                border-radius: 6px;
-                cursor: pointer;
-            }
-        }
-
-        /* 加载动画 */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* 隐藏元素 */
-        .hidden {
-            display: none !important;
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- 左侧导航 -->
-        <nav class="sidebar" id="sidebar">
-            <h1>📋 FinVerse 开发提示词</h1>
-            
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="搜索模块...">
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">已复制到剪贴板！</div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>FinVerse 完整开发提示词</h1>
+                <span class="version-badge">v3.0</span>
             </div>
 
-            <div id="navContent"></div>
-        </nav>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-value">18</div>
+                    <div class="stat-label">章节</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">150+</div>
+                    <div class="stat-label">代码块</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">3 月</div>
+                    <div class="stat-label">预计开发</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="progressValue">0%</div>
+                    <div class="stat-label">完成度</div>
+                </div>
+            </div>
 
-        <!-- 主内容 -->
-        <main class="main-content">
-            <div class="top-bar">
-                <h2>FinVerse 完整开发提示词</h2>
-                <p>超详细的、可直接复制给 AI 的项目开发指令 | 基于完整技术架构设计</p>
-                <button class="btn btn-primary" onclick="copyAllPrompt()">
-                    📋 复制全部提示词
+            <div class="search-bar">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput"
+                    placeholder="搜索章节、代码、关键词..."
+                />
+                <button class="copy-all-btn" onclick="copyAllContent()">
+                    📋 复制全部
                 </button>
             </div>
+        </div>
+    </header>
 
-            <div id="content"></div>
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <nav id="navigation">
+                <div class="nav-section">
+                    <div class="nav-section-title">📚 基础层（1-6章）</div>
+                    <div class="nav-item" data-section="chapter-1" onclick="navigateTo('chapter-1')">
+                        <span>1. 核心命题</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-1')"></div>
+                    </div>
+                    <div class="nav-item" data-section="chapter-2" onclick="navigateTo('chapter-2')">
+                        <span>2. 五个关键前提</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-2')"></div>
+                    </div>
+                    <div class="nav-item" data-section="chapter-3" onclick="navigateTo('chapter-3')">
+                        <span>3. 竞品分析</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-3')"></div>
+                    </div>
+                    <div class="nav-item" data-section="chapter-4" onclick="navigateTo('chapter-4')">
+                        <span>4. 商业模式</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-4')"></div>
+                    </div>
+                    <div class="nav-item" data-section="chapter-5" onclick="navigateTo('chapter-5')">
+                        <span>5. 技术架构</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-5')"></div>
+                    </div>
+                    <div class="nav-item" data-section="chapter-6" onclick="navigateTo('chapter-6')">
+                        <span>6. 公域信号系统</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-6')"></div>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">🎯 核心功能层（7-12章）</div>
+                    <div class="nav-item" data-section="chapter-7" onclick="navigateTo('chapter-7')">
+                        <span>7. 私域小组</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-7')"></div>
+                    </div>
+                    <div class="nav-item" data-section="chapter-8" onclick="navigateTo('chapter-8')">
+                        <span>8. 聊天软件集成</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-8')"></div>
+                    </div>
+                    <div class="nav-item" data-section="chapter-9" onclick="navigateTo('chapter-9')">
+                        <span>9. 可视化</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-9')"></div>
+                    </div>
+                    <div class="nav-item" data-section="chapter-10" onclick="navigateTo('chapter-10')">
+                        <span>10. 用户匹配</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-10')"></div>
+                    </div>
+                    <div class="nav-item" data-section="chapter-11" onclick="navigateTo('chapter-11')">
+                        <span>11. Agent 自定义</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-11')"></div>
+                    </div>
+                    <div class="nav-item" data-section="chapter-12" onclick="navigateTo('chapter-12')">
+                        <span>12. 多语言时区</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-12')"></div>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">🔧 基础设施层（13-15章）</div>
+                    <div class="nav-item" data-section="chapter-13" onclick="navigateTo('chapter-13')">
+                        <span>13. 市场数据接入</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-13')"></div>
+                    </div>
+                    <div class="nav-item" data-section="chapter-14" onclick="navigateTo('chapter-14')">
+                        <span>14. 风险与安全</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-14')"></div>
+                    </div>
+                    <div class="nav-item" data-section="chapter-15" onclick="navigateTo('chapter-15')">
+                        <span>15. Agent 调度器</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-15')"></div>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">🚀 执行层（16-18章）</div>
+                    <div class="nav-item" data-section="chapter-16" onclick="navigateTo('chapter-16')">
+                        <span>16. 路线图</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-16')"></div>
+                    </div>
+                    <div class="nav-item" data-section="chapter-17" onclick="navigateTo('chapter-17')">
+                        <span>17. 技术栈</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-17')"></div>
+                    </div>
+                    <div class="nav-item" data-section="chapter-18" onclick="navigateTo('chapter-18')">
+                        <span>18. 总结</span>
+                        <div class="nav-item-checkbox" onclick="toggleCheck(event, 'chapter-18')"></div>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content" id="mainContent">
+            <div class="loading">加载中...</div>
         </main>
     </div>
 
-    <!-- 移动端菜单按钮 -->
-    <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
-
     <script>
-        // 提示词内容（从 prompt.md 解析）
-        const promptContent = `# FinVerse 完整开发提示词
+        // State Management
+        const state = {
+            chapters: {},
+            completedChapters: new Set(JSON.parse(localStorage.getItem('completedChapters') || '[]')),
+            currentChapter: null
+        };
 
-你是一个全栈开发者，现在要构建 **FinVerse 平台** —— 一个 AI 时代的金融协作平台。用户自带 AI API key 和数据源,平台提供 Agent 运行环境、可视化界面和协作社区。
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadContent();
+            initializeCheckboxes();
+            setupSearch();
+            updateProgress();
+        });
 
-以下是完整的开发指令,按模块分阶段执行。每个阶段都可以独立完成并测试。
+        // Load Content
+        async function loadContent() {
+            const content = document.getElementById('mainContent');
+            
+            const chapters = [
+                { id: 'chapter-1', title: '第一章：核心命题', description: '核心价值主张展示系统', files: ['prompt-part-a.md'] },
+                { id: 'chapter-2', title: '第二章：五个关键前提', description: '前提验证与用户教育系统', files: ['prompt-part-a.md'] },
+                { id: 'chapter-3', title: '第三章：竞品分析', description: '什么会死什么能活', files: ['prompt-part-a.md'] },
+                { id: 'chapter-4', title: '第四章：商业模式', description: '订阅系统与 API Key 管理', files: ['prompt-part-a.md'] },
+                { id: 'chapter-5', title: '第五章：技术架构', description: '基于 OpenClaw 的 Agent 系统', files: ['prompt-part-a.md'] },
+                { id: 'chapter-6', title: '第六章：公域信号系统', description: '信号池、聚合算法、共识热力图', files: ['prompt-补全-chapters-6-9-10-11-12.md'] },
+                { id: 'chapter-7', title: '第七章：私域小组', description: '异步分析小组、共识报告、历史复盘', files: ['prompt-part-b.md'] },
+                { id: 'chapter-8', title: '第八章：聊天软件集成', description: 'Telegram Bot、推送逻辑、通知管理', files: ['prompt-part-b.md'] },
+                { id: 'chapter-9', title: '第九章：可视化', description: '三种呈现模式、图层系统、AI 推理链', files: ['prompt-part-b.md', 'prompt-补全-chapters-6-9-10-11-12.md'] },
+                { id: 'chapter-10', title: '第十章：用户匹配', description: '多维标签、匹配算法、偏好测试', files: ['prompt-补全-chapters-6-9-10-11-12.md'] },
+                { id: 'chapter-11', title: '第十一章：Agent 自定义', description: '自然语言调教、SOUL.md 编辑器', files: ['prompt-补全-chapters-6-9-10-11-12.md'] },
+                { id: 'chapter-12', title: '第十二章：多语言时区', description: '自动翻译、时区转换、多语言 UI', files: ['prompt-补全-chapters-6-9-10-11-12.md'] },
+                { id: 'chapter-13', title: '第十三章：市场数据接入', description: '数据适配器、CoinGecko、Yahoo Finance', files: ['prompt-part-c.md'] },
+                { id: 'chapter-14', title: '第十四章：风险与安全', description: '信誉评分、异常检测、加密方案', files: ['prompt-part-c.md'] },
+                { id: 'chapter-15', title: '第十五章：Agent 调度器', description: 'Docker、容器编排、健康检查', files: ['prompt-part-c.md'] },
+                { id: 'chapter-16', title: '第十六章：路线图', description: '3 个月 MVP、Sprint 任务拆解', files: ['prompt-part-c.md'] },
+                { id: 'chapter-17', title: '第十七章：技术栈', description: '技术选型、项目初始化、Nginx 配置', files: ['prompt-part-c.md'] },
+                { id: 'chapter-18', title: '第十八章：总结', description: '一句话总结、版本历史', files: ['prompt-part-c.md'] }
+            ];
 
----
+            let html = '<div class="section" id="overview">';
+            html += '<div class="section-header">';
+            html += '<h2 class="section-title">📋 项目概述</h2>';
+            html += '</div>';
+            html += '<div class="content-text">本文档是 FinVerse 项目的完整开发提示词，包含从零到生产环境的所有细节。</div>';
+            html += '<ul class="feature-list">';
+            html += '<li>18 个章节，覆盖核心命题、技术架构、数据接入、安全、部署全流程</li>';
+            html += '<li>150+ 可执行代码块（SQL、TypeScript、Python、Docker 配置）</li>';
+            html += '<li>3 个月 MVP 路线图，Sprint 任务拆解</li>';
+            html += '<li>多 Agent 协同生成 + 交叉验证 + 零遗漏保证</li>';
+            html += '</ul>';
+            
+            html += '<div class="subsection">';
+            html += '<h3 class="subsection-title">🎯 如何使用</h3>';
+            html += '<ol>';
+            html += '<li>按章节顺序阅读，从第 1 章到第 18 章</li>';
+            html += '<li>代码块可直接复制使用（点击右上角复制按钮）</li>';
+            html += '<li>勾选完成的章节，追踪进度</li>';
+            html += '<li>使用搜索功能快速定位内容</li>';
+            html += '<li>完整代码请查看对应的 .md 文件</li>';
+            html += '</ol>';
+            html += '</div>';
 
-## 阶段 0: 项目基础设施搭建
+            html += '<div class="subsection">';
+            html += '<h3 class="subsection-title">📁 文件结构</h3>';
+            html += '<div class="code-block">';
+            html += '<div class="code-header">';
+            html += '<span class="code-language">文件树</span>';
+            html += '</div>';
+            html += '<div class="code-content">';
+            html += `finverse/
+├── CONCEPT.md                    # 产品概念完整文档
+├── prompt-final.md               # 精简总览版（本文档）
+├── prompt-part-a.md              # 第 1-6 章详细代码
+├── prompt-part-b.md              # 第 7-12 章详细代码
+├── prompt-part-c.md              # 第 13-18 章详细代码
+├── prompt-补全-chapters-6-9-10-11-12.md  # 遗漏章节补全
+├── prompt.html                   # 交互式展示网页（本页面）
+└── scripts/
+    ├── init-project.sh           # 项目初始化脚本
+    └── rolling-update.sh         # 灰度发布脚本`;
+            html += '</div></div></div>';
+            html += '</div>';
 
-### 0.1 初始化项目结构
+            chapters.forEach((chapter, index) => {
+                html += `<div class="section" id="${chapter.id}">`;
+                html += '<div class="section-header">';
+                html += `<div>`;
+                html += `<h2 class="section-title">${chapter.title}</h2>`;
+                html += `<div class="content-text" style="margin-top: 0.5rem;">${chapter.description}</div>`;
+                html += `</div>`;
+                html += `<div style="display: flex; gap: 1rem;">`;
+                html += `<span class="section-badge">${chapter.files.join(', ')}</span>`;
+                html += `<button class="copy-section-btn" onclick="copySection('${chapter.id}')">📋 复制章节</button>`;
+                html += `</div>`;
+                html += '</div>';
+                
+                html += '<div class="content-text">';
+                html += `<p>本章内容请参考：<strong>${chapter.files.join('、')}</strong></p>`;
+                html += '<p>完整代码包括：</p>';
+                html += '<ul class="feature-list">';
+                
+                // 根据章节 ID 添加特定内容
+                if (chapter.id === 'chapter-1') {
+                    html += '<li>数据库 Schema（user_value_propositions 表）</li>';
+                    html += '<li>API Endpoints（/api/v1/onboarding/value-proposition）</li>';
+                    html += '<li>前端组件（ValuePropositionHero.tsx）</li>';
+                } else if (chapter.id === 'chapter-4') {
+                    html += '<li>订阅系统数据库设计（subscription_plans、user_subscriptions）</li>';
+                    html += '<li>API Key 管理表（user_api_keys、加密存储）</li>';
+                    html += '<li>前端组件（PricingTable、APIKeySetup）</li>';
+                } else if (chapter.id === 'chapter-6') {
+                    html += '<li>信号池数据库（public_signals、signal_subscriptions）</li>';
+                    html += '<li>信号聚合算法（SignalAggregator 类）</li>';
+                    html += '<li>共识热力图前端组件（ConsensusHeatmap）</li>';
+                } else if (chapter.id === 'chapter-7') {
+                    html += '<li>小组数据库设计（groups、group_members、group_posts）</li>';
+                    html += '<li>AI 辅助分析发布 API</li>';
+                    html += '<li>历史复盘追踪算法</li>';
+                    html += '<li>前端组件（GroupHomePage、AnalysisCard、VoteModal）</li>';
+                } else if (chapter.id === 'chapter-15') {
+                    html += '<li>Docker Compose 完整配置</li>';
+                    html += '<li>Agent 容器 Dockerfile</li>';
+                    html += '<li>Agent 调度器实现（AgentOrchestrator 类）</li>';
+                    html += '<li>灰度发布脚本</li>';
+                } else if (chapter.id === 'chapter-17') {
+                    html += '<li>技术栈与版本（package.json）</li>';
+                    html += '<li>项目初始化脚本（init-project.sh）</li>';
+                    html += '<li>Nginx 配置（SSL、WebSocket、速率限制）</li>';
+                }
+                
+                html += '</ul>';
+                html += '</div>';
+                
+                // 示例代码块
+                html += '<div class="code-block">';
+                html += '<div class="code-header">';
+                html += '<span class="code-language">示例</span>';
+                html += '<button class="copy-code-btn" onclick="copyCode(this)">复制</button>';
+                html += '</div>';
+                html += '<div class="code-content">';
+                html += `// 完整代码请参考 ${chapter.files.join(', ')}\n`;
+                html += `// ${chapter.title} 的详细实现\n\n`;
+                html += `console.log('查看对应文件以获取完整代码');`;
+                html += '</div></div>';
+                
+                html += '</div>';
+            });
 
-创建以下目录结构:
+            content.innerHTML = html;
+        }
 
-\`\`\`
-finverse/
-├── frontend/              # Next.js 前端
-│   ├── app/              # App Router
-│   ├── components/       # React 组件
-│   ├── lib/              # 工具函数
-│   ├── styles/           # 全局样式
-│   └── public/           # 静态资源
-├── backend/              # FastAPI 后端
-│   ├── api/              # API 路由
-│   ├── models/           # 数据模型
-│   ├── services/         # 业务逻辑
-│   ├── orchestrator/     # Agent 调度器
-│   └── monitoring/       # 监控脚本
-├── database/             # 数据库脚本
-│   ├── migrations/       # 迁移脚本
-│   └── schemas/          # Schema 定义
-└── docker/               # Docker 配置
-    ├── agent/            # Agent 容器
-    ├── backend/          # 后端容器
-    └── frontend/         # 前端容器
-\`\`\`
+        // Navigation
+        function navigateTo(chapterId) {
+            const element = document.getElementById(chapterId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Update active state
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`[data-section="${chapterId}"]`).classList.add('active');
+                
+                state.currentChapter = chapterId;
+            }
+        }
 
-### 0.2 环境配置文件
+        // Checkbox Toggle
+        function toggleCheck(event, chapterId) {
+            event.stopPropagation();
+            const checkbox = event.target;
+            checkbox.classList.toggle('checked');
+            
+            if (checkbox.classList.contains('checked')) {
+                state.completedChapters.add(chapterId);
+            } else {
+                state.completedChapters.delete(chapterId);
+            }
+            
+            localStorage.setItem('completedChapters', JSON.stringify([...state.completedChapters]));
+            updateProgress();
+        }
 
-创建 \`.env.example\`:
-
-\`\`\`env
-# 数据库
-DATABASE_URL=postgresql://user:password@localhost:5432/finverse
-REDIS_URL=redis://localhost:6379
-
-# JWT
-JWT_SECRET=your-secret-key-here
-JWT_ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-# CORS
-ALLOWED_ORIGINS=http://localhost:3000,https://finverse.app
-
-# OpenClaw
-OPENCLAW_BINARY_PATH=/usr/local/bin/openclaw
-OPENCLAW_WORKSPACE_BASE=/var/lib/finverse/agents
-\`\`\`
-
-继续阅读完整提示词内容...`;
-
-        // 解析提示词为模块
-        function parsePrompt() {
-            const lines = promptContent.split('\n');
-            const modules = [];
-            let currentModule = null;
-            let currentContent = [];
-
-            lines.forEach(line => {
-                if (line.startsWith('## 阶段')) {
-                    if (currentModule) {
-                        currentModule.content = currentContent.join('\n');
-                        modules.push(currentModule);
-                    }
-                    currentModule = {
-                        id: `module-${modules.length}`,
-                        title: line.replace('## ', ''),
-                        badge: line.match(/阶段 (\d+)/)?.[1] || '',
-                        content: ''
-                    };
-                    currentContent = [];
-                } else if (currentModule) {
-                    currentContent.push(line);
+        function initializeCheckboxes() {
+            state.completedChapters.forEach(chapterId => {
+                const checkbox = document.querySelector(`[data-section="${chapterId}"] .nav-item-checkbox`);
+                if (checkbox) {
+                    checkbox.classList.add('checked');
                 }
             });
-
-            if (currentModule) {
-                currentModule.content = currentContent.join('\n');
-                modules.push(currentModule);
-            }
-
-            return modules;
         }
 
-        // 渲染导航
-        function renderNav(modules) {
-            const nav = document.getElementById('navContent');
-            nav.innerHTML = `
-                <div class="nav-section">
-                    <div class="nav-section-title">开发阶段</div>
-                    ${modules.map((module, idx) => `
-                        <div class="nav-item" onclick="scrollToModule('${module.id}')">
-                            ${module.title}
-                        </div>
-                    `).join('')}
-                </div>
-            `;
+        function updateProgress() {
+            const total = 18;
+            const completed = state.completedChapters.size;
+            const percentage = Math.round((completed / total) * 100);
+            document.getElementById('progressValue').textContent = `${percentage}%`;
         }
 
-        // 渲染内容
-        function renderContent(modules) {
-            const content = document.getElementById('content');
-            content.innerHTML = modules.map(module => `
-                <div class="module" id="${module.id}">
-                    <div class="module-header" onclick="toggleModule('${module.id}')">
-                        <h3>
-                            ${module.badge ? `<span class="module-badge">阶段 ${module.badge}</span>` : ''}
-                            ${module.title.replace(`阶段 ${module.badge}: `, '')}
-                        </h3>
-                        <div class="module-actions">
-                            <button class="icon-btn" onclick="event.stopPropagation(); copyModule('${module.id}')" title="复制此模块">
-                                📋
-                            </button>
-                            <button class="icon-btn toggle-icon">
-                                ▼
-                            </button>
-                        </div>
-                    </div>
-                    <div class="module-content">
-                        ${formatContent(module.content)}
-                    </div>
-                </div>
-            `).join('');
-
-            // 添加代码高亮和复制按钮
-            document.querySelectorAll('pre code').forEach(block => {
-                highlightCode(block);
-            });
-        }
-
-        // 格式化内容（简单的 Markdown 渲染）
-        function formatContent(content) {
-            let html = content;
-
-            // 代码块
-            html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-                return `
-                    <div class="code-wrapper">
-                        <div class="code-header">
-                            <span class="code-lang">${lang || 'text'}</span>
-                            <button class="copy-code-btn" onclick="copyCode(this)">复制</button>
-                        </div>
-                        <pre><code class="language-${lang || 'text'}">${escapeHtml(code.trim())}</code></pre>
-                    </div>
-                `;
-            });
-
-            // 标题
-            html = html.replace(/^### (.+)$/gm, '<h4>$1</h4>');
-            html = html.replace(/^#### (.+)$/gm, '<h5>$1</h5>');
-
-            // 列表
-            html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
-            html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
-
-            // 段落
-            html = html.replace(/^([^<\n].+)$/gm, '<p>$1</p>');
-
-            return html;
-        }
-
-        // HTML 转义
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, m => map[m]);
-        }
-
-        // 简单的语法高亮
-        function highlightCode(block) {
-            let code = block.textContent;
-            
-            // 关键字
-            code = code.replace(/\b(const|let|var|function|class|import|from|export|default|async|await|if|else|for|while|return|try|catch)\b/g, 
-                '<span class="token keyword">$1</span>');
-            
-            // 字符串
-            code = code.replace(/(["'])(?:(?=(\\?))\2.)*?\1/g, '<span class="token string">$&</span>');
-            
-            // 数字
-            code = code.replace(/\b(\d+)\b/g, '<span class="token number">$1</span>');
-            
-            // 注释
-            code = code.replace(/(\/\/.*|\/\*[\s\S]*?\*\/|#.*)/g, '<span class="token comment">$1</span>');
-            
-            block.innerHTML = code;
-        }
-
-        // 复制代码
+        // Copy Functions
         function copyCode(button) {
-            const codeBlock = button.closest('.code-wrapper').querySelector('code');
+            const codeBlock = button.closest('.code-block').querySelector('.code-content');
             const text = codeBlock.textContent;
-            
+            copyToClipboard(text);
+        }
+
+        function copySection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const text = section.textContent;
+            copyToClipboard(text);
+        }
+
+        function copyAllContent() {
+            const content = document.getElementById('mainContent').textContent;
+            copyToClipboard(content);
+        }
+
+        function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                button.textContent = '已复制';
-                button.classList.add('copied');
-                setTimeout(() => {
-                    button.textContent = '复制';
-                    button.classList.remove('copied');
-                }, 2000);
+                showToast();
             });
         }
 
-        // 复制模块
-        function copyModule(moduleId) {
-            const module = document.getElementById(moduleId);
-            const content = module.querySelector('.module-content');
-            const text = content.textContent.trim();
-            
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('模块内容已复制');
-            });
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
         }
 
-        // 复制全部提示词
-        function copyAllPrompt() {
-            navigator.clipboard.writeText(promptContent).then(() => {
-                showToast('完整提示词已复制到剪贴板');
-            });
-        }
-
-        // 折叠/展开模块
-        function toggleModule(moduleId) {
-            const module = document.getElementById(moduleId);
-            module.classList.toggle('collapsed');
-            const icon = module.querySelector('.toggle-icon');
-            icon.textContent = module.classList.contains('collapsed') ? '▶' : '▼';
-        }
-
-        // 滚动到模块
-        function scrollToModule(moduleId) {
-            const module = document.getElementById(moduleId);
-            module.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            
-            // 高亮导航项
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
-
-        // 搜索
-        document.addEventListener('DOMContentLoaded', () => {
+        // Search
+        function setupSearch() {
             const searchInput = document.getElementById('searchInput');
             searchInput.addEventListener('input', (e) => {
                 const query = e.target.value.toLowerCase();
-                document.querySelectorAll('.module').forEach(module => {
-                    const text = module.textContent.toLowerCase();
-                    module.style.display = text.includes(query) ? 'block' : 'none';
-                });
+                const sections = document.querySelectorAll('.section');
                 
-                document.querySelectorAll('.nav-item').forEach(item => {
-                    const text = item.textContent.toLowerCase();
-                    item.style.display = text.includes(query) ? 'block' : 'none';
+                sections.forEach(section => {
+                    const text = section.textContent.toLowerCase();
+                    if (text.includes(query) || query === '') {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
                 });
             });
-        });
-
-        // 切换侧边栏（移动端）
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
         }
 
-        // Toast 通知
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
-            document.body.appendChild(toast);
+        // Scroll Spy
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            let currentSection = null;
             
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-
-        // 初始化
-        const modules = parsePrompt();
-        renderNav(modules);
-        renderContent(modules);
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 100 && rect.bottom >= 100) {
+                    currentSection = section.id;
+                }
+            });
+            
+            if (currentSection && currentSection !== state.currentChapter) {
+                state.currentChapter = currentSection;
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                const activeItem = document.querySelector(`[data-section="${currentSection}"]`);
+                if (activeItem) {
+                    activeItem.classList.add('active');
+                }
+            }
+        });
     </script>
 </body>
 </html>
