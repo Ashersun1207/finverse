@@ -1131,6 +1131,680 @@
     </div>
 </div>
 
+<!-- Chapter 5: 技术架构 -->
+<div class="chapter" id="chapter-5">
+    <div class="chapter-header">
+        <div class="chapter-number">第五章</div>
+        <h1 class="chapter-title">技术架构：基于 OpenClaw 的 Agent 系统</h1>
+        <p class="chapter-summary">
+            每个用户有自己的 OpenClaw Agent 实例，平台提供连接、调度和可视化服务。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 架构示意图</div>
+        <div class="mockup">
+            <!-- FinVerse Platform Layer -->
+            <div class="wire-box" style="background: var(--bg-secondary); padding: 16px; margin-bottom: 16px;">
+                <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px;">FINVERSE 平台层</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="wire-card" style="background: rgba(99, 102, 241, 0.1);">
+                        <div style="font-size: 11px; color: var(--accent); margin-bottom: 8px;">🌐 网站前端</div>
+                        <div style="height: 8px; background: var(--border-color); border-radius: 2px; margin-bottom: 4px;"></div>
+                        <div style="height: 8px; background: var(--border-color); border-radius: 2px; opacity: 0.5;"></div>
+                    </div>
+                    <div class="wire-card" style="background: rgba(99, 102, 241, 0.1);">
+                        <div style="font-size: 11px; color: var(--accent); margin-bottom: 8px;">📡 实时数据层</div>
+                        <div style="height: 8px; background: var(--border-color); border-radius: 2px; margin-bottom: 4px;"></div>
+                        <div style="height: 8px; background: var(--border-color); border-radius: 2px; opacity: 0.5;"></div>
+                    </div>
+                </div>
+                <div class="wire-card" style="background: rgba(99, 102, 241, 0.1); margin-top: 12px;">
+                    <div style="font-size: 11px; color: var(--accent); margin-bottom: 8px;">🔌 FinVerse API</div>
+                    <div style="height: 8px; background: var(--border-color); border-radius: 2px;"></div>
+                </div>
+            </div>
+
+            <!-- Agent Orchestrator -->
+            <div style="text-align: center; margin-bottom: 16px;">
+                <div style="width: 2px; height: 20px; background: var(--border-color); margin: 0 auto;"></div>
+                <div style="font-size: 10px; color: var(--text-secondary);">↓</div>
+            </div>
+
+            <div class="wire-box" style="background: var(--bg-card); padding: 16px; margin-bottom: 16px; border: 2px dashed var(--accent);">
+                <div style="font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 12px;">⚙️ Agent 调度器</div>
+                <div style="display: flex; gap: 8px;">
+                    <div style="flex: 1; height: 40px; background: rgba(99, 102, 241, 0.2); border-radius: 4px;"></div>
+                    <div style="flex: 1; height: 40px; background: rgba(99, 102, 241, 0.2); border-radius: 4px;"></div>
+                    <div style="flex: 1; height: 40px; background: rgba(99, 102, 241, 0.2); border-radius: 4px;"></div>
+                </div>
+            </div>
+
+            <!-- User Agents -->
+            <div style="text-align: center; margin-bottom: 16px;">
+                <div style="width: 2px; height: 20px; background: var(--border-color); margin: 0 auto;"></div>
+                <div style="font-size: 10px; color: var(--text-secondary);">↓</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                <div class="wire-card" style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success);">
+                    <div style="font-size: 11px; color: var(--success); margin-bottom: 8px;">🤖 User1 Agent</div>
+                    <div style="font-size: 9px; color: var(--text-secondary); margin-bottom: 6px;">主会话 | Cron | 子会话</div>
+                    <div style="height: 6px; background: var(--success); border-radius: 2px; opacity: 0.5;"></div>
+                </div>
+                <div class="wire-card" style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success);">
+                    <div style="font-size: 11px; color: var(--success); margin-bottom: 8px;">🤖 User2 Agent</div>
+                    <div style="font-size: 9px; color: var(--text-secondary); margin-bottom: 6px;">主会话 | Cron | 子会话</div>
+                    <div style="height: 6px; background: var(--success); border-radius: 2px; opacity: 0.5;"></div>
+                </div>
+                <div class="wire-card" style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success);">
+                    <div style="font-size: 11px; color: var(--success); margin-bottom: 8px;">🤖 User3 Agent</div>
+                    <div style="font-size: 9px; color: var(--text-secondary); margin-bottom: 6px;">主会话 | Cron | 子会话</div>
+                    <div style="height: 6px; background: var(--success); border-radius: 2px; opacity: 0.5;"></div>
+                </div>
+            </div>
+
+            <!-- Data Layer -->
+            <div style="text-align: center; margin: 16px 0;">
+                <div style="width: 2px; height: 20px; background: var(--border-color); margin: 0 auto;"></div>
+                <div style="font-size: 10px; color: var(--text-secondary);">↓</div>
+            </div>
+
+            <div class="wire-box" style="background: var(--bg-secondary); padding: 16px;">
+                <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px;">📊 数据层</div>
+                <div style="display: flex; gap: 12px;">
+                    <div style="flex: 1; padding: 12px; background: rgba(245, 158, 11, 0.1); border-radius: 6px; border: 1px solid var(--warning);">
+                        <div style="font-size: 10px; color: var(--warning); margin-bottom: 6px;">监控脚本</div>
+                        <div style="font-size: 9px; color: var(--text-secondary);">Python 持续运行</div>
+                    </div>
+                    <div style="flex: 1; padding: 12px; background: rgba(16, 185, 129, 0.1); border-radius: 6px; border: 1px solid var(--success);">
+                        <div style="font-size: 10px; color: var(--success); margin-bottom: 6px;">免费 API</div>
+                        <div style="font-size: 9px; color: var(--text-secondary);">CoinGecko / Yahoo</div>
+                    </div>
+                    <div style="flex: 1; padding: 12px; background: rgba(99, 102, 241, 0.1); border-radius: 6px; border: 1px solid var(--accent);">
+                        <div style="font-size: 10px; color: var(--accent); margin-bottom: 6px;">付费 API</div>
+                        <div style="font-size: 9px; color: var(--text-secondary);">用户自己的 key</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            FinVerse 的技术架构基于 <span class="highlight">OpenClaw Agent 运行时</span>。每个用户有自己的 Agent 实例，平台负责连接、调度和可视化服务。
+        </p>
+
+        <p><strong>OpenClaw 提供的核心能力：</strong></p>
+        <ul>
+            <li><strong>AI Agent 运行时</strong>：每个用户的专属 Agent 就是一个 OpenClaw 实例，独立运行</li>
+            <li><strong>记忆系统（MEMORY.md）</strong>：Agent 记住用户偏好、历史判断、持仓信息，支持长期记忆和每日记录</li>
+            <li><strong>定时任务（Cron）</strong>：定期市场扫描、开盘/收盘摘要推送、异常检测</li>
+            <li><strong>心跳（Heartbeat）</strong>：周期性检查异常、批量更新数据、健康检查</li>
+            <li><strong>多通道通信</strong>：Telegram/WhatsApp/Discord/Signal 连接，用户选择聊天软件</li>
+            <li><strong>子会话（Spawn）</strong>：公域 Agent 交互在子会话中运行，不占主会话上下文，节省 token</li>
+            <li><strong>工具调用</strong>：调用数据 API、执行分析脚本、生成可视化图表</li>
+            <li><strong>浏览器控制</strong>：抓取需要渲染的网页数据，处理需要 JavaScript 的页面</li>
+        </ul>
+
+        <p><strong>整体架构分层：</strong></p>
+        
+        <p><strong>1. 网站前端层（用户可见）</strong></p>
+        <ul>
+            <li>可视化看板：三种模式（摘要/图表/数据）</li>
+            <li>小组空间：异步分析协作界面</li>
+            <li>公域信号池：共识热力图、信号聚合</li>
+            <li>用户设置：API key 管理、Agent 自定义</li>
+            <li>技术栈：Next.js + React + WebSocket 实时更新</li>
+        </ul>
+
+        <p><strong>2. FinVerse API 层（中间层）</strong></p>
+        <ul>
+            <li>用户管理：注册、登录、订阅管理</li>
+            <li>信号数据池：接收 Agent 发布的信号、聚合、分发</li>
+            <li>小组/分析/投票：小组数据管理、分析发布、投票统计</li>
+            <li>Agent 调度：创建/销毁/监控 Agent 容器</li>
+            <li>WebSocket 服务：推送实时数据到网站前端</li>
+            <li>数据库：PostgreSQL（结构化数据）+ Redis（实时缓存）</li>
+        </ul>
+
+        <p><strong>3. Agent 调度器（核心层）</strong></p>
+        <ul>
+            <li>管理所有用户的 OpenClaw 实例</li>
+            <li>容器生命周期：创建 → 运行 → 暂停 → 唤醒 → 销毁</li>
+            <li>资源隔离：每个 Agent 独立容器，CPU/内存限额</li>
+            <li>健康检查：定期 ping Agent，挂了自动重启</li>
+            <li>分级调度：活跃/待机/休眠三级，按需分配资源</li>
+            <li>技术栈：Docker + Kubernetes（或 Docker Compose 简化版）</li>
+        </ul>
+
+        <p><strong>4. 各用户的 Agent（OpenClaw 实例）</strong></p>
+        <ul>
+            <li><strong>主会话</strong>：与用户对话（Telegram/WhatsApp 等）
+                <ul>
+                    <li>接收用户查询："帮我看一下 BTC 怎么样"</li>
+                    <li>推送每日摘要、异常预警</li>
+                    <li>执行用户命令："加入这个小组"、"发布我的分析"</li>
+                </ul>
+            </li>
+            <li><strong>Cron 任务</strong>：定期扫描
+                <ul>
+                    <li>每日开盘前摘要：总结昨日走势 + 今日关注点</li>
+                    <li>每日收盘后复盘：回顾今日走势 + 准确率评估</li>
+                    <li>每 4 小时市场扫描：检测异常、生成信号</li>
+                </ul>
+            </li>
+            <li><strong>子会话</strong>：公域信号发布
+                <ul>
+                    <li>产出结构化分析（JSON 格式）</li>
+                    <li>订阅其他 Agent 信号</li>
+                    <li>汇总生成用户个性化摘要</li>
+                </ul>
+            </li>
+            <li><strong>工具调用</strong>：数据获取
+                <ul>
+                    <li>使用用户自己的 API key 调用 AI</li>
+                    <li>调用免费/付费数据源</li>
+                    <li>生成图表配置（传给前端渲染）</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>5. 数据层（底层支撑）</strong></p>
+        <ul>
+            <li><strong>监控脚本（共享基础设施）</strong>
+                <ul>
+                    <li>Python 持续运行，不使用 AI</li>
+                    <li>数据采集：每分钟拉取价格、成交量</li>
+                    <li>简单阈值判断：价格暴跌 5%、成交量异常</li>
+                    <li>异常时唤醒相关 Agent 进行深度分析</li>
+                    <li>成本极低：无 AI 调用，只有计算资源</li>
+                </ul>
+            </li>
+            <li><strong>免费 API</strong>
+                <ul>
+                    <li>CoinGecko（加密行情）</li>
+                    <li>Yahoo Finance（美股基础）</li>
+                    <li>ExchangeRate API（汇率）</li>
+                    <li>RSS 新闻源（财经新闻）</li>
+                </ul>
+            </li>
+            <li><strong>付费 API（用户自己的 key）</strong>
+                <ul>
+                    <li>Glassnode / CryptoQuant（链上数据）</li>
+                    <li>Alpha Vantage / Polygon.io（美股深度）</li>
+                    <li>Twelve Data（外汇/贵金属实时）</li>
+                    <li>CBOE（期权数据）</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>监控脚本与 Agent 的分工：</strong></p>
+        <ul>
+            <li><strong>监控脚本做什么</strong>：苦力活，数据采集、简单判断、异常检测</li>
+            <li><strong>Agent 做什么</strong>：智力活，深度分析、生成摘要、推送用户</li>
+            <li><strong>原则</strong>：笨但便宜的程序做苦力，聪明但贵的 AI 做决策</li>
+            <li><strong>成本</strong>：监控脚本成本由平台承担，Agent 的 AI 成本由用户自己承担</li>
+        </ul>
+
+        <p><strong>数据同步机制：</strong></p>
+        <ul>
+            <li><strong>Agent → 网站</strong>：Agent 产出分析 → API → WebSocket → 网站实时更新（秒级）</li>
+            <li><strong>网站 → Agent</strong>：用户在网站标注/投票 → API → Agent 下次醒来读取（分钟级）</li>
+            <li><strong>小组协作</strong>：新分析发布 → API → 通知 Agent → 聊天软件推送（秒级）</li>
+            <li><strong>公域信号</strong>：Agent 发布 → 信号池 → 订阅者 Agent（秒级）</li>
+            <li><strong>异常触发</strong>：监控脚本 → 唤醒 Agent → 分析 → 推送（秒-分钟级）</li>
+        </ul>
+
+        <p><strong>为什么这样设计：</strong></p>
+        <ul>
+            <li>大部分场景几秒延迟完全可以接受，不需要所有东西都实时</li>
+            <li>WebSocket 只用在网站看板的实时刷新上，聊天软件推送走各平台自己的通道</li>
+            <li>异步设计降低系统复杂度，提高可靠性</li>
+            <li>Agent 独立容器隔离，一个挂了不影响其他用户</li>
+        </ul>
+
+        <p><strong>技术实现关键点：</strong></p>
+        <ul>
+            <li>Agent 容器使用 Docker，镜像预装 OpenClaw + 用户配置</li>
+            <li>容器间通信走 Redis（发布/订阅模式）</li>
+            <li>用户 API key 加密存储，只在 Agent 容器内解密</li>
+            <li>监控脚本与 Agent 通过消息队列（Redis Streams）通信</li>
+            <li>数据库连接池管理，避免连接泄漏</li>
+            <li>日志集中收集（ELK Stack 或 Grafana Loki）</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-5')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+<!-- Chapter 6: 公域系统 -->
+<div class="chapter" id="chapter-6">
+    <div class="chapter-header">
+        <div class="chapter-number">第六章</div>
+        <h1 class="chapter-title">公域系统：结构化信号广播</h1>
+        <p class="chapter-summary">
+            不是 AI 对 AI 闲聊，而是结构化数据广播 + 订阅。每个 Agent 按标准格式发布信号，其他 Agent 按需订阅。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 公域信号池界面示意图</div>
+        <div class="mockup">
+            <!-- Header with asset selector -->
+            <div class="wire-nav">
+                <div style="height: 20px; background: var(--accent); border-radius: 4px; width: 120px;"></div>
+                <div style="flex: 1;"></div>
+                <div style="display: flex; gap: 8px;">
+                    <div style="height: 32px; width: 100px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px;"></div>
+                    <div style="height: 32px; width: 100px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px;"></div>
+                </div>
+            </div>
+
+            <!-- Consensus Heat Map -->
+            <div class="wire-box" style="background: var(--bg-secondary); padding: 20px; margin-top: 20px;">
+                <div style="font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 16px;">🔥 共识热力图</div>
+                
+                <!-- Percentage bar -->
+                <div style="display: flex; height: 48px; border-radius: 8px; overflow: hidden; margin-bottom: 16px;">
+                    <div style="flex: 72; background: var(--danger); display: flex; align-items: center; justify-content: center; font-weight: 600;">72% 看空</div>
+                    <div style="flex: 16; background: var(--text-secondary); display: flex; align-items: center; justify-content: center; font-size: 12px;">16%</div>
+                    <div style="flex: 12; background: var(--success); display: flex; align-items: center; justify-content: center; font-size: 12px;">12%</div>
+                </div>
+
+                <!-- Dimension breakdown -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px;">
+                    <div class="wire-card">
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">⛓ 链上</div>
+                        <div style="font-size: 20px; font-weight: 700; color: var(--danger); margin-bottom: 4px;">78%</div>
+                        <div style="height: 4px; background: var(--danger); border-radius: 2px;"></div>
+                    </div>
+                    <div class="wire-card">
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">📈 技术</div>
+                        <div style="font-size: 20px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">50%</div>
+                        <div style="height: 4px; background: var(--text-secondary); border-radius: 2px;"></div>
+                    </div>
+                    <div class="wire-card">
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">🌍 宏观</div>
+                        <div style="font-size: 20px; font-weight: 700; color: var(--danger); margin-bottom: 4px;">72%</div>
+                        <div style="height: 4px; background: var(--danger); border-radius: 2px;"></div>
+                    </div>
+                    <div class="wire-card">
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">💭 情绪</div>
+                        <div style="font-size: 20px; font-weight: 700; color: var(--danger); margin-bottom: 4px;">65%</div>
+                        <div style="height: 4px; background: var(--danger); border-radius: 2px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Levels Consensus -->
+            <div class="wire-box" style="background: var(--bg-secondary); padding: 20px; margin-top: 16px;">
+                <div style="font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 16px;">🎯 关键位共识</div>
+                
+                <div style="display: flex; gap: 16px;">
+                    <div style="flex: 1;">
+                        <div style="font-size: 10px; color: var(--success); margin-bottom: 8px;">支撑位</div>
+                        <div style="padding: 12px; background: rgba(16, 185, 129, 0.1); border-radius: 6px; border: 1px solid var(--success);">
+                            <div style="font-size: 18px; font-weight: 700; color: var(--success); margin-bottom: 4px;">$67,200</div>
+                            <div style="font-size: 10px; color: var(--text-secondary);">85% 共识</div>
+                        </div>
+                        <div style="padding: 12px; background: rgba(16, 185, 129, 0.05); border-radius: 6px; margin-top: 8px;">
+                            <div style="font-size: 16px; font-weight: 600; color: var(--success); margin-bottom: 4px;">$64,800</div>
+                            <div style="font-size: 10px; color: var(--text-secondary);">62% 共识</div>
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-size: 10px; color: var(--danger); margin-bottom: 8px;">阻力位</div>
+                        <div style="padding: 12px; background: rgba(239, 68, 68, 0.1); border-radius: 6px; border: 1px solid var(--danger);">
+                            <div style="font-size: 18px; font-weight: 700; color: var(--danger); margin-bottom: 4px;">$69,800</div>
+                            <div style="font-size: 10px; color: var(--text-secondary);">78% 共识</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Signals -->
+            <div style="margin-top: 16px;">
+                <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px;">最新信号</div>
+                
+                <div class="wire-card" style="margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                        <div style="width: 32px; height: 32px; background: var(--accent); border-radius: 50%; opacity: 0.8;"></div>
+                        <div style="flex: 1;">
+                            <div style="height: 12px; background: var(--border-color); border-radius: 4px; max-width: 150px; margin-bottom: 4px;"></div>
+                            <div style="height: 10px; background: var(--border-color); border-radius: 4px; max-width: 100px; opacity: 0.5;"></div>
+                        </div>
+                        <div style="padding: 6px 12px; background: rgba(239, 68, 68, 0.1); border-radius: 6px; color: var(--danger); font-size: 12px; font-weight: 600;">看空 72%</div>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-secondary);">
+                        <div style="height: 10px; background: var(--border-color); border-radius: 4px; margin-bottom: 4px; opacity: 0.6;"></div>
+                        <div style="height: 10px; background: var(--border-color); border-radius: 4px; max-width: 80%; opacity: 0.6;"></div>
+                    </div>
+                </div>
+
+                <div class="wire-card">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                        <div style="width: 32px; height: 32px; background: var(--success); border-radius: 50%; opacity: 0.8;"></div>
+                        <div style="flex: 1;">
+                            <div style="height: 12px; background: var(--border-color); border-radius: 4px; max-width: 150px; margin-bottom: 4px;"></div>
+                            <div style="height: 10px; background: var(--border-color); border-radius: 4px; max-width: 100px; opacity: 0.5;"></div>
+                        </div>
+                        <div style="padding: 6px 12px; background: rgba(16, 185, 129, 0.1); border-radius: 6px; color: var(--success); font-size: 12px; font-weight: 600;">看多 68%</div>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-secondary);">
+                        <div style="height: 10px; background: var(--border-color); border-radius: 4px; margin-bottom: 4px; opacity: 0.6;"></div>
+                        <div style="height: 10px; background: var(--border-color); border-radius: 4px; max-width: 70%; opacity: 0.6;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            公域系统的核心是<span class="highlight">结构化信号广播</span>。不是让 AI 互相闲聊（成本太高），而是每个 Agent 按统一格式发布信号，其他 Agent 订阅并聚合。
+        </p>
+
+        <p><strong>Agent 信号标准格式（JSON）：</strong></p>
+        <ul>
+            <li><strong>基础信息</strong>：
+                <ul>
+                    <li>agent_id：发布者 ID</li>
+                    <li>asset：资产代码（如 "BTC/USD"）</li>
+                    <li>signal：看多/看空/中性（bullish/bearish/neutral）</li>
+                    <li>confidence：置信度（0-1 浮点数）</li>
+                    <li>timeframe：时间框架（如 "48h"、"1w"）</li>
+                    <li>timestamp：发布时间（Unix 时间戳）</li>
+                </ul>
+            </li>
+            <li><strong>多维度分析</strong>：
+                <ul>
+                    <li>dimensions.on_chain：链上维度（signal、confidence、summary、key_metrics）</li>
+                    <li>dimensions.technical：技术面维度</li>
+                    <li>dimensions.macro：宏观维度</li>
+                    <li>dimensions.sentiment：情绪维度</li>
+                </ul>
+            </li>
+            <li><strong>关键位</strong>：
+                <ul>
+                    <li>key_levels.support：支撑位数组（如 [67200, 64800]）</li>
+                    <li>key_levels.resistance：阻力位数组（如 [69800]）</li>
+                </ul>
+            </li>
+            <li><strong>推理过程</strong>：
+                <ul>
+                    <li>reasoning：文本描述 AI 的推理链</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>信号流转机制（5 步）：</strong></p>
+        <ul>
+            <li><strong>1. 发布</strong>：每个 Agent 按标准格式产出分析 → 发布到公域信号池（Redis + PostgreSQL）</li>
+            <li><strong>2. 索引</strong>：信号池按品种（asset）、时间框架（timeframe）分类索引，支持快速查询</li>
+            <li><strong>3. 订阅</strong>：其他 Agent 按用户的订阅偏好拉取相关信号（如只订阅 BTC/ETH）</li>
+            <li><strong>4. 汇总</strong>：用户的 Agent 汇总多个信号 → 生成个性化摘要，考虑用户的交易风格和偏好</li>
+            <li><strong>5. 推送</strong>：摘要通过聊天软件推送 + 网站看板实时更新</li>
+        </ul>
+
+        <p><strong>信号聚合可视化（网站展示）：</strong></p>
+        <ul>
+            <li><strong>共识热力图</strong>：
+                <ul>
+                    <li>显示"72% 的 Agent 看空 BTC"</li>
+                    <li>用颜色条展示：红色（看空）、灰色（中性）、绿色（看多）</li>
+                    <li>动态更新：新信号进来时，条形图平滑变化</li>
+                </ul>
+            </li>
+            <li><strong>维度分解热力图</strong>：
+                <ul>
+                    <li>四个小卡片分别展示链上/技术/宏观/情绪维度的共识</li>
+                    <li>标注"链上维度分歧最大"（如看多 48% vs 看空 52%）</li>
+                    <li>点击某个维度，展开该维度的详细分析列表</li>
+                </ul>
+            </li>
+            <li><strong>关键位共识</strong>：
+                <ul>
+                    <li>支撑位：显示最多人提到的价格点位，按共识度排序</li>
+                    <li>阻力位：同上</li>
+                    <li>用百分比标注共识度："85% 的 Agent 认为 $67,200 是关键支撑"</li>
+                </ul>
+            </li>
+            <li><strong>历史追踪</strong>：
+                <ul>
+                    <li>"过去 7 天社区看空准确率 68%"</li>
+                    <li>折线图展示每日共识方向和实际走势的对比</li>
+                    <li>标注准确/错误的预测，用户可以点击查看详情</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>防博弈机制（4 层防护）：</strong></p>
+        <ul>
+            <li><strong>1. Agent 信誉评分</strong>：
+                <ul>
+                    <li>基于历史信号准确率计算评分（0-100 分）</li>
+                    <li>评分低的 Agent 信号在聚合时权重降低</li>
+                    <li>新注册的 Agent 默认中等评分，逐步调整</li>
+                </ul>
+            </li>
+            <li><strong>2. 异常检测</strong>：
+                <ul>
+                    <li>突然大量发布相同信号 → 标记为垃圾信号（Spam）</li>
+                    <li>短时间内（1 小时）发布超过 10 个信号 → 自动限流</li>
+                    <li>连续 5 个信号完全相同 → 降权处理</li>
+                </ul>
+            </li>
+            <li><strong>3. 交叉验证</strong>：
+                <ul>
+                    <li>信号与市场数据严重矛盾时降权</li>
+                    <li>例：发布"看多"信号时价格暴跌 5% → 标记为可疑</li>
+                    <li>高置信度信号如果错误，惩罚加倍</li>
+                </ul>
+            </li>
+            <li><strong>4. 持续错误自动降权</strong>：
+                <ul>
+                    <li>最近 10 个信号准确率低于 40% → 在聚合中权重降为 0.5</li>
+                    <li>持续 30 天准确率低于 30% → 完全排除出聚合</li>
+                    <li>用户可以在设置中查看信誉评分，了解为什么某个 Agent 被降权</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>用户个性化摘要生成：</strong></p>
+        <ul>
+            <li><strong>基于用户偏好过滤</strong>：
+                <ul>
+                    <li>用户只关注 BTC 和 ETH → Agent 只订阅这两个资产的信号</li>
+                    <li>用户偏好链上分析 → 链上维度的信号权重更高</li>
+                    <li>用户是短线交易者 → 只订阅时间框架小于 48h 的信号</li>
+                </ul>
+            </li>
+            <li><strong>智能汇总</strong>：
+                <ul>
+                    <li>不是简单列出所有信号，而是提炼关键信息</li>
+                    <li>"BTC 公域共识 72% 看空，但你关注的链上维度有分歧"</li>
+                    <li>"支撑位 $67,200 有 85% 共识，建议重点关注"</li>
+                    <li>"小组内 68% 看多，与公域相反，查看小组讨论了解原因"</li>
+                </ul>
+            </li>
+            <li><strong>推送时机</strong>：
+                <ul>
+                    <li>共识发生显著变化时（如从 60% 看多变为 60% 看空）</li>
+                    <li>用户主动查询时</li>
+                    <li>定期推送（每日摘要）</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>数据库设计关键点：</strong></p>
+        <ul>
+            <li><strong>signals 表</strong>：
+                <ul>
+                    <li>主键：signal_id（UUID）</li>
+                    <li>索引：asset、timestamp、agent_id</li>
+                    <li>JSONB 字段存储完整信号数据（PostgreSQL 原生支持 JSON 查询）</li>
+                    <li>TTL：信号保留 90 天，过期自动删除</li>
+                </ul>
+            </li>
+            <li><strong>agent_reputation 表</strong>：
+                <ul>
+                    <li>agent_id、total_score、accuracy_score、last_updated</li>
+                    <li>每次信号验证后更新评分</li>
+                </ul>
+            </li>
+            <li><strong>signal_aggregations 表</strong>：
+                <ul>
+                    <li>预计算的聚合结果（如每小时的共识热力图）</li>
+                    <li>避免每次都实时计算，提高查询速度</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>实时更新机制：</strong></p>
+        <ul>
+            <li>Agent 发布信号 → 写入 PostgreSQL → 发布到 Redis Pub/Sub</li>
+            <li>网站前端通过 WebSocket 订阅 Redis 频道</li>
+            <li>新信号到达时，前端实时更新共识热力图和最新信号列表</li>
+            <li>使用防抖（debounce）避免更新过于频繁</li>
+        </ul>
+
+        <p><strong>技术实现提示：</strong></p>
+        <ul>
+            <li>信号发布 API：<code>POST /api/signals</code>，需要 Agent 认证</li>
+            <li>信号订阅 API：<code>GET /api/signals?asset=BTC/USD&timeframe=48h&limit=50</code></li>
+            <li>共识聚合 API：<code>GET /api/signals/consensus?asset=BTC/USD</code></li>
+            <li>WebSocket 频道：<code>ws://api.finverse.app/signals/{asset}</code></li>
+            <li>信号验证定时任务：每小时检查已过时间框架的信号，计算准确率</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-6')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+<!-- Chapter 7 continues in next chunk due to length... -->
+
+
+<!-- Chapter 7: 异步分析协作 -->
+<div class="chapter" id="chapter-7">
+    <div class="chapter-header">
+        <div class="chapter-number">第7章</div>
+        <h1 class="chapter-title">私域小组：异步分析协作</h1>
+        <p class="chapter-summary">
+            异步深度分析 > 实时碎片闲聊。发布→阅读→讨论→共识→复盘的完整循环。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 功能界面示意图</div>
+        <div class="mockup">
+            <div class="wire-box" style="background: var(--bg-secondary); padding: 20px;">
+                <div style="font-size: 32px; text-align: center; margin-bottom: 16px;">👥</div>
+                <div style="height: 24px; background: var(--border-color); border-radius: 4px; margin-bottom: 12px;"></div>
+                <div style="height: 16px; background: var(--border-color); border-radius: 4px; opacity: 0.6;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--accent); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--success); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            为什么选择异步：全球不同时区、降低使用门槛、深度分析需要时间
+        </p>
+
+        <ul>
+            <li>核心循环：用户说想法→AI辅助结构化→发布分析→成员阅读反馈→AI汇总共识→历史复盘</li>
+            <li>AI辅助发布：用户说'我觉得BTC要跌'→Agent自动补充数据、生成图表、结构化呈现</li>
+            <li>共识报告：每天自动生成，显示多数观点、主要分歧、与公域对比</li>
+            <li>历史复盘：一周后自动回看，标注准确率，只给个人看不公开排名</li>
+            <li>数据库：groups、group_members、group_posts、post_votes、post_comments、consensus_reports表</li>
+            <li>与普通论坛的区别：AI辅助降低门槛、结构化数据、自动共识报告、历史准确率追踪</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-7')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+
+
+
+<!-- Chapter 8: Agent活在用户的消息里 -->
+<div class="chapter" id="chapter-8">
+    <div class="chapter-header">
+        <div class="chapter-number">第8章</div>
+        <h1 class="chapter-title">聊天软件集成：Agent活在用户的消息里</h1>
+        <p class="chapter-summary">
+            不做新App，Agent直接活在Telegram/WhatsApp里。日常推送在聊天，深度分析去网站。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 功能界面示意图</div>
+        <div class="mockup">
+            <div class="wire-box" style="background: var(--bg-secondary); padding: 20px;">
+                <div style="font-size: 32px; text-align: center; margin-bottom: 16px;">💬</div>
+                <div style="height: 24px; background: var(--border-color); border-radius: 4px; margin-bottom: 12px;"></div>
+                <div style="height: 16px; background: var(--border-color); border-radius: 4px; opacity: 0.6;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--accent); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--success); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            核心理念：不做新聊天工具，Agent活在用户已有的聊天软件里
+        </p>
+
+        <ul>
+            <li>分工矩阵：日常推送/简单查询/异常预警→聊天软件，深度分析/可视化/小组协作→网站</li>
+            <li>用户日常流程：早上收到摘要→路上问Agent→点链接看网站→收到小组通知→晚上收盘摘要</li>
+            <li>Telegram Bot开发：注册Bot、Webhook接收、消息格式化、按钮交互、深度链接</li>
+            <li>推送逻辑：定时推送(摘要/复盘)、事件触发(异常/小组新分析)、用户主动查询</li>
+            <li>深度分析留在网站：聊天界面承载不了交互图表，只推送标题+摘要+查看详情链接</li>
+            <li>通知优先级：异常预警>小组@你>每日摘要>公域信号更新，可自定义</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-8')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+
+
+
 <!-- Chapter 9: 可视化 -->
 <div class="chapter" id="chapter-9">
     <div class="chapter-header">
@@ -1310,7 +1984,453 @@
     </div>
 </div>
 
-<!-- Continue with remaining chapters... (truncated for length) -->
+<!-- Chapter 10: 按交易风格不按水平 -->
+<div class="chapter" id="chapter-10">
+    <div class="chapter-header">
+        <div class="chapter-number">第10章</div>
+        <h1 class="chapter-title">用户匹配：按交易风格不按水平</h1>
+        <p class="chapter-summary">
+            不分高手韭菜，按风格匹配小组。日内交易者跟日内交易者合作，技术派跟技术派讨论。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 功能界面示意图</div>
+        <div class="mockup">
+            <div class="wire-box" style="background: var(--bg-secondary); padding: 20px;">
+                <div style="font-size: 32px; text-align: center; margin-bottom: 16px;">🎯</div>
+                <div style="height: 24px; background: var(--border-color); border-radius: 4px; margin-bottom: 12px;"></div>
+                <div style="height: 16px; background: var(--border-color); border-radius: 4px; opacity: 0.6;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--accent); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--success); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            核心理念：不分水平，按风格匹配。认知差距太大时无法协作。
+        </p>
+
+        <ul>
+            <li>多维标签体系：交易风格(日内/短线/波段/长线)、分析偏好(技术/基本/量化/链上/宏观)、品种偏好(美股/外汇/贵金属/加密)、风险偏好(保守/稳健/激进)</li>
+            <li>匹配机制四层：1)入门-2分钟游戏化测试 2)使用中-AI根据行为数据调整 3)推荐-系统推荐相似小组 4)自组织-自由加入退出</li>
+            <li>偏好测试设计：情景题不是考试，例如'你更喜欢看K线图还是数字表格？'</li>
+            <li>小组推荐算法：计算用户标签与小组标签的余弦相似度，推荐Top 5</li>
+            <li>为什么不做'大神带韭菜'：大神没动力免费分享，认知差距太大时韭菜只会无脑跟单，亏了怪大神</li>
+            <li>示例小组：加密短线技术派(12人)、美股价值投资圈(8人)、外汇量化研究组(6人)</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-10')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+
+
+
+<!-- Chapter 11: 渐进式从零门槛到编程 -->
+<div class="chapter" id="chapter-11">
+    <div class="chapter-header">
+        <div class="chapter-number">第11章</div>
+        <h1 class="chapter-title">Agent自定义：渐进式从零门槛到编程</h1>
+        <p class="chapter-summary">
+            入门用户只需选标签，进阶用户自然语言调教，高级用户直接编辑SOUL.md写策略逻辑。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 功能界面示意图</div>
+        <div class="mockup">
+            <div class="wire-box" style="background: var(--bg-secondary); padding: 20px;">
+                <div style="font-size: 32px; text-align: center; margin-bottom: 16px;">⚙️</div>
+                <div style="height: 24px; background: var(--border-color); border-radius: 4px; margin-bottom: 12px;"></div>
+                <div style="height: 16px; background: var(--border-color); border-radius: 4px; opacity: 0.6;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--accent); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--success); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            入门(0门槛)：只需选偏好标签，Agent用默认提示词+用户标签生成分析
+        </p>
+
+        <ul>
+            <li>进阶(有想法的用户)：自然语言调教，'我更关注链上数据，技术面不太看'，Agent记住所有偏好</li>
+            <li>高级(量化/开发者)：开放Agent的SOUL.md编辑，写自定义策略逻辑，接入私有数据源，API程序化控制</li>
+            <li>Agent记忆系统：MEMORY.md(长期)、memory/YYYY-MM-DD.md(每日)，定期回顾整理</li>
+            <li>自定义示例：'当RSI低于30重点提醒'、'不关心meme币'、'每天8点推送不要凌晨'</li>
+            <li>团队版功能：多Agent实例、共享分析模板、团队协作空间</li>
+            <li>安全限制：不能访问其他用户数据、API调用有频率限制、自定义脚本需要审核</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-11')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+
+
+
+<!-- Chapter 12: AI原生全球化 -->
+<div class="chapter" id="chapter-12">
+    <div class="chapter-header">
+        <div class="chapter-number">第12章</div>
+        <h1 class="chapter-title">多语言多时区：AI原生全球化</h1>
+        <p class="chapter-summary">
+            Agent输出自动适配用户语言，不是翻译是原生生成。时区自动转换，不会凌晨3点推送。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 功能界面示意图</div>
+        <div class="mockup">
+            <div class="wire-box" style="background: var(--bg-secondary); padding: 20px;">
+                <div style="font-size: 32px; text-align: center; margin-bottom: 16px;">🌍</div>
+                <div style="height: 24px; background: var(--border-color); border-radius: 4px; margin-bottom: 12px;"></div>
+                <div style="height: 16px; background: var(--border-color); border-radius: 4px; opacity: 0.6;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--accent); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--success); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            语言处理：注册时选语言，Agent所有输出自动以目标语言生成(质量远高于机翻)
+        </p>
+
+        <ul>
+            <li>公域信号的语言：结构化JSON本身语言无关，reasoning字段订阅时自动翻译</li>
+            <li>小组内多语言：每条分析存储原文，成员阅读时Agent自动翻译为各自语言</li>
+            <li>时区处理：数据存储UTC，前端显示按用户时区转换，Agent推送时间按用户时区调整</li>
+            <li>交易时段智能适配：美股用户Agent知道9:30-16:00 ET是交易时段，加密24/7但学习用户活跃时间</li>
+            <li>Cron任务时区感知：'每天开盘前推送'根据用户关注市场自动计算开盘时间</li>
+            <li>小组跨时区协作：异步模式天然适合，共识报告按各成员时区分别推送，活跃地图显示成员时区分布</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-12')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+
+
+
+<!-- Chapter 13: 标准化适配器架构 -->
+<div class="chapter" id="chapter-13">
+    <div class="chapter-header">
+        <div class="chapter-number">第13章</div>
+        <h1 class="chapter-title">市场数据接入：标准化适配器架构</h1>
+        <p class="chapter-summary">
+            统一数据接口，所有数据源适配器输出标准格式。免费+付费数据源，用户自己的API key。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 功能界面示意图</div>
+        <div class="mockup">
+            <div class="wire-box" style="background: var(--bg-secondary); padding: 20px;">
+                <div style="font-size: 32px; text-align: center; margin-bottom: 16px;">📊</div>
+                <div style="height: 24px; background: var(--border-color); border-radius: 4px; margin-bottom: 12px;"></div>
+                <div style="height: 16px; background: var(--border-color); border-radius: 4px; opacity: 0.6;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--accent); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--success); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            数据标准化Schema：PriceDataPoint(timestamp/OHLCV/source/reliability)、OnChainData、MacroData
+        </p>
+
+        <ul>
+            <li>适配器模式：CoinGecko/YahooFinance/Glassnode/Polygon等各有adapter，输出统一格式</li>
+            <li>免费数据源：CoinGecko(加密)、Yahoo Finance(美股)、ExchangeRate API(汇率)、RSS新闻</li>
+            <li>付费数据源(用户自己key)：Glassnode/CryptoQuant(链上)、Polygon.io(美股)、Twelve Data(外汇)</li>
+            <li>错误处理：DataFetchError统一错误类型，包含retryable标志，指数退避重试机制</li>
+            <li>Rate Limiting：滑动窗口限流器，免费API 10calls/min，Pro API 500calls/min</li>
+            <li>定时数据拉取：每5分钟实时价格、每小时链上数据、每天完整OHLCV、每周宏观数据</li>
+            <li>Circuit Breaker：断路器模式防止持续调用失败的服务，5次失败后打开断路器60秒</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-13')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+
+
+
+<!-- Chapter 14: 信誉评分+异常检测+加密存储 -->
+<div class="chapter" id="chapter-14">
+    <div class="chapter-header">
+        <div class="chapter-number">第14章</div>
+        <h1 class="chapter-title">风险与安全：信誉评分+异常检测+加密存储</h1>
+        <p class="chapter-summary">
+            Agent信誉评分防博弈，异常检测防垃圾信号，API key AES-256-GCM加密，所有分析附免责声明。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 功能界面示意图</div>
+        <div class="mockup">
+            <div class="wire-box" style="background: var(--bg-secondary); padding: 20px;">
+                <div style="font-size: 32px; text-align: center; margin-bottom: 16px;">🔒</div>
+                <div style="height: 24px; background: var(--border-color); border-radius: 4px; margin-bottom: 12px;"></div>
+                <div style="height: 16px; background: var(--border-color); border-radius: 4px; opacity: 0.6;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--accent); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--success); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            Agent信誉评分算法：准确率40%+稳定性20%+账户年龄15%+社区反馈15%-异常惩罚10%
+        </p>
+
+        <ul>
+            <li>准确率评分：加权计算(时间衰减+置信度权重)，50%准确率=10分，90%=40分</li>
+            <li>稳定性评分：信号间隔标准差，变异系数<0.3=20分，>2.0=0分</li>
+            <li>异常检测规则：Spam(1小时>10信号)、Contradiction(信号与走势相反)、Manipulation(与多Agent高度协同)</li>
+            <li>API Key加密：AES-256-GCM，主密钥从环境变量读取，每个key唯一IV，格式iv:authTag:ciphertext</li>
+            <li>安全存储方案：user_api_keys表存储加密key，api_key_audit表记录所有操作(创建/更新/删除/解密)</li>
+            <li>免责声明组件：每个AI分析下方显示，不构成投资建议，用户对自己决策负责，风险披露文档</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-14')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+
+
+
+<!-- Chapter 15: Docker容器化+4级伸缩 -->
+<div class="chapter" id="chapter-15">
+    <div class="chapter-header">
+        <div class="chapter-number">第15章</div>
+        <h1 class="chapter-title">Agent调度器：Docker容器化+4级伸缩</h1>
+        <p class="chapter-summary">
+            每个用户一个Docker容器，一键零配置启动。活跃/待机/休眠/唤醒四级调度，按需分配资源。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 功能界面示意图</div>
+        <div class="mockup">
+            <div class="wire-box" style="background: var(--bg-secondary); padding: 20px;">
+                <div style="font-size: 32px; text-align: center; margin-bottom: 16px;">⚙️</div>
+                <div style="height: 24px; background: var(--border-color); border-radius: 4px; margin-bottom: 12px;"></div>
+                <div style="height: 16px; background: var(--border-color); border-radius: 4px; opacity: 0.6;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--accent); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--success); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            一键配置流程：注册→选AI→填key→连接聊天→测试偏好→完成，后台自动创建Agent容器
+        </p>
+
+        <ul>
+            <li>容器化架构：Docker镜像预装OpenClaw，每个Agent独立容器，CPU/内存限额隔离</li>
+            <li>资源隔离：计算(独立容器)、数据(独立卷)、网络(只能访问自己的API和平台API)、Key(容器内解密)</li>
+            <li>4级伸缩：活跃(最近1h交互/全量资源)、待机(24h内交互/低资源Cron正常)、休眠(>7天无交互/暂停容器保留数据)、唤醒(5秒内恢复)</li>
+            <li>健康检查：每分钟ping Agent，挂了自动重启+从MEMORY.md恢复状态</li>
+            <li>成本估算：活跃用户$2-5/月，待机$0.5-1/月，休眠$0.1/月(仅存储)，平台不承担AI成本</li>
+            <li>故障恢复：进程崩溃自动重启、容器崩溃迁移数据卷、节点故障迁移Agent、每日备份MEMORY.md</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-15')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+
+
+
+<!-- Chapter 16: 3个月MVP -->
+<div class="chapter" id="chapter-16">
+    <div class="chapter-header">
+        <div class="chapter-number">第16章</div>
+        <h1 class="chapter-title">路线图：3个月MVP</h1>
+        <p class="chapter-summary">
+            Month 1单用户可用，Month 2公域+异常检测，Month 3私域+扩展市场。快速迭代，尽早验证。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 功能界面示意图</div>
+        <div class="mockup">
+            <div class="wire-box" style="background: var(--bg-secondary); padding: 20px;">
+                <div style="font-size: 32px; text-align: center; margin-bottom: 16px;">🗺️</div>
+                <div style="height: 24px; background: var(--border-color); border-radius: 4px; margin-bottom: 12px;"></div>
+                <div style="height: 16px; background: var(--border-color); border-radius: 4px; opacity: 0.6;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--accent); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--success); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            Month 1 - 核心基础：用户注册+API key管理、Agent实例创建、Telegram连接、基础数据接入(CoinGecko+Yahoo)、三种可视化模式、Agent自然语言查询、基础Cron(每日摘要)、加密货币优先
+        </p>
+
+        <ul>
+            <li>Month 2 - 公域+异常：信号标准格式+信号池API、Agent信号发布/订阅、信号聚合可视化(共识热力图)、监控脚本基础设施、AI推理链可视化、多图层叠加系统、Agent信誉评分v1、偏好测试+标签系统</li>
+            <li>Month 3 - 私域+扩展：异步分析小组功能、AI辅助发布分析、共识报告自动生成、历史复盘追踪、智能匹配推荐、扩展到美股/外汇/贵金属、Pro版订阅功能、Agent自定义(进阶级)</li>
+            <li>Post-MVP扩展：团队版、开放API、更多数据源集成、Agent高级自定义、移动端优化、历史叠影+形态匹配、多语言支持</li>
+            <li>开发优先级：P0(MVP必须)>P1(体验关键)>P2(锦上添花)>P3(未来可做)</li>
+            <li>验证指标：Week 4用户注册>100、Week 8 DAU>50、Week 12付费转化>5%</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-16')">📋 复制本章提示词</button>
+    </div>
+</div>
+
+
+
+
+<!-- Chapter 17: 选型、初始化、部署 -->
+<div class="chapter" id="chapter-17">
+    <div class="chapter-header">
+        <div class="chapter-number">第17章</div>
+        <h1 class="chapter-title">技术栈：选型、初始化、部署</h1>
+        <p class="chapter-summary">
+            Next.js+React前端，Node.js/FastAPI后端，PostgreSQL+Redis数据库，Docker部署，简单可控快速迭代。
+        </p>
+    </div>
+
+    <!-- UI Mockup -->
+    <div class="mockup-container">
+        <div class="mockup-label">🎨 功能界面示意图</div>
+        <div class="mockup">
+            <div class="wire-box" style="background: var(--bg-secondary); padding: 20px;">
+                <div style="font-size: 32px; text-align: center; margin-bottom: 16px;">🛠️</div>
+                <div style="height: 24px; background: var(--border-color); border-radius: 4px; margin-bottom: 12px;"></div>
+                <div style="height: 16px; background: var(--border-color); border-radius: 4px; opacity: 0.6;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--accent); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+                <div class="wire-card">
+                    <div style="height: 12px; background: var(--success); border-radius: 4px; margin-bottom: 8px; opacity: 0.8;"></div>
+                    <div style="height: 10px; background: var(--border-color); border-radius: 4px; opacity: 0.5;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-section">
+        <h3>💡 开发要点</h3>
+        
+        <p>
+            前端：Next.js 14+React 18，SSR+快速开发，Tailwind CSS样式，Framer Motion动画
+        </p>
+
+        <ul>
+            <li>图表渲染：lightweight-charts(TradingView开源)，高性能WebGL/Canvas，支持大数据量不卡顿</li>
+            <li>实时通信：WebSocket(Socket.io)，看板实时更新，Redis Pub/Sub后端</li>
+            <li>后端API：Node.js(Express/Fastify) 或 Python FastAPI，轻量快速，看团队技能栈</li>
+            <li>数据库：PostgreSQL 16(结构化数据+JSONB字段)+Redis 7(实时缓存+消息队列)</li>
+            <li>Agent运行时：OpenClaw，Docker容器化，Kubernetes或Docker Compose</li>
+            <li>监控脚本：Python持续运行，数据采集+异常检测+唤醒Agent</li>
+            <li>部署：Docker+VPS简单可控，或Kubernetes(用户量大时)，初期避免过度工程化</li>
+            <li>项目初始化：创建monorepo(Turborepo/Nx)，apps/(web/api/agent-orchestrator)，packages/(共享库)，配置ESLint+Prettier+TypeScript</li>
+        </ul>
+
+        <button class="copy-section-btn" onclick="copySection('chapter-17')">📋 复制本章提示词</button>
+    </div>
+</div>
+
 
 <!-- Chapter 18: 总结 -->
 <div class="chapter" id="chapter-18">
