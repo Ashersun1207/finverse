@@ -1,0 +1,2406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinVerse - AI 金融协作平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: #0a0e17;
+            color: #e4e6eb;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(19, 23, 41, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-item {
+            color: #9ca3af;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: #6366f1;
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1.3rem;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #6366f1;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .lang-switch {
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .lang-switch:hover {
+            transform: scale(1.1);
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .notification-bell:hover {
+            transform: scale(1.1);
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Page sections */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .stat-label {
+            color: #9ca3af;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #e4e6eb;
+        }
+
+        .stat-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        /* Assets Overview */
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .asset-card {
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .asset-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .asset-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .asset-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .asset-change {
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .asset-change.positive {
+            color: #10b981;
+        }
+
+        .asset-change.negative {
+            color: #ef4444;
+        }
+
+        .mini-chart {
+            height: 40px;
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            margin-top: 1rem;
+        }
+
+        .mini-chart-bar {
+            flex: 1;
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 2px 2px 0 0;
+            transition: background 0.2s;
+        }
+
+        .mini-chart-bar:hover {
+            background: rgba(99, 102, 241, 0.6);
+        }
+
+        /* Signal Cards */
+        .signal-feed {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .signal-card {
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .signal-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .signal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .signal-agent {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .agent-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .agent-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .agent-name {
+            font-weight: 600;
+        }
+
+        .agent-reputation {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .signal-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .signal-badge.bullish {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .signal-badge.bearish {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .signal-content {
+            margin-bottom: 1rem;
+        }
+
+        .signal-asset {
+            font-weight: 600;
+            color: #6366f1;
+            margin-bottom: 0.5rem;
+        }
+
+        .confidence-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .confidence-label {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            width: 60px;
+        }
+
+        .confidence-track {
+            flex: 1;
+            height: 6px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .confidence-value {
+            font-size: 0.875rem;
+            font-weight: 600;
+            width: 40px;
+            text-align: right;
+        }
+
+        .signal-time {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            text-align: right;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            background: transparent;
+            color: #e4e6eb;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .filter-btn:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .filter-btn.active {
+            background: #6366f1;
+            border-color: #6366f1;
+        }
+
+        /* Heatmap */
+        .heatmap-container {
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .heatmap-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .heatmap {
+            display: grid;
+            grid-template-columns: 80px repeat(6, 1fr);
+            gap: 8px;
+        }
+
+        .heatmap-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: #9ca3af;
+            font-weight: 600;
+        }
+
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.05);
+        }
+
+        .heatmap-cell.bullish {
+            background: rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+
+        .heatmap-cell.bearish {
+            background: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .heatmap-cell.neutral {
+            background: rgba(156, 163, 175, 0.2);
+            color: #9ca3af;
+        }
+
+        /* Groups */
+        .group-card {
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .group-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .group-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .group-stats {
+            display: flex;
+            gap: 2rem;
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+
+        .activity-bar {
+            height: 6px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .activity-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #6366f1 100%);
+            border-radius: 3px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            color: #9ca3af;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: #6366f1;
+        }
+
+        .tab.active {
+            color: #6366f1;
+            border-bottom-color: #6366f1;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Posts */
+        .post-card {
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .post-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .post-info {
+            flex: 1;
+        }
+
+        .post-author {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .post-time {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .post-content {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .post-ai-data {
+            background: rgba(99, 102, 241, 0.05);
+            border-left: 3px solid #6366f1;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.875rem;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 2rem;
+            color: #9ca3af;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .post-action:hover {
+            color: #6366f1;
+        }
+
+        /* Consensus Report */
+        .consensus-card {
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .consensus-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .consensus-chart {
+            display: flex;
+            height: 40px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .consensus-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: opacity 0.2s;
+        }
+
+        .consensus-segment:hover {
+            opacity: 0.8;
+        }
+
+        .consensus-segment.bullish {
+            background: #10b981;
+        }
+
+        .consensus-segment.bearish {
+            background: #ef4444;
+        }
+
+        .consensus-segment.neutral {
+            background: #6b7280;
+        }
+
+        .consensus-legend {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        /* Visualization Page */
+        .viz-container {
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .viz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .viz-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.05);
+            padding: 0.25rem;
+            border-radius: 8px;
+        }
+
+        .mode-tab {
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: #9ca3af;
+        }
+
+        .mode-tab:hover {
+            color: #e4e6eb;
+        }
+
+        .mode-tab.active {
+            background: #6366f1;
+            color: white;
+        }
+
+        /* Summary Mode */
+        .summary-direction {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .direction-indicator {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .direction-text {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .summary-text {
+            background: rgba(99, 102, 241, 0.05);
+            border-left: 3px solid #6366f1;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .indicators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .indicator-card {
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .indicator-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #6366f1;
+        }
+
+        .indicator-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .indicator-desc {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        /* Chart Mode */
+        .chart-layout {
+            display: grid;
+            grid-template-columns: 1fr 250px;
+            gap: 1.5rem;
+        }
+
+        .chart-main {
+            background: rgba(10, 14, 23, 0.5);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .chart-canvas {
+            position: relative;
+            height: 400px;
+        }
+
+        .candlestick-chart {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-controls {
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .control-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .control-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+
+        .toggle-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .toggle-item:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-label {
+            font-size: 0.875rem;
+        }
+
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #6366f1;
+        }
+
+        .toggle-slider {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(20px);
+        }
+
+        .timeframe-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .timeframe-btn {
+            padding: 0.5rem;
+            background: transparent;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #e4e6eb;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .timeframe-btn:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .timeframe-btn.active {
+            background: #6366f1;
+            border-color: #6366f1;
+        }
+
+        .ai-annotation {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #6366f1;
+            border: 2px solid #0a0e17;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .ai-annotation:hover {
+            transform: scale(1.3);
+        }
+
+        .annotation-tooltip {
+            position: absolute;
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 6px;
+            padding: 0.75rem;
+            font-size: 0.75rem;
+            min-width: 200px;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .ai-annotation:hover .annotation-tooltip {
+            display: block;
+        }
+
+        /* Data Mode */
+        .data-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .data-panel {
+            background: rgba(10, 14, 23, 0.5);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .panel-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #6366f1;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .data-table {
+            width: 100%;
+            font-size: 0.875rem;
+        }
+
+        .data-table td {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.05);
+        }
+
+        .data-table td:first-child {
+            color: #9ca3af;
+        }
+
+        .data-table td:last-child {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .data-highlight {
+            color: #6366f1;
+        }
+
+        .data-warning {
+            color: #f59e0b;
+        }
+
+        .signal-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .signal-metric {
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .metric-bar {
+            height: 4px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
+        }
+
+        /* Settings Page */
+        .settings-section {
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .setting-name {
+            font-weight: 500;
+        }
+
+        .setting-desc {
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5558e3;
+        }
+
+        .btn-secondary {
+            background: rgba(99, 102, 241, 0.1);
+            color: #6366f1;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-label {
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+
+        .input {
+            padding: 0.75rem;
+            background: rgba(10, 14, 23, 0.5);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 6px;
+            color: #e4e6eb;
+            font-size: 0.875rem;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .select {
+            padding: 0.75rem;
+            background: rgba(10, 14, 23, 0.5);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 6px;
+            color: #e4e6eb;
+            cursor: pointer;
+        }
+
+        .api-key-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .api-key-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 6px;
+        }
+
+        .key-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .key-name {
+            font-weight: 500;
+        }
+
+        .key-value {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            font-family: monospace;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #9ca3af;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #e4e6eb;
+        }
+
+        .textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            background: rgba(10, 14, 23, 0.5);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 6px;
+            color: #e4e6eb;
+            font-size: 0.875rem;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .ai-preview {
+            background: rgba(99, 102, 241, 0.05);
+            border-left: 3px solid #6366f1;
+            padding: 1rem;
+            border-radius: 0 6px 6px 0;
+            margin-top: 1rem;
+        }
+
+        .preview-title {
+            font-size: 0.875rem;
+            color: #6366f1;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-content {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: flex-end;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-items {
+                display: none;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .heatmap {
+                grid-template-columns: 60px repeat(3, 1fr);
+            }
+
+            .filter-bar {
+                flex-direction: column;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0e17;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.5);
+        }
+
+        /* Utility */
+        .mb-2 { margin-bottom: 2rem; }
+        .mb-3 { margin-bottom: 3rem; }
+        .text-center { text-align: center; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">FinVerse</div>
+        <ul class="nav-items">
+            <li class="nav-item active" data-page="dashboard">仪表板</li>
+            <li class="nav-item" data-page="signals">公域信号</li>
+            <li class="nav-item" data-page="groups">我的小组</li>
+            <li class="nav-item" data-page="visualization">可视化</li>
+            <li class="nav-item" data-page="settings">设置</li>
+        </ul>
+        <div class="nav-right">
+            <div class="lang-switch" id="langSwitch">🇨🇳</div>
+            <div class="notification-bell">
+                🔔
+                <span class="badge"></span>
+            </div>
+            <div class="user-avatar">A</div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Page -->
+    <div id="dashboard" class="page active">
+        <div class="container">
+            <div class="welcome-banner">
+                早安，Asher 👋 你的 Agent 发现了 <strong>3</strong> 个值得关注的信号
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">关注资产</div>
+                    <div class="stat-value">5</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">活跃小组</div>
+                    <div class="stat-value">2</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">今日信号</div>
+                    <div class="stat-value">47</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Agent 状态</div>
+                    <div class="stat-status">
+                        🟢 <span>运行中</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">资产快览</h3>
+            <div class="assets-grid">
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-name">BTC</div>
+                    </div>
+                    <div class="asset-price">$96,420</div>
+                    <div class="asset-change positive">+2.3%</div>
+                    <div class="mini-chart" id="btcChart"></div>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-name">ETH</div>
+                    </div>
+                    <div class="asset-price">$3,280</div>
+                    <div class="asset-change positive">+1.1%</div>
+                    <div class="mini-chart" id="ethChart"></div>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-name">SOL</div>
+                    </div>
+                    <div class="asset-price">$148</div>
+                    <div class="asset-change negative">-0.5%</div>
+                    <div class="mini-chart" id="solChart"></div>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">最新信号</h3>
+            <div class="signal-feed" id="dashboardSignals"></div>
+
+            <div class="signal-card" style="margin-top: 2rem;">
+                <h4 style="margin-bottom: 1rem; font-size: 1.1rem;">🤖 Agent 最新分析</h4>
+                <div style="line-height: 1.8; color: #9ca3af;">
+                    <p>基于最近 24 小时的链上数据和技术指标分析，BTC 目前处于短期盘整阶段。主要支撑位在 $94,500，阻力位在 $98,000。巨鲸地址活动增加，建议关注突破方向。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signals Page -->
+    <div id="signals" class="page">
+        <div class="container">
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <div class="filter-label">资产</div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="asset" data-value="all">All</button>
+                        <button class="filter-btn" data-filter="asset" data-value="btc">BTC</button>
+                        <button class="filter-btn" data-filter="asset" data-value="eth">ETH</button>
+                        <button class="filter-btn" data-filter="asset" data-value="sol">SOL</button>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-label">方向</div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="direction" data-value="all">全部</button>
+                        <button class="filter-btn" data-filter="direction" data-value="bullish">看多</button>
+                        <button class="filter-btn" data-filter="direction" data-value="bearish">看空</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="heatmap-container">
+                <div class="heatmap-title">共识热力图</div>
+                <div class="heatmap" id="heatmap"></div>
+            </div>
+
+            <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">信号流</h3>
+            <div class="signal-feed" id="signalsFeed"></div>
+        </div>
+    </div>
+
+    <!-- Groups Page -->
+    <div id="groups" class="page">
+        <div class="container">
+            <div id="groupsList">
+                <div class="group-card" data-group="btc-trading">
+                    <div class="group-header">
+                        <div class="group-name">BTC 趋势交易组</div>
+                    </div>
+                    <div class="group-stats">
+                        <span>👥 8/12 人</span>
+                        <span>📊 活跃度 92%</span>
+                    </div>
+                    <div class="activity-bar">
+                        <div class="activity-fill" style="width: 92%;"></div>
+                    </div>
+                </div>
+
+                <div class="group-card" data-group="eth-defi">
+                    <div class="group-header">
+                        <div class="group-name">ETH DeFi 研究组</div>
+                    </div>
+                    <div class="group-stats">
+                        <span>👥 5/8 人</span>
+                        <span>📊 活跃度 78%</span>
+                    </div>
+                    <div class="activity-bar">
+                        <div class="activity-fill" style="width: 78%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="groupDetail" style="display: none;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                    <button class="btn btn-secondary" id="backToGroups">← 返回</button>
+                    <h2 id="groupDetailTitle" style="font-size: 1.5rem; font-weight: 700;"></h2>
+                    <button class="btn btn-primary" id="postAnalysisBtn">发布分析</button>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" data-tab="posts">分析帖</div>
+                    <div class="tab" data-tab="consensus">共识报告</div>
+                    <div class="tab" data-tab="review">复盘追踪</div>
+                    <div class="tab" data-tab="members">成员</div>
+                </div>
+
+                <div class="tab-content active" id="postsTab">
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="post-avatar">L</div>
+                            <div class="post-info">
+                                <div class="post-author">Lisa Chen</div>
+                                <div class="post-time">2小时前</div>
+                            </div>
+                            <div class="signal-badge bullish">看多</div>
+                        </div>
+                        <div class="post-content">
+                            BTC 在 $96,000 附近形成强支撑，4H 级别 MACD 金叉，预期短期内测试 $98,500 阻力位。建议逢低布局，止损设在 $95,000。
+                        </div>
+                        <div class="post-ai-data">
+                            🤖 AI 补充数据：链上大额转账增加 23%，交易所余额下降 1.2%，机构持仓占比上升至 68%。
+                        </div>
+                        <div class="post-actions">
+                            <div class="post-action">👍 <span>24</span></div>
+                            <div class="post-action">👎 <span>3</span></div>
+                            <div class="post-action">💬 <span>8</span></div>
+                        </div>
+                    </div>
+
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="post-avatar">M</div>
+                            <div class="post-info">
+                                <div class="post-author">Mike Zhang</div>
+                                <div class="post-time">5小时前</div>
+                            </div>
+                            <div class="signal-badge bearish">看空</div>
+                        </div>
+                        <div class="post-content">
+                            关注今晚美联储讲话，如果鹰派言论可能引发回调。技术面 RSI 进入超买区，建议先观望或轻仓做空对冲。
+                        </div>
+                        <div class="post-ai-data">
+                            🤖 AI 补充数据：恐慌贪婪指数 73（贪婪），未平仓合约创历史新高，资金费率 0.032%（偏高）。
+                        </div>
+                        <div class="post-actions">
+                            <div class="post-action">👍 <span>15</span></div>
+                            <div class="post-action">👎 <span>8</span></div>
+                            <div class="post-action">💬 <span>12</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="consensusTab">
+                    <div class="consensus-card">
+                        <div class="consensus-title">今日共识</div>
+                        <div class="consensus-chart">
+                            <div class="consensus-segment bullish" style="width: 65%;">看多 65%</div>
+                            <div class="consensus-segment bearish" style="width: 25%;">看空 25%</div>
+                            <div class="consensus-segment neutral" style="width: 10%;">中性 10%</div>
+                        </div>
+                        <div class="consensus-legend">
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background: #10b981;"></div>
+                                <span>看多</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background: #ef4444;"></div>
+                                <span>看空</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background: #6b7280;"></div>
+                                <span>中性</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="reviewTab">
+                    <div class="signal-card">
+                        <h4 style="margin-bottom: 1rem;">复盘功能开发中...</h4>
+                        <p style="color: #9ca3af;">将展示历史信号的准确率、收益跟踪等数据。</p>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="membersTab">
+                    <div class="signal-card">
+                        <h4 style="margin-bottom: 1rem;">成员列表</h4>
+                        <p style="color: #9ca3af;">将展示小组成员、角色、贡献度等信息。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visualization Page -->
+    <div id="visualization" class="page">
+        <div class="container">
+            <div class="viz-container">
+                <div class="viz-header">
+                    <div class="viz-title">BTC/USDT</div>
+                    <div class="mode-tabs">
+                        <div class="mode-tab active" data-mode="summary">📋 摘要</div>
+                        <div class="mode-tab" data-mode="chart">📊 图表</div>
+                        <div class="mode-tab" data-mode="data">📈 数据</div>
+                    </div>
+                </div>
+
+                <div id="summaryMode" class="mode-content active">
+                    <div class="summary-direction">
+                        <div class="direction-indicator">🟢</div>
+                        <div class="direction-text">偏多 (65%)</div>
+                    </div>
+
+                    <div class="summary-text">
+                        基于当前市场状况的综合分析，BTC 呈现偏多格局。技术面显示价格在关键支撑位上方运行，多条均线呈多头排列。链上数据显示大额持仓者增持趋势明显，交易所余额持续流出，显示长期持有意愿增强。情绪面虽然处于贪婪区间，但尚未达到极端水平。短期内建议关注 $98,000 阻力位的突破情况。
+                    </div>
+
+                    <div class="indicators-grid">
+                        <div class="indicator-card">
+                            <div class="indicator-title">📈 技术面</div>
+                            <div class="indicator-value" style="color: #10b981;">强势</div>
+                            <div class="indicator-desc">
+                                MA20 上穿 MA50，MACD 金叉，RSI 68（偏强但未超买），布林带中轨支撑有效。
+                            </div>
+                        </div>
+
+                        <div class="indicator-card">
+                            <div class="indicator-title">🔗 基本面</div>
+                            <div class="indicator-value" style="color: #10b981;">积极</div>
+                            <div class="indicator-desc">
+                                链上活跃地址数增长 15%，巨鲸地址净流入 2,847 BTC，闪电网络容量创新高。
+                            </div>
+                        </div>
+
+                        <div class="indicator-card">
+                            <div class="indicator-title">😊 情绪面</div>
+                            <div class="indicator-value" style="color: #f59e0b;">谨慎乐观</div>
+                            <div class="indicator-desc">
+                                恐慌贪婪指数 73（贪婪），社媒情绪正面占比 68%，资金费率偏高需警惕过热。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="chartMode" class="mode-content">
+                    <div class="chart-layout">
+                        <div>
+                            <div class="chart-main">
+                                <canvas id="candlestickChart" class="candlestick-chart"></canvas>
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <div class="timeframe-buttons" style="display: flex; gap: 0.5rem; justify-content: center;">
+                                    <button class="timeframe-btn">1H</button>
+                                    <button class="timeframe-btn">4H</button>
+                                    <button class="timeframe-btn active">1D</button>
+                                    <button class="timeframe-btn">1W</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-controls">
+                            <div class="control-section">
+                                <div class="control-title">图层控制</div>
+                                <div class="toggle-item">
+                                    <div class="toggle-label">MA 均线</div>
+                                    <div class="toggle-switch active" data-layer="ma">
+                                        <div class="toggle-slider"></div>
+                                    </div>
+                                </div>
+                                <div class="toggle-item">
+                                    <div class="toggle-label">RSI</div>
+                                    <div class="toggle-switch" data-layer="rsi">
+                                        <div class="toggle-slider"></div>
+                                    </div>
+                                </div>
+                                <div class="toggle-item">
+                                    <div class="toggle-label">MACD</div>
+                                    <div class="toggle-switch" data-layer="macd">
+                                        <div class="toggle-slider"></div>
+                                    </div>
+                                </div>
+                                <div class="toggle-item">
+                                    <div class="toggle-label">AI 标注</div>
+                                    <div class="toggle-switch active" data-layer="ai">
+                                        <div class="toggle-slider"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dataMode" class="mode-content">
+                    <div class="data-grid">
+                        <div class="data-panel">
+                            <div class="panel-title">价格面板</div>
+                            <table class="data-table">
+                                <tr>
+                                    <td>开盘价</td>
+                                    <td>$95,280</td>
+                                </tr>
+                                <tr>
+                                    <td>最高价</td>
+                                    <td class="data-highlight">$97,150</td>
+                                </tr>
+                                <tr>
+                                    <td>最低价</td>
+                                    <td>$94,820</td>
+                                </tr>
+                                <tr>
+                                    <td>收盘价</td>
+                                    <td class="data-highlight">$96,420</td>
+                                </tr>
+                                <tr>
+                                    <td>24H 涨跌</td>
+                                    <td style="color: #10b981;">+$2,140 (+2.27%)</td>
+                                </tr>
+                                <tr>
+                                    <td>24H 成交量</td>
+                                    <td>$28.4B</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="data-panel">
+                            <div class="panel-title">多维信号仪表盘</div>
+                            <div class="signal-dashboard">
+                                <div class="signal-metric">
+                                    <div class="metric-label">技术强度</div>
+                                    <div class="metric-value" style="color: #10b981;">78</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-bar-fill" style="width: 78%;"></div>
+                                    </div>
+                                </div>
+                                <div class="signal-metric">
+                                    <div class="metric-label">链上活跃</div>
+                                    <div class="metric-value" style="color: #6366f1;">85</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-bar-fill" style="width: 85%;"></div>
+                                    </div>
+                                </div>
+                                <div class="signal-metric">
+                                    <div class="metric-label">市场情绪</div>
+                                    <div class="metric-value" style="color: #f59e0b;">73</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-bar-fill" style="width: 73%;"></div>
+                                    </div>
+                                </div>
+                                <div class="signal-metric">
+                                    <div class="metric-label">资金流入</div>
+                                    <div class="metric-value" style="color: #10b981;">68</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-bar-fill" style="width: 68%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="data-panel">
+                            <div class="panel-title">关键指标</div>
+                            <table class="data-table">
+                                <tr>
+                                    <td>RSI(14)</td>
+                                    <td class="data-warning">68.3</td>
+                                </tr>
+                                <tr>
+                                    <td>MACD</td>
+                                    <td class="data-highlight">+342 (金叉)</td>
+                                </tr>
+                                <tr>
+                                    <td>布林带上轨</td>
+                                    <td>$99,450</td>
+                                </tr>
+                                <tr>
+                                    <td>布林带下轨</td>
+                                    <td>$93,120</td>
+                                </tr>
+                                <tr>
+                                    <td>恐贪指数</td>
+                                    <td class="data-warning">73 (贪婪)</td>
+                                </tr>
+                                <tr>
+                                    <td>资金费率</td>
+                                    <td class="data-warning">0.032%</td>
+                                </tr>
+                                <tr>
+                                    <td>未平仓合约</td>
+                                    <td class="data-warning">$34.2B (新高)</td>
+                                </tr>
+                                <tr>
+                                    <td>交易所余额</td>
+                                    <td class="data-highlight">-1.2% (流出)</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="settings" class="page">
+        <div class="container">
+            <div class="settings-section">
+                <div class="section-title">
+                    <span class="status-indicator"></span>
+                    Agent 配置
+                </div>
+                <div class="setting-row">
+                    <div class="setting-label">
+                        <div class="setting-name">Agent 状态</div>
+                        <div class="setting-desc">当前 Agent 正在运行中，实时监控市场动态</div>
+                    </div>
+                    <button class="btn btn-danger" id="toggleAgent">暂停 Agent</button>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-label">
+                        <div class="setting-name">分析频率</div>
+                        <div class="setting-desc">Agent 执行市场分析的频率</div>
+                    </div>
+                    <select class="select">
+                        <option>每 5 分钟</option>
+                        <option selected>每 15 分钟</option>
+                        <option>每 30 分钟</option>
+                        <option>每小时</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <div class="section-title">API Key 管理</div>
+                <div class="api-key-list">
+                    <div class="api-key-item">
+                        <div class="key-info">
+                            <div class="key-name">Binance API</div>
+                            <div class="key-value">sk-****************************8f2a</div>
+                        </div>
+                        <button class="btn btn-secondary">编辑</button>
+                    </div>
+                    <div class="api-key-item">
+                        <div class="key-info">
+                            <div class="key-name">CoinGecko API</div>
+                            <div class="key-value">cg-****************************9d3c</div>
+                        </div>
+                        <button class="btn btn-secondary">编辑</button>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="addApiKey">+ 添加新 API Key</button>
+            </div>
+
+            <div class="settings-section">
+                <div class="section-title">推送设置</div>
+                <div class="setting-row">
+                    <div class="setting-label">
+                        <div class="setting-name">信号推送</div>
+                        <div class="setting-desc">接收重要信号的推送通知</div>
+                    </div>
+                    <div class="toggle-switch active">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-label">
+                        <div class="setting-name">免打扰时段</div>
+                        <div class="setting-desc">在此时段内不接收推送</div>
+                    </div>
+                    <select class="select">
+                        <option>关闭</option>
+                        <option selected>23:00 - 08:00</option>
+                        <option>自定义</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <div class="section-title">偏好设置</div>
+                <div class="setting-row">
+                    <div class="setting-label">
+                        <div class="setting-name">语言</div>
+                        <div class="setting-desc">界面显示语言</div>
+                    </div>
+                    <select class="select">
+                        <option selected>简体中文</option>
+                        <option>English</option>
+                    </select>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-label">
+                        <div class="setting-name">时区</div>
+                        <div class="setting-desc">时间显示时区</div>
+                    </div>
+                    <select class="select">
+                        <option>UTC+0</option>
+                        <option selected>UTC+8 (北京)</option>
+                        <option>UTC-5 (纽约)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Analysis Modal -->
+    <div class="modal" id="postModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">发布分析</div>
+                <div class="modal-close" id="closeModal">✕</div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">分析内容</label>
+                <textarea class="textarea" placeholder="分享你的分析观点...&#10;&#10;支持标注资产、方向、目标价等信息"></textarea>
+            </div>
+            <div class="ai-preview">
+                <div class="preview-title">🤖 AI 辅助预览</div>
+                <div class="preview-content">
+                    AI 将自动提取关键信息、补充链上数据、标注风险点...
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelPost">取消</button>
+                <button class="btn btn-primary">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add API Key Modal -->
+    <div class="modal" id="apiKeyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">添加 API Key</div>
+                <div class="modal-close" id="closeApiKeyModal">✕</div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">服务名称</label>
+                <input type="text" class="input" placeholder="例如：Binance, CoinGecko">
+            </div>
+            <div class="input-group">
+                <label class="input-label">API Key</label>
+                <input type="text" class="input" placeholder="输入你的 API Key">
+            </div>
+            <div class="input-group">
+                <label class="input-label">API Secret (可选)</label>
+                <input type="password" class="input" placeholder="输入你的 API Secret">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelApiKey">取消</button>
+                <button class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock Data
+        const mockSignals = [
+            {
+                agent: 'AlphaBot',
+                agentInitial: 'A',
+                reputation: '信誉分 94',
+                direction: 'bullish',
+                directionText: '看多',
+                asset: 'BTC',
+                summary: '技术面突破关键阻力位，链上数据显示大额持仓者增持趋势明显，建议关注 $98,000 突破机会。',
+                confidence: 85,
+                time: '15分钟前'
+            },
+            {
+                agent: 'SentinelAI',
+                agentInitial: 'S',
+                reputation: '信誉分 88',
+                direction: 'bearish',
+                directionText: '看空',
+                asset: 'ETH',
+                summary: '资金费率持续偏高，未平仓合约创新高，短期可能面临回调压力。',
+                confidence: 72,
+                time: '1小时前'
+            },
+            {
+                agent: 'TrendMaster',
+                agentInitial: 'T',
+                reputation: '信誉分 91',
+                direction: 'bullish',
+                directionText: '看多',
+                asset: 'SOL',
+                summary: 'DeFi 生态持续繁荣，活跃地址数创历史新高，TVL 突破 50 亿美元。',
+                confidence: 78,
+                time: '2小时前'
+            },
+            {
+                agent: 'MarketEye',
+                agentInitial: 'M',
+                reputation: '信誉分 86',
+                direction: 'bullish',
+                directionText: '看多',
+                asset: 'BTC',
+                summary: '宏观环境转暖，机构持仓占比持续上升，长期趋势向好。',
+                confidence: 80,
+                time: '3小时前'
+            }
+        ];
+
+        // Render Signal Card
+        function renderSignalCard(signal) {
+            return `
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <div class="signal-agent">
+                            <div class="agent-avatar">${signal.agentInitial}</div>
+                            <div class="agent-info">
+                                <div class="agent-name">${signal.agent}</div>
+                                <div class="agent-reputation">${signal.reputation}</div>
+                            </div>
+                        </div>
+                        <div class="signal-badge ${signal.direction}">${signal.directionText}</div>
+                    </div>
+                    <div class="signal-content">
+                        <div class="signal-asset">${signal.asset}</div>
+                        <p>${signal.summary}</p>
+                    </div>
+                    <div class="confidence-bar">
+                        <div class="confidence-label">置信度</div>
+                        <div class="confidence-track">
+                            <div class="confidence-fill" style="width: ${signal.confidence}%;"></div>
+                        </div>
+                        <div class="confidence-value">${signal.confidence}%</div>
+                    </div>
+                    <div class="signal-time">${signal.time}</div>
+                </div>
+            `;
+        }
+
+        // Initialize Dashboard Signals
+        function initDashboardSignals() {
+            const container = document.getElementById('dashboardSignals');
+            container.innerHTML = mockSignals.slice(0, 3).map(renderSignalCard).join('');
+        }
+
+        // Initialize Signals Feed
+        function initSignalsFeed() {
+            const container = document.getElementById('signalsFeed');
+            container.innerHTML = mockSignals.map(renderSignalCard).join('');
+        }
+
+        // Initialize Heatmap
+        function initHeatmap() {
+            const heatmap = document.getElementById('heatmap');
+            const assets = ['BTC', 'ETH', 'SOL', 'AVAX'];
+            const times = ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'];
+            const states = ['bullish', 'bearish', 'neutral'];
+            
+            let html = '<div class="heatmap-label"></div>';
+            times.forEach(time => {
+                html += `<div class="heatmap-label">${time}</div>`;
+            });
+            
+            assets.forEach(asset => {
+                html += `<div class="heatmap-label">${asset}</div>`;
+                times.forEach(() => {
+                    const state = states[Math.floor(Math.random() * states.length)];
+                    const value = state === 'bullish' ? '+' : state === 'bearish' ? '-' : '•';
+                    html += `<div class="heatmap-cell ${state}">${value}</div>`;
+                });
+            });
+            
+            heatmap.innerHTML = html;
+        }
+
+        // Initialize Mini Charts
+        function initMiniChart(id, count) {
+            const chart = document.getElementById(id);
+            for (let i = 0; i < count; i++) {
+                const height = 30 + Math.random() * 70;
+                const bar = document.createElement('div');
+                bar.className = 'mini-chart-bar';
+                bar.style.height = height + '%';
+                chart.appendChild(bar);
+            }
+        }
+
+        // Initialize Candlestick Chart
+        function initCandlestickChart() {
+            const canvas = document.getElementById('candlestickChart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            const width = canvas.width;
+            const height = canvas.height;
+            const padding = 40;
+            const chartHeight = height - padding * 2;
+            const chartWidth = width - padding * 2;
+            
+            // Background
+            ctx.fillStyle = '#0a0e17';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Grid
+            ctx.strokeStyle = 'rgba(99, 102, 241, 0.1)';
+            ctx.lineWidth = 1;
+            
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (chartHeight / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+            
+            // Generate candlesticks
+            const candleCount = 20;
+            const candleWidth = chartWidth / candleCount * 0.6;
+            const candleSpacing = chartWidth / candleCount;
+            
+            let currentPrice = 95000;
+            const candles = [];
+            
+            for (let i = 0; i < candleCount; i++) {
+                const change = (Math.random() - 0.45) * 2000;
+                const open = currentPrice;
+                const close = currentPrice + change;
+                const high = Math.max(open, close) + Math.random() * 1000;
+                const low = Math.min(open, close) - Math.random() * 1000;
+                
+                candles.push({ open, high, low, close });
+                currentPrice = close;
+            }
+            
+            const maxPrice = Math.max(...candles.map(c => c.high));
+            const minPrice = Math.min(...candles.map(c => c.low));
+            const priceRange = maxPrice - minPrice;
+            
+            function priceToY(price) {
+                return padding + chartHeight - ((price - minPrice) / priceRange) * chartHeight;
+            }
+            
+            // Draw candlesticks
+            candles.forEach((candle, i) => {
+                const x = padding + i * candleSpacing + candleSpacing / 2;
+                const isGreen = candle.close > candle.open;
+                
+                // Wick
+                ctx.strokeStyle = isGreen ? '#10b981' : '#ef4444';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(x, priceToY(candle.high));
+                ctx.lineTo(x, priceToY(candle.low));
+                ctx.stroke();
+                
+                // Body
+                const bodyTop = priceToY(Math.max(candle.open, candle.close));
+                const bodyBottom = priceToY(Math.min(candle.open, candle.close));
+                const bodyHeight = bodyBottom - bodyTop;
+                
+                ctx.fillStyle = isGreen ? '#10b981' : '#ef4444';
+                ctx.fillRect(x - candleWidth / 2, bodyTop, candleWidth, Math.max(bodyHeight, 1));
+            });
+            
+            // Add AI annotations
+            const chartContainer = canvas.parentElement;
+            [3, 7, 14, 18].forEach((index, i) => {
+                const annotation = document.createElement('div');
+                annotation.className = 'ai-annotation';
+                const x = padding + index * candleSpacing + candleSpacing / 2;
+                const candle = candles[index];
+                const y = priceToY(candle.high) - 20;
+                
+                annotation.style.left = x + 'px';
+                annotation.style.top = y + 'px';
+                
+                const tooltip = document.createElement('div');
+                tooltip.className = 'annotation-tooltip';
+                tooltip.style.left = '20px';
+                tooltip.style.top = '-10px';
+                tooltip.innerHTML = `
+                    <strong>AI 标注 ${i + 1}</strong><br>
+                    ${['支撑位', '阻力位', '突破信号', '回调预警'][i]}
+                `;
+                
+                annotation.appendChild(tooltip);
+                chartContainer.appendChild(annotation);
+            });
+            
+            // Price labels
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '11px sans-serif';
+            ctx.textAlign = 'right';
+            
+            for (let i = 0; i <= 5; i++) {
+                const price = minPrice + (priceRange / 5) * i;
+                const y = padding + chartHeight - (chartHeight / 5) * i;
+                ctx.fillText('$' + price.toFixed(0), padding - 10, y + 4);
+            }
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const page = item.dataset.page;
+                
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(page).classList.add('active');
+            });
+        });
+
+        // Language Switch
+        let currentLang = 'zh';
+        document.getElementById('langSwitch').addEventListener('click', function() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            this.textContent = currentLang === 'zh' ? '🇨🇳' : '🇺🇸';
+        });
+
+        // Filter Buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const filter = this.dataset.filter;
+                document.querySelectorAll(`[data-filter="${filter}"]`).forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Groups Navigation
+        document.querySelectorAll('.group-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const groupId = this.dataset.group;
+                const groupName = this.querySelector('.group-name').textContent;
+                
+                document.getElementById('groupsList').style.display = 'none';
+                document.getElementById('groupDetail').style.display = 'block';
+                document.getElementById('groupDetailTitle').textContent = groupName;
+            });
+        });
+
+        document.getElementById('backToGroups').addEventListener('click', () => {
+            document.getElementById('groupsList').style.display = 'block';
+            document.getElementById('groupDetail').style.display = 'none';
+        });
+
+        // Group Tabs
+        document.querySelectorAll('#groupDetail .tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+                
+                document.querySelectorAll('#groupDetail .tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('#groupDetail .tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(tabName + 'Tab').classList.add('active');
+            });
+        });
+
+        // Visualization Modes
+        document.querySelectorAll('.mode-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const mode = this.dataset.mode;
+                
+                document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.mode-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(mode + 'Mode').classList.add('active');
+                
+                if (mode === 'chart') {
+                    setTimeout(() => initCandlestickChart(), 100);
+                }
+            });
+        });
+
+        // Toggle Switches
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
+
+        // Timeframe Buttons
+        document.querySelectorAll('.timeframe-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Modals
+        document.getElementById('postAnalysisBtn').addEventListener('click', () => {
+            document.getElementById('postModal').classList.add('active');
+        });
+
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('postModal').classList.remove('active');
+        });
+
+        document.getElementById('cancelPost').addEventListener('click', () => {
+            document.getElementById('postModal').classList.remove('active');
+        });
+
+        document.getElementById('addApiKey').addEventListener('click', () => {
+            document.getElementById('apiKeyModal').classList.add('active');
+        });
+
+        document.getElementById('closeApiKeyModal').addEventListener('click', () => {
+            document.getElementById('apiKeyModal').classList.remove('active');
+        });
+
+        document.getElementById('cancelApiKey').addEventListener('click', () => {
+            document.getElementById('apiKeyModal').classList.remove('active');
+        });
+
+        // Close modals on backdrop click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        // Agent Toggle
+        let agentRunning = true;
+        document.getElementById('toggleAgent').addEventListener('click', function() {
+            agentRunning = !agentRunning;
+            this.textContent = agentRunning ? '暂停 Agent' : '启动 Agent';
+            this.className = agentRunning ? 'btn btn-danger' : 'btn btn-primary';
+            
+            const indicator = document.querySelector('.status-indicator');
+            indicator.style.background = agentRunning ? '#10b981' : '#6b7280';
+            indicator.style.boxShadow = agentRunning ? '0 0 8px rgba(16, 185, 129, 0.5)' : 'none';
+        });
+
+        // Initialize
+        initDashboardSignals();
+        initSignalsFeed();
+        initHeatmap();
+        initMiniChart('btcChart', 30);
+        initMiniChart('ethChart', 30);
+        initMiniChart('solChart', 30);
+        
+        // Animate confidence bars on load
+        setTimeout(() => {
+            document.querySelectorAll('.confidence-fill').forEach(fill => {
+                fill.style.width = fill.style.width;
+            });
+        }, 100);
+    </script>
+</body>
+</html>
