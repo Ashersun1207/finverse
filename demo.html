@@ -1832,10 +1832,378 @@
             background: rgba(99, 102, 241, 0.5);
         }
 
+        /* Comparison Demo Section */
+        .comparison-hero {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .comparison-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1 0%, #a855f7 50%, #6366f1 100%);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .comparison-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #e4e6eb 0%, #9ca3af 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .comparison-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #9ca3af;
+            margin-bottom: 3rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .comparison-column {
+            background: #131729;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            min-height: 500px;
+            transition: transform 0.3s, border-color 0.3s;
+            position: relative;
+        }
+
+        .comparison-column:hover {
+            transform: translateY(-4px);
+        }
+
+        .comparison-column.old {
+            opacity: 0.8;
+        }
+
+        .comparison-column.old:hover {
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .comparison-column.summary:hover {
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+        }
+
+        .comparison-column.chart:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
+        }
+
+        .column-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .column-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .badge-old {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .badge-new {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-pro {
+            background: rgba(99, 102, 241, 0.15);
+            color: #6366f1;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .column-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .column-desc {
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+
+        .column-content {
+            flex: 1;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Old Style Content */
+        .old-content {
+            font-size: 0.75rem;
+            line-height: 1.5;
+            color: #6b7280;
+            font-family: 'Courier New', monospace;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+        }
+
+        .old-content p {
+            margin-bottom: 0.75rem;
+        }
+
+        .old-numbers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .old-number {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        /* Summary Style Content */
+        .summary-direction-mini {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(16, 185, 129, 0.05);
+            border-radius: 8px;
+        }
+
+        .direction-icon-mini {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .direction-text-mini {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .summary-cards-mini {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .summary-card-mini {
+            background: rgba(99, 102, 241, 0.05);
+            border-left: 3px solid #6366f1;
+            padding: 0.75rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .card-mini-title {
+            font-size: 0.75rem;
+            color: #6366f1;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-mini-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-mini-desc {
+            font-size: 0.7rem;
+            color: #9ca3af;
+        }
+
+        /* Chart Style Content */
+        .chart-mini-container {
+            background: rgba(10, 14, 23, 0.5);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .chart-mini {
+            width: 100%;
+            height: 200px;
+            position: relative;
+        }
+
+        .chart-annotation-mini {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #6366f1;
+            border: 2px solid #0a0e17;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .chart-annotation-mini:hover {
+            transform: scale(1.5);
+        }
+
+        .chart-layers-mini {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .layer-tag {
+            font-size: 0.65rem;
+            padding: 0.25rem 0.5rem;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 4px;
+            color: #6366f1;
+        }
+
+        /* Decision Buttons */
+        .decision-btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .decision-btn.disabled {
+            background: rgba(107, 114, 128, 0.2);
+            color: #6b7280;
+            cursor: not-allowed;
+            border: 1px dashed rgba(107, 114, 128, 0.3);
+        }
+
+        .decision-btn.disabled::after {
+            content: '😵 信息过载';
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+        }
+
+        .decision-btn.primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+            }
+            50% {
+                box-shadow: 0 6px 24px rgba(16, 185, 129, 0.5);
+            }
+        }
+
+        .decision-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(16, 185, 129, 0.5);
+        }
+
+        .decision-btn.primary::after {
+            content: '⚡ 立即决策';
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+        }
+
+        .decision-btn.secondary {
+            background: linear-gradient(135deg, #6366f1 0%, #5558e3 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+        }
+
+        .decision-btn.secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
+        }
+
+        .decision-btn.secondary::after {
+            content: '🔍 深度分析';
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+        }
+
+        .decision-time {
+            text-align: center;
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .decision-time.fast {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .decision-time.slow {
+            color: #ef4444;
+        }
+
         /* Utility */
         .mb-2 { margin-bottom: 2rem; }
         .mb-3 { margin-bottom: 3rem; }
         .text-center { text-align: center; }
+
+        @media (max-width: 1024px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-column {
+                min-height: auto;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1925,6 +2293,103 @@
     <!-- Dashboard Page -->
     <div id="dashboard" class="page active">
         <div class="container">
+            <!-- Comparison Demo Section -->
+            <div class="comparison-hero">
+                <h2 class="comparison-title">同样的数据。不同的呈现。这就是 FinVerse。</h2>
+                <p class="comparison-subtitle">信息呈现设计 > 数据本身 | 1 秒做出判断 vs 5 分钟看不完</p>
+                
+                <div class="comparison-grid">
+                    <!-- Old Way -->
+                    <div class="comparison-column old">
+                        <div class="column-header">
+                            <div class="column-badge badge-old">❌ 传统方式</div>
+                            <div class="column-title">这是你现在看到的</div>
+                            <div class="column-desc">密集文字，无视觉层次</div>
+                        </div>
+                        <div class="column-content">
+                            <div class="old-content">
+                                <p>BTC 市场分析报告（2026-02-08）：根据最新技术指标分析，比特币价格目前运行在关键支撑位上方，MA20均线在95850位置提供支撑，MA50均线在94200位置形成第二道防线。相对强弱指标RSI(14)当前读数为68.3，处于偏强区间但尚未进入超买状态（通常以70为分界线）。MACD指标显示快线上穿慢线形成金叉，柱状图由负转正，显示多头动能增强。布林带方面，价格运行在布林带中轨上方，上轨位于99450，下轨位于93120，当前带宽处于正常范围。</p>
+                                <p>从链上数据来看，过去24小时大额转账（单笔>100 BTC）数量较前日增加23%，显示巨鲸活跃度上升。交易所BTC余额较上周下降1.2%，持续呈现净流出态势，这通常被视为长期持有意愿增强的信号。活跃地址数增长15%，网络拥堵度中等。机构持仓占比上升至68%，较上月增加2个百分点。</p>
+                                <p>市场情绪方面，恐慌贪婪指数当前为73，处于贪婪区间。社交媒体情绪分析显示正面情绪占比68%，负面情绪占比22%，中性情绪10%。资金费率为0.032%，略高于中性水平，显示市场多头意愿较强但需警惕过热风险。未平仓合约总量达到34.2亿美元，创历史新高，需关注潜在的多空双杀风险。</p>
+                                <div class="old-numbers">
+                                    <span class="old-number">开盘: 95280</span>
+                                    <span class="old-number">最高: 97150</span>
+                                    <span class="old-number">最低: 94820</span>
+                                    <span class="old-number">收盘: 96420</span>
+                                    <span class="old-number">成交量: 28.4B</span>
+                                    <span class="old-number">涨跌: +2.27%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="decision-btn disabled">做决策</button>
+                            <div class="decision-time slow">⏱️ 预计阅读时间：5-10 分钟</div>
+                        </div>
+                    </div>
+
+                    <!-- FinVerse Summary -->
+                    <div class="comparison-column summary">
+                        <div class="column-header">
+                            <div class="column-badge badge-new">✅ FinVerse 摘要</div>
+                            <div class="column-title">1 秒消化</div>
+                            <div class="column-desc">关键信息，一目了然</div>
+                        </div>
+                        <div class="column-content">
+                            <div class="summary-direction-mini">
+                                <div class="direction-icon-mini">🟢</div>
+                                <div class="direction-text-mini">看多 65%</div>
+                            </div>
+                            <div class="summary-cards-mini">
+                                <div class="summary-card-mini">
+                                    <div class="card-mini-title">📈 技术面</div>
+                                    <div class="card-mini-value" style="color: #10b981;">强势</div>
+                                    <div class="card-mini-desc">MACD 金叉，均线多头排列</div>
+                                </div>
+                                <div class="summary-card-mini">
+                                    <div class="card-mini-title">🔗 链上数据</div>
+                                    <div class="card-mini-value" style="color: #10b981;">积极</div>
+                                    <div class="card-mini-desc">巨鲸增持，交易所流出</div>
+                                </div>
+                                <div class="summary-card-mini">
+                                    <div class="card-mini-title">😊 市场情绪</div>
+                                    <div class="card-mini-value" style="color: #f59e0b;">谨慎乐观</div>
+                                    <div class="card-mini-desc">贪婪 73，注意过热</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="decision-btn primary">做决策</button>
+                            <div class="decision-time fast">⚡ 1 秒即可判断</div>
+                        </div>
+                    </div>
+
+                    <!-- FinVerse Chart -->
+                    <div class="comparison-column chart">
+                        <div class="column-header">
+                            <div class="column-badge badge-pro">✅ FinVerse 图表</div>
+                            <div class="column-title">30 秒深度理解</div>
+                            <div class="column-desc">可视化 + AI 标注</div>
+                        </div>
+                        <div class="column-content">
+                            <div class="chart-mini-container">
+                                <canvas id="comparisonChart" class="chart-mini"></canvas>
+                            </div>
+                            <div class="chart-layers-mini">
+                                <span class="layer-tag">📊 K 线</span>
+                                <span class="layer-tag">📈 MA 均线</span>
+                                <span class="layer-tag">🤖 AI 标注</span>
+                                <span class="layer-tag">📉 支撑阻力</span>
+                                <span class="layer-tag">💡 推理链</span>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="decision-btn secondary">做决策</button>
+                            <div class="decision-time" style="color: #6366f1;">🔍 30 秒深度分析</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="welcome-banner">
                 早安，Asher 👋 你的 Agent 发现了 <strong>3</strong> 个值得关注的信号
             </div>
@@ -3323,6 +3788,163 @@
             indicator.style.boxShadow = agentRunning ? '0 0 8px rgba(16, 185, 129, 0.5)' : 'none';
         });
 
+        // Initialize Comparison Chart
+        function initComparisonChart() {
+            const canvas = document.getElementById('comparisonChart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            const width = canvas.width;
+            const height = canvas.height;
+            const padding = 20;
+            const chartHeight = height - padding * 2;
+            const chartWidth = width - padding * 2;
+            
+            // Background
+            ctx.fillStyle = '#0a0e17';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Grid
+            ctx.strokeStyle = 'rgba(99, 102, 241, 0.05)';
+            ctx.lineWidth = 1;
+            
+            for (let i = 0; i <= 4; i++) {
+                const y = padding + (chartHeight / 4) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+            
+            // Generate simplified candlesticks
+            const candleCount = 12;
+            const candleWidth = chartWidth / candleCount * 0.5;
+            const candleSpacing = chartWidth / candleCount;
+            
+            let currentPrice = 95000;
+            const candles = [];
+            
+            for (let i = 0; i < candleCount; i++) {
+                const change = (Math.random() - 0.42) * 2500;
+                const open = currentPrice;
+                const close = currentPrice + change;
+                const high = Math.max(open, close) + Math.random() * 1200;
+                const low = Math.min(open, close) - Math.random() * 1200;
+                
+                candles.push({ open, high, low, close });
+                currentPrice = close;
+            }
+            
+            const maxPrice = Math.max(...candles.map(c => c.high));
+            const minPrice = Math.min(...candles.map(c => c.low));
+            const priceRange = maxPrice - minPrice;
+            
+            function priceToY(price) {
+                return padding + chartHeight - ((price - minPrice) / priceRange) * chartHeight;
+            }
+            
+            // Draw MA line
+            ctx.strokeStyle = 'rgba(99, 102, 241, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            const maPoints = candles.map((candle, i) => {
+                const x = padding + i * candleSpacing + candleSpacing / 2;
+                const avgPrice = (candle.high + candle.low + candle.close) / 3;
+                return { x, y: priceToY(avgPrice) };
+            });
+            
+            maPoints.forEach((point, i) => {
+                if (i === 0) {
+                    ctx.moveTo(point.x, point.y);
+                } else {
+                    ctx.lineTo(point.x, point.y);
+                }
+            });
+            ctx.stroke();
+            
+            // Draw candlesticks
+            candles.forEach((candle, i) => {
+                const x = padding + i * candleSpacing + candleSpacing / 2;
+                const isGreen = candle.close > candle.open;
+                
+                // Wick
+                ctx.strokeStyle = isGreen ? '#10b981' : '#ef4444';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(x, priceToY(candle.high));
+                ctx.lineTo(x, priceToY(candle.low));
+                ctx.stroke();
+                
+                // Body
+                const bodyTop = priceToY(Math.max(candle.open, candle.close));
+                const bodyBottom = priceToY(Math.min(candle.open, candle.close));
+                const bodyHeight = bodyBottom - bodyTop;
+                
+                ctx.fillStyle = isGreen ? '#10b981' : '#ef4444';
+                ctx.fillRect(x - candleWidth / 2, bodyTop, candleWidth, Math.max(bodyHeight, 1));
+            });
+            
+            // Add AI annotation points
+            const chartContainer = canvas.parentElement;
+            const annotations = [
+                { index: 2, top: 30 },
+                { index: 6, top: 15 },
+                { index: 10, top: 50 }
+            ];
+            
+            annotations.forEach(ann => {
+                const dot = document.createElement('div');
+                dot.className = 'chart-annotation-mini';
+                const x = padding + ann.index * candleSpacing + candleSpacing / 2;
+                
+                dot.style.left = x + 'px';
+                dot.style.top = ann.top + '%';
+                dot.title = 'AI 标注点 - 点击查看推理链';
+                
+                chartContainer.appendChild(dot);
+            });
+        }
+
+        // Decision Button Click Handlers
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('decision-btn') && !e.target.classList.contains('disabled')) {
+                const column = e.target.closest('.comparison-column');
+                let message = '';
+                
+                if (column.classList.contains('summary')) {
+                    message = '✅ 基于摘要模式做出决策：偏多，建议关注 $98,000 突破';
+                } else if (column.classList.contains('chart')) {
+                    message = '🔍 基于图表分析做出决策：技术形态良好，支撑位 $94,500';
+                }
+                
+                if (message) {
+                    // Show AI chat with decision
+                    document.getElementById('aiChatButton').click();
+                    setTimeout(() => {
+                        const chatMessages = document.getElementById('chatMessages');
+                        const aiMsg = document.createElement('div');
+                        aiMsg.className = 'chat-message';
+                        aiMsg.innerHTML = `
+                            <div class="message-avatar ai">🤖</div>
+                            <div class="message-content">
+                                ${message}
+                                <div class="message-actions">
+                                    <button class="message-action-btn">📊 查看完整分析</button>
+                                    <button class="message-action-btn">⚡ 设置提醒</button>
+                                </div>
+                            </div>
+                        `;
+                        chatMessages.appendChild(aiMsg);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 300);
+                }
+            }
+        });
+
         // Initialize
         initDashboardSignals();
         initSignalsFeed();
@@ -3330,6 +3952,7 @@
         initMiniChart('btcChart', 30);
         initMiniChart('ethChart', 30);
         initMiniChart('solChart', 30);
+        initComparisonChart();
         
         // Animate confidence bars on load
         setTimeout(() => {
